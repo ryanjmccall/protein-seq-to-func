@@ -1,0 +1,66 @@
+NEBIUS API QUICK REFERENCE (OpenAI-compatible)
+
+Base URL (from Quickstart):
+  https://api.studio.nebius.com/v1/
+
+Auth:
+  Header: Authorization: Bearer <NEBIUS_API_KEY>
+  Header: Content-Type: application/json
+
+Core endpoints:
+  POST /v1/chat/completions     # chat-style (messages[])
+  POST /v1/completions          # classic prompt/response (less common now)
+  POST /v1/embeddings           # text → vector embeddings
+  (There are others like images; not needed for this project.)
+
+Chat Completions payload (minimum):
+  {
+    "model": "<model-slug>",             # e.g., "gpt-oss-120b" (OSS, inexpensive)
+    "messages": [
+      {"role":"system","content":"..."},
+      {"role":"user","content":"..."}
+    ],
+    "max_tokens": 128,                   # limit output length (controls cost)
+    "temperature": 0.2                   # lower = more deterministic
+  }
+
+JSON Mode (structured output):
+  - Arbitrary JSON object:
+    Add: "response_format": {"type": "json_object"}
+    (Model returns valid JSON in message.content, schema unspecified)
+
+  - Strict schema:
+    Add: "response_format": {"type": "json_schema", "json_schema": <JSON_SCHEMA>}
+    (content must follow your schema; also remind in the prompt)
+
+Embeddings payload (text → vectors):
+  POST /v1/embeddings
+  {
+    "model": "<embedding-model-slug>",   # e.g., "BAAI/bge-en-icl"
+    "input": "single string or list of strings"
+  }
+  Returns JSON with "data": [{"embedding":[...], "index":0}, ...]
+  Use for RAG: chunk papers → embed → store vectors → top-K similarity → feed to chat/completions.
+
+Typical headers:
+  Authorization: Bearer <NEBIUS_API_KEY>
+  Content-Type: application/json
+
+Common fields:
+  - model        : name/slug shown in Nebius UI (Playground) and docs
+  - messages     : list of {role, content} (system/user/assistant)
+  - max_tokens   : hard cap on generated tokens (output cost)
+  - temperature  : randomness (0–1)
+  - response_format (optional): JSON mode (json_object or json_schema)
+  - stream (optional): true to stream tokens (not needed for simple tests)
+
+Error hints:
+  - 401/403: invalid/missing key or permissions
+  - 404: wrong endpoint path (ensure /v1/chat/completions)
+  - 429: rate limit; retry with backoff
+  - Timeouts: increase client timeout; keep prompts short
+
+Model slugs:
+  - You pick the exact slug from the Nebius model card in the Playground.
+  - Example for tests: "gpt-oss-120b" (open-source, low cost).
+  - Embeddings example: "BAAI/bge-en-icl".
