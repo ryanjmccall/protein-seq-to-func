@@ -1,5 +1,4 @@
 import sys
-import os
 
 # Get the path of the Python executable currently being used
 executable_path = sys.executable

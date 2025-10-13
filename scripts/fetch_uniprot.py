@@ -47,7 +47,7 @@ def fetch_uniprot_data(gene_list: list):
             else:
                 print(f"  ❌ No result found for {gene}")
             
-            time.sleep(0.5) # Be respectful to the API by adding a small delay
+            time.sleep(0.1) # Be respectful to the API by adding a small delay
 
         except requests.exceptions.RequestException as e:
             print(f"  An error occurred for gene {gene}: {e}")
@@ -57,13 +57,14 @@ def fetch_uniprot_data(gene_list: list):
 
 if __name__ == "__main__":
     # --- How to use the script ---
+    # Uniprot is the comprehensive and list every protein that exists, 
+    # regardless of its function. If a protein is known, it's in UniProt
 
-    # Example list of genes. In your project, you would load this from the genage_human.csv file.
     # example_genes = ["CCR2", "KCNB1", "GLP1R", "SIRT6", "FOXO3"]
+
+    # C-C Chemokine Receptor Family, implicated in inflammation and immune response
     example_genes = ["CCR1", "CCR2", "CCR5", "CCR7"]
 
-
-    # Fetch the data
     uniprot_data = fetch_uniprot_data(example_genes)
 
     if not uniprot_data.empty:
