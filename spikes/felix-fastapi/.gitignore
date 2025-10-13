@@ -1,0 +1,4 @@
+venv_felix/
+__pycache__/
+*.pyc
+.env
