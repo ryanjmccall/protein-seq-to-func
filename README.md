@@ -1,30 +1,26 @@
 # protein-seq-to-func
 West Coast Vectors team submission for HackAging project: https://www.hackaging.ai/challenges/sequence-to-function/
 
-To help us divide and conquer for the hackathon, here’s a proposed breakdown of the project areas. Think of these as starting points to help us focus.
+Data Engineer (The Source):
 
-The Architect (Backend Lead) 🏗️
+Mission: Get the raw materials.
 
-Mission: Build the central API and database so we have a solid foundation for our project.
+Tasks: Write and run the Python scripts to scrape/download data from the target databases (GenAge, UniProt, etc.). Place all raw data into the /data/raw directory.
 
-Primary Area: backend/
+ML / NLP Engineer (The Engine):
 
-The Alchemist (AI/Data Lead) 🧪
+Mission: Build the "brain" of the project.
 
-Mission: Get the raw data from scientific papers and use AI to turn it into structured knowledge.
+Tasks: Develop and train the core model that reads scientific papers (mined by the Data Engineer) and extracts the key sequence-to-phenotype relationships. This is the primary NLP task.
 
-Primary Area: pipelines/
+Data Analyst / Bioinformatician (The Insight):
 
-The Storyteller (Frontend & Demo Lead) 🎨
+Mission: Make sense of the extracted data.
 
-Mission: Create the user interface and the final presentation to showcase our work and tell a compelling story.
+Tasks: Take the messy output from the ML model, clean it, structure it into the final knowledge base, and analyze it. Find the key patterns and insights that will be used in the final presentation.
 
-Primary Area: frontend/
+Project Lead / Strategist (The Storyteller):
 
-The Specialist (Research & Validation Lead) 🔬
+Mission: Steer the ship and create the final story.
 
-Mission: Provide scientific expertise, find key insights in the data, and help validate our automated results.
-
-Primary Areas: data/, docs/, notebooks/
-
-This structure just helps us know where to start.
+Tasks: Keep the team aligned with Andrei's strategic guidance. Manage the project, merge code, and be responsible for building the final, compelling presentation and demo that showcases the team's work.
