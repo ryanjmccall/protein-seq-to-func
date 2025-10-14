@@ -8,24 +8,36 @@ import io
 import time
 import zipfile
 
+from collections.abc import Iterable
+
 import pandas as pd
 import requests
 
 
-def fetch_uniprot_data(gene_list: list[str]) -> pd.DataFrame:
+def _ensure_iterable(item: str | Iterable[str]) -> list[str]:
     """
-    Fetch protein ID, name, and sequence information from UniProt for each gene.
+    Normalize a single string or iterable of strings into a list of strings.
+    """
+    if isinstance(item, str):
+        return [item]
+    return list(item)
+
+
+def fetch_uniprot_data(genes: str | Iterable[str]) -> pd.DataFrame:
+    """
+    Fetch protein ID, name, and sequence information from UniProt for each gene symbol.
 
     Args:
-        gene_list (list[str]): Official human gene symbols (e.g., ['CCR2', 'KCNB1']).
+        genes (str | Iterable[str]): One or more official human gene symbols (e.g., 'CCR2' or ['CCR2', 'KCNB1']).
 
     Returns:
         pandas.DataFrame: A DataFrame containing the fetched protein data.
     """
     base_url = "https://rest.uniprot.org/uniprotkb/search"
     protein_data = []
+    gene_list = _ensure_iterable(genes)
 
-    print(f"Fetching data for {len(gene_list)} genes from UniProt...")
+    print(f"Fetching data for {len(gene_list)} gene(s) from UniProt...")
 
     for gene in gene_list:
         query = f'(gene:"{gene}") AND (organism_id:9606)'  # 9606 is Homo sapiens
@@ -63,16 +75,19 @@ def fetch_uniprot_data(gene_list: list[str]) -> pd.DataFrame:
     return pd.DataFrame(protein_data)
 
 
-def fetch_genage_data(gene: str | None = None, zip_url: str = "https://genomics.senescence.info/genes/human_genes.zip") -> pd.DataFrame | None:
+def fetch_genage_data(
+    genes: str | Iterable[str] | None = None,
+    zip_url: str = "https://genomics.senescence.info/genes/human_genes.zip",
+) -> pd.DataFrame | None:
     """
-    Fetch the GenAge human dataset and optionally filter for a specific gene.
+    Fetch the GenAge human dataset and optionally filter for one or more gene queries.
 
     Args:
-        gene (str, optional): Gene symbol or keyword to filter by.
+        genes (str | Iterable[str] | None): Gene symbol(s) or keyword(s) to filter by.
         zip_url (str): URL to the GenAge human genes zip archive.
 
     Returns:
-        pandas.DataFrame | None: DataFrame of GenAge data (filtered if gene provided).
+        pandas.DataFrame | None: DataFrame of GenAge data (filtered if genes provided).
     """
     print(f"Downloading GenAge data from: {zip_url}")
 
@@ -86,14 +101,23 @@ def fetch_genage_data(gene: str | None = None, zip_url: str = "https://genomics.
             with archive.open(target_csv) as csv_file:
                 df = pd.read_csv(csv_file)
 
-        # If a gene query was provided, filter for it
-        if gene:
-            mask = df.apply(lambda row: row.astype(str).str.contains(gene, case=False, na=False)).any(axis=1)
+        # If gene queries were provided, filter for them (logical OR across queries)
+        if genes:
+            gene_queries = _ensure_iterable(genes)
+
+            def row_matches(row: pd.Series) -> bool:
+                row_strs = row.astype(str)
+                return any(row_strs.str.contains(query, case=False, na=False).any() for query in gene_queries)
+
+            mask = df.apply(row_matches, axis=1)
             df = df.loc[mask]
+
             if df.empty:
-                print(f"No results found for gene query: '{gene}'")
+                queries = ", ".join(gene_queries)
+                print(f"No results found for gene query: {queries!r}")
                 return None
-            print(f"Found {len(df)} entries matching '{gene}'")
+
+            print(f"Found {len(df)} entries matching query set: {gene_queries}")
 
         return df
 
