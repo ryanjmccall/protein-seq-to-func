@@ -8,7 +8,7 @@ import re
 import time
 import requests
 import pandas as pd
-from typing import Optional, Iterable
+from typing import Optional, Iterable, Mapping, Any, Tuple
 
 # ---------- Europe PMC endpoints ----------
 EPMC_BASE = "https://www.ebi.ac.uk/europepmc/webservices/rest"
@@ -163,21 +163,53 @@ def fetch_europe_pmc_best_batch(items: Iterable[str], delay: float = 0.1) -> lis
     """
     return [fetch_europe_pmc_best(it, delay=delay) for it in items]
 
-def list_references_epmc(item: str, page_size: int = 100, delay: float = 0.05) -> pd.DataFrame:
+ResolvedInput = str | Mapping[str, Any]
+
+def _resolve_source_and_id(inp: ResolvedInput, delay: float = 0.1) -> Tuple[Optional[str], Optional[str]]:
     """
-    List all papers that THIS paper CITES (its reference list).
-    Accepts DOI/PMID/PMCID/title.
-    Returns DataFrame with columns: PMID, PMCID, DOI, title, journal, year, source_url
+    Resolve to a Europe PMC (source, id):
+      - If a dict (output of fetch_europe_pmc_best), prefer PMID (MED) then PMCID (PMC).
+      - If a string, call fetch_europe_pmc_best on it.
+      - If dict lacks PMID/PMCID but has DOI/title, try a second-pass resolve using those.
+    Returns (source, id) or (None, None).
     """
-    resolved = fetch_europe_pmc_best(item, delay=delay)
-    # We need a MED/PMCID context for the /references endpoint
-    source = None
-    id_ = None
-    if resolved.get("PMID"):
-        source, id_ = "MED", resolved["PMID"]
-    elif resolved.get("PMCID"):
-        source, id_ = "PMC", resolved["PMCID"]
-    else:
+    # Case 1: already a dict (json_id-like)
+    if isinstance(inp, Mapping):
+        pmid  = inp.get("PMID")
+        pmcid = inp.get("PMCID")
+        if pmid:
+            return "MED", str(pmid)
+        if pmcid:
+            return "PMC", str(pmcid)
+        # Fallback via DOI or title if provided
+        fallback_key = inp.get("DOI") or inp.get("title")
+        if fallback_key:
+            resolved = fetch_europe_pmc_best(str(fallback_key), delay=delay)
+            if resolved.get("PMID"):
+                return "MED", str(resolved["PMID"])
+            if resolved.get("PMCID"):
+                return "PMC", str(resolved["PMCID"])
+        return None, None
+
+    # Case 2: raw string
+    meta = fetch_europe_pmc_best(inp, delay=delay)
+    if meta.get("PMID"):
+        return "MED", str(meta["PMID"])
+    if meta.get("PMCID"):
+        return "PMC", str(meta["PMCID"])
+    return None, None
+
+
+def list_references_epmc(item_or_dict: ResolvedInput, page_size: int = 100, delay: float = 0.05) -> pd.DataFrame:
+    """
+    List all papers that THIS paper CITES.
+    Accepts:
+      - DOI/PMID/PMCID/title string, or
+      - dict from fetch_europe_pmc_best(...)
+    Returns DataFrame: PMID, PMCID, DOI, title, journal, year, source_url
+    """
+    source, id_ = _resolve_source_and_id(item_or_dict, delay=delay)
+    if not source or not id_:
         return pd.DataFrame(columns=["PMID","PMCID","DOI","title","journal","year","source_url"])
 
     rows, page = [], 1
@@ -201,20 +233,17 @@ def list_references_epmc(item: str, page_size: int = 100, delay: float = 0.05) -
 
     return pd.DataFrame(rows, columns=["PMID","PMCID","DOI","title","journal","year","source_url"])
 
-def list_citations_epmc(item: str, page_size: int = 100, delay: float = 0.05) -> pd.DataFrame:
+
+def list_citations_epmc(item_or_dict: ResolvedInput, page_size: int = 100, delay: float = 0.05) -> pd.DataFrame:
     """
-    List all papers that CITE THIS paper (downstream citations).
-    Accepts DOI/PMID/PMCID/title.
-    Returns DataFrame with columns: PMID, PMCID, DOI, title, journal, year, source_url
+    List all papers that CITE THIS paper.
+    Accepts:
+      - DOI/PMID/PMCID/title string, or
+      - dict from fetch_europe_pmc_best(...)
+    Returns DataFrame: PMID, PMCID, DOI, title, journal, year, source_url
     """
-    resolved = fetch_europe_pmc_best(item, delay=delay)
-    source = None
-    id_ = None
-    if resolved.get("PMID"):
-        source, id_ = "MED", resolved["PMID"]
-    elif resolved.get("PMCID"):
-        source, id_ = "PMC", resolved["PMCID"]
-    else:
+    source, id_ = _resolve_source_and_id(item_or_dict, delay=delay)
+    if not source or not id_:
         return pd.DataFrame(columns=["PMID","PMCID","DOI","title","journal","year","source_url"])
 
     rows, page = [], 1
