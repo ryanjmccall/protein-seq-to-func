@@ -60,12 +60,13 @@ if __name__ == "__main__":
     # Uniprot is the comprehensive and list every protein that exists, 
     # regardless of its function. If a protein is known, it's in UniProt
 
-    # example_genes = ["CCR2", "KCNB1", "GLP1R", "SIRT6", "FOXO3"]
+    # https://www.hackaging.ai/challenges/sequence-to-function/ 
+    test_cases = ["NRF2", "SOX2", "APOE", "OCT4"]
 
     # C-C Chemokine Receptor Family, implicated in inflammation and immune response
-    example_genes = ["CCR1", "CCR2", "CCR5", "CCR7"]
+    genes = test_cases + ["CCR1", "CCR2", "CCR5", "CCR7"]
 
-    uniprot_data = fetch_uniprot_data(example_genes)
+    uniprot_data = fetch_uniprot_data(genes)
 
     if not uniprot_data.empty:
         # Display the results

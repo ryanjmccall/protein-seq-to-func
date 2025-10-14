@@ -49,6 +49,8 @@ def download_and_extract_genage_zip(zip_url: str):
         return None
 
 if __name__ == "__main__":
+    # expert-curated database that only includes genes for which there is 
+    # significant, direct scientific evidence linking them to the aging process
     # --- How to use the script ---
     
     # The new URL you provided for the zip archive
