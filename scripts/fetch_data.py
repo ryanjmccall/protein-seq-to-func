@@ -4,7 +4,7 @@ Core data access helpers for external biological datasets.
 
 from __future__ import annotations
 
-import io
+import io, re
 import zipfile
 import time
 import requests
@@ -29,6 +29,23 @@ def _best_hit(results):
         return None
     reviewed = [r for r in results if r.get("entryType") == "Swiss-Prot" or r.get("reviewed") is True]
     return (reviewed or results)[0]
+
+def split_colon_list(value: str | None) -> list[str]:
+    """
+    Split a colon/semicolon/comma-separated string into a list of clean items.
+
+    Examples:
+        "10.1038/nature01215; 10.1073/pnas.0606143103"
+        -> ["10.1038/nature01215", "10.1073/pnas.0606143103"]
+
+        None -> []
+        "" -> []
+    """
+    if not value:
+        return []
+    parts = re.split(r"[;]", value)
+    return [p.strip() for p in parts if p.strip()]
+
 
 def fetch_uniprot_data(genes: str | Iterable[str]) -> pd.DataFrame:
     """
@@ -100,12 +117,7 @@ def fetch_uniprot_data(genes: str | Iterable[str]) -> pd.DataFrame:
 
     return pd.DataFrame(rows)
 
-
-
-def fetch_genage_data(
-    genes: str | Iterable[str] | None = None,
-    zip_url: str = "https://genomics.senescence.info/genes/human_genes.zip",
-) -> pd.DataFrame | None:
+def fetch_genage_data(genes: str | Iterable[str] | None = None, zip_url: str = "https://genomics.senescence.info/genes/human_genes.zip") -> pd.DataFrame | None:
     """
     Fetch the GenAge human dataset and optionally filter for one or more gene queries.
 
