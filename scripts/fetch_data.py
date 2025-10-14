@@ -5,74 +5,101 @@ Core data access helpers for external biological datasets.
 from __future__ import annotations
 
 import io
-import time
 import zipfile
-
+import time
+import requests
+import pandas as pd
 from collections.abc import Iterable
 
-import pandas as pd
-import requests
+BASE_SEARCH = "https://rest.uniprot.org/uniprotkb/search"
+BASE_ENTRY  = "https://rest.uniprot.org/uniprotkb"  # /{accession}
 
+def _ensure_iterable(x):
+    if isinstance(x, str):
+        return [x]
+    if isinstance(x, Iterable):
+        return list(x)
+    return [x]
 
-def _ensure_iterable(item: str | Iterable[str]) -> list[str]:
+def _best_hit(results):
     """
-    Normalize a single string or iterable of strings into a list of strings.
+    Prefer reviewed Swiss-Prot hits first; otherwise take the first.
     """
-    if isinstance(item, str):
-        return [item]
-    return list(item)
-
+    if not results:
+        return None
+    reviewed = [r for r in results if r.get("entryType") == "Swiss-Prot" or r.get("reviewed") is True]
+    return (reviewed or results)[0]
 
 def fetch_uniprot_data(genes: str | Iterable[str]) -> pd.DataFrame:
     """
-    Fetch protein ID, name, and sequence information from UniProt for each gene symbol.
-
-    Args:
-        genes (str | Iterable[str]): One or more official human gene symbols (e.g., 'CCR2' or ['CCR2', 'KCNB1']).
-
-    Returns:
-        pandas.DataFrame: A DataFrame containing the fetched protein data.
+    Fetch UniProt protein data for human genes, including DOIs & PMIDs from references.
     """
-    base_url = "https://rest.uniprot.org/uniprotkb/search"
-    protein_data = []
-    gene_list = _ensure_iterable(genes)
+    genes = _ensure_iterable(genes)
+    rows = []
 
-    print(f"Fetching data for {len(gene_list)} gene(s) from UniProt...")
-
-    for gene in gene_list:
-        query = f'(gene:"{gene}") AND (organism_id:9606)'  # 9606 is Homo sapiens
+    for gene in genes:
+        # 1) Search: get the best accession for Homo sapiens
         params = {
-            "query": query,
-            "fields": "accession,protein_name,sequence",
+            "query": f'gene_exact:{gene} AND organism_id:9606',
             "format": "json",
-            "size": 1,  # Only request the primary result
+            "size": 5,  # get a few, we'll choose reviewed if available
+            # keep fields minimal; we just need accession & a name for logging
+            "fields": "accession,reviewed,protein_name"
         }
-
         try:
-            response = requests.get(base_url, params=params)
-            response.raise_for_status()
+            s = requests.get(BASE_SEARCH, params=params, timeout=30)
+            s.raise_for_status()
+            hits = s.json().get("results", [])
+            hit = _best_hit(hits)
+            if not hit:
+                print(f"✗ No UniProt result for {gene}")
+                continue
 
-            data = response.json()
-            if data and "results" in data and data["results"]:
-                result = data["results"][0]
-                protein_info = {
-                    "gene_symbol": gene,
-                    "uniprot_id": result.get("primaryAccession"),
-                    "protein_name": result.get("proteinDescription", {}).get("fullName", {}).get("value"),
-                    "sequence": result.get("sequence", {}).get("value"),
-                }
-                protein_data.append(protein_info)
-                print(f"  Found data for {gene}")
-            else:
-                print(f"  No result found for {gene}")
+            acc = hit["primaryAccession"]
 
-            time.sleep(0.1)  # Small delay to respect the API
+            # 2) Retrieve full entry JSON by accession (rich, includes references)
+            e = requests.get(f"{BASE_ENTRY}/{acc}.json", timeout=30)
+            e.raise_for_status()
+            entry = e.json()
 
-        except requests.exceptions.RequestException as exc:
-            print(f"  Error occurred for gene {gene}: {exc}")
+            # basic protein info (be tolerant to missing nested keys)
+            protein_name = (
+                entry.get("proteinDescription", {})
+                     .get("recommendedName", {})
+                     .get("fullName", {})
+                     .get("value")
+            )
+            sequence = entry.get("sequence", {}).get("value")
 
-    print("\nUniProt fetching complete.")
-    return pd.DataFrame(protein_data)
+            # 3) Extract references → PMIDs, DOIs, Titles
+            dois, pmids, titles = [], [], []
+            for ref in entry.get("references", []):
+                c = ref.get("citation", {}) or {}
+                if (d := c.get("doi")):
+                    dois.append(d)
+                if (pm := c.get("pubMedId")):
+                    pmids.append(pm)
+                if (t := c.get("title")):
+                    titles.append(t)
+
+            rows.append({
+                "gene_symbol": gene,
+                "uniprot_id": acc,
+                "protein_name": protein_name,
+                "sequence": sequence,
+                "pmids": "; ".join(pmids) if pmids else None,
+                "dois": "; ".join(dois) if dois else None,
+                "citation_titles": "; ".join(titles) if titles else None,
+                "reviewed": entry.get("entryType") == "Swiss-Prot"
+            })
+
+            time.sleep(0.1)  # courtesy delay
+
+        except requests.RequestException as exc:
+            print(f"⚠ UniProt request failed for {gene}: {exc}")
+
+    return pd.DataFrame(rows)
+
 
 
 def fetch_genage_data(
