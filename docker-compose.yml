@@ -3,34 +3,42 @@
 version: '3.8'
 
 services:
-  # The FastAPI Backend Application
-  backend:
-    build: ./backend  # Specifies to build from the Dockerfile in the ./backend directory
-    container_name: longevity_api
-    ports:
-      - "8000:8000" # Exposes the FastAPI port to your local machine
+  # The PostgreSQL Database Service
+  db:
+    image: postgres:15-alpine  # Use a lightweight postgres image
+    container_name: local-postgres-db
     environment:
-      # These variables will be used by your FastAPI app to connect to the database
-      - NEO4J_URI=bolt://neo4j:7687
-      - NEO4J_USER=neo4j
-      - NEO4J_PASSWORD=your-super-secret-password
-    depends_on:
-      - neo4j # Ensures that the database is started before the backend starts
-
-  # The Neo4j Database
-  neo4j:
-    image: neo4j:5.13
-    container_name: longevity_db
+      POSTGRES_DB: knowledge_base
+      POSTGRES_USER: api_user
+      POSTGRES_PASSWORD: your_local_dev_password # This is for local dev only!
     ports:
-      - "7474:7474" # Web interface (Neo4j Browser)
-      - "7687:7687" # Bolt protocol (for the driver)
-    environment:
-      # Sets the username and password for the database on first run
-      - NEO4J_AUTH=neo4j/your-super-secret-password
+      - "5432:5432"  # Map local port 5432 to the container's port 5432
     volumes:
-      - neo4j_data:/data # Persists database data across container restarts
+      - postgres_data:/var/lib/postgresql/data/
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U api_user -d knowledge_base"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
 
+  # The FastAPI Backend Service
+  backend:
+    build:
+      context: ./backend  # Tells Docker to look for the Dockerfile in the ./backend directory
+    container_name: backend-api-service
+    ports:
+      - "8000:8080"  # Map local port 8000 to the container's port 8080
+    volumes:
+      - ./backend:/app  # Mounts your local code into the container for hot-reloading
+    environment:
+      - DB_HOST=db  # The hostname 'db' resolves to the postgres container
+      - DB_NAME=knowledge_base
+      - DB_USER=api_user
+      - DB_PASS=your_local_dev_password
+    depends_on:
+      db:
+        condition: service_healthy # Ensures the backend only starts after the DB is ready
+
+# Defines a named volume to persist database data across container restarts
 volumes:
-  # Defines the named volume for data persistence
-  neo4j_data:
-
+  postgres_data:

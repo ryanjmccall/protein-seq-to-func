@@ -1,31 +1,29 @@
-# Stage 1: Define the base image
-# Use a lean, Python-specific base image.
-# 'slim-buster' is a good balance of size and required dependencies.
-FROM python:3.11-slim-buster
+# backend/Dockerfile
 
-# --- Environment Setup ---
+# 1. Start with a lean, official Python base image.
+FROM python:3.11-slim
 
-# Set the working directory inside the container
+# 2. Set the working directory inside the container.
 WORKDIR /app
 
-# --- Dependencies & Code ---
+# 3. Copy only the requirements file first to leverage Docker's build cache.
+#    This layer only rebuilds when your dependencies change.
+COPY ./requirements.txt .
 
-# Copy the requirements file into the container
-# This step is often separated to leverage Docker's build cache
-COPY requirements.txt .
+# 4. Install dependencies. We include build-essentials in case any libraries
+#    need to compile C extensions (like psycopg2), then clean up to keep the image small.
+RUN apt-get update && apt-get install -y build-essential libpq-dev && \
+    pip install --no-cache-dir -r requirements.txt && \
+    apt-get purge -y --auto-remove build-essential
 
-# Install Python dependencies
-# The --no-cache-dir flag helps keep the image size down
-RUN pip install --no-cache-dir -r requirements.txt
-
-# Copy the rest of the application code into the container
+# 5. Copy the rest of your application source code into the container.
 COPY . .
 
-# --- Execution Command ---
+# 6. Expose the port that the application will listen on.
+#    Cloud Run expects 8080 by default.
+EXPOSE 8080
 
-# Define the command to run when the container starts
-# Use the executable form (CMD ["executable", "param1", "param2"])
-# This should point to your main application file (e.g., your ML model entry point)
-CMD ["python", "main.py"]
-
-
+# 7. Define the command to run your application.
+#    Listen on 0.0.0.0 to accept connections from outside the container.
+#    The port is dynamically set by the $PORT environment variable, which Cloud Run provides.
+CMD ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8080"]
