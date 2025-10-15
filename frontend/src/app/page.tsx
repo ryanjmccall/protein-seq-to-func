@@ -1,102 +1,114 @@
-import Image from "next/image";
+import Link from "next/link";
 
 export default function Home() {
   return (
-    <div className="font-sans grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20">
-      <main className="flex flex-col gap-[32px] row-start-2 items-center sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={180}
-          height={38}
-          priority
-        />
-        <ol className="font-mono list-inside list-decimal text-sm/6 text-center sm:text-left">
-          <li className="mb-2 tracking-[-.01em]">
-            Get started by editing{" "}
-            <code className="bg-black/[.05] dark:bg-white/[.06] font-mono font-semibold px-1 py-0.5 rounded">
-              src/app/page.tsx
-            </code>
-            .
-          </li>
-          <li className="tracking-[-.01em]">
-            Save and see your changes instantly.
-          </li>
-        </ol>
+    <div className="min-h-screen bg-[var(--background)] flex flex-col">
+      {/* Header */}
+      <header className="border-b border-[var(--border-color)] bg-[var(--background-elevated)]">
+        <div className="max-w-[1200px] mx-auto px-8 py-4">
+          <h1 className="text-3xl font-bold text-[var(--foreground)]">WCVikiCrow</h1>
+          <p className="text-[var(--foreground-muted)] text-sm mt-1">
+            Protein Sequence-to-Function Explorer
+          </p>
+        </div>
+      </header>
 
-        <div className="flex gap-4 items-center flex-col sm:flex-row">
-          <a
-            className="rounded-full border border-solid border-transparent transition-colors flex items-center justify-center bg-foreground text-background gap-2 hover:bg-[#383838] dark:hover:bg-[#ccc] font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 sm:w-auto"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={20}
-              height={20}
-            />
-            Deploy now
-          </a>
-          <a
-            className="rounded-full border border-solid border-black/[.08] dark:border-white/[.145] transition-colors flex items-center justify-center hover:bg-[#f2f2f2] dark:hover:bg-[#1a1a1a] hover:border-transparent font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 w-full sm:w-auto md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Read our docs
-          </a>
+      {/* Main Content */}
+      <main className="flex-1 max-w-[1200px] mx-auto px-8 py-16">
+        <div className="space-y-12">
+          {/* Hero Section */}
+          <div className="text-center space-y-4">
+            <h2 className="text-5xl font-bold text-[var(--foreground)]">
+              Explore Protein Sequence-to-Function Relationships
+            </h2>
+            <p className="text-xl text-[var(--foreground-muted)] max-w-3xl mx-auto">
+              A comprehensive database mapping protein modifications to their functional
+              consequences, with a focus on aging-related proteins and therapeutic targets.
+            </p>
+          </div>
+
+          {/* Features */}
+          <div className="grid md:grid-cols-3 gap-6 mt-12">
+            <div className="border border-[var(--border-color)] rounded-lg p-6 bg-[var(--background-card)]">
+              <h3 className="text-xl font-semibold text-[var(--foreground)] mb-3">
+                Sequence-to-Function
+              </h3>
+              <p className="text-[var(--foreground-muted)]">
+                Detailed mappings of protein modifications to their functional impacts,
+                backed by scientific literature.
+              </p>
+            </div>
+
+            <div className="border border-[var(--border-color)] rounded-lg p-6 bg-[var(--background-card)]">
+              <h3 className="text-xl font-semibold text-[var(--foreground)] mb-3">
+                Small Molecule Interactions
+              </h3>
+              <p className="text-[var(--foreground-muted)]">
+                Comprehensive data on drug and compound interactions with target proteins.
+              </p>
+            </div>
+
+            <div className="border border-[var(--border-color)] rounded-lg p-6 bg-[var(--background-card)]">
+              <h3 className="text-xl font-semibold text-[var(--foreground)] mb-3">
+                Clinical Significance
+              </h3>
+              <p className="text-[var(--foreground-muted)]">
+                Disease associations and age-related phenotypes linked to protein variants.
+              </p>
+            </div>
+          </div>
+
+          {/* Demo Protein */}
+          <div className="border border-[var(--border-color)] rounded-lg p-8 bg-[var(--background-elevated)] text-center">
+            <h3 className="text-2xl font-semibold text-[var(--foreground)] mb-4">
+              Example Protein Article
+            </h3>
+            <p className="text-[var(--foreground-muted)] mb-6">
+              Explore GANAB (Glucosidase II Alpha Subunit), a protein involved in polycystic
+              kidney disease and aging-related processes.
+            </p>
+            <Link
+              href="/protein/GANAB"
+              className="inline-block px-6 py-3 bg-[var(--accent-primary)] hover:bg-[var(--accent-primary-hover)] text-white font-semibold rounded-lg transition-colors"
+            >
+              View GANAB Protein Page
+            </Link>
+          </div>
+
+          {/* Project Info */}
+          <div className="border border-[var(--border-color)] rounded-lg p-6 bg-[var(--background-card)]">
+            <h3 className="text-xl font-semibold text-[var(--foreground)] mb-3">
+              About This Project
+            </h3>
+            <p className="text-[var(--foreground-muted)] mb-4">
+              This is a WikiCrow-inspired protein explorer built for the HackAging
+              Sequence-to-Function challenge. The platform integrates data from multiple
+              sources to provide comprehensive insights into protein function and its role
+              in aging.
+            </p>
+            <div className="flex flex-wrap gap-2">
+              <span className="px-3 py-1 bg-[var(--accent-secondary)] text-white rounded text-sm">
+                UniProt
+              </span>
+              <span className="px-3 py-1 bg-[var(--accent-secondary)] text-white rounded text-sm">
+                GenAge
+              </span>
+              <span className="px-3 py-1 bg-[var(--accent-secondary)] text-white rounded text-sm">
+                PubChem
+              </span>
+              <span className="px-3 py-1 bg-[var(--accent-secondary)] text-white rounded text-sm">
+                PubMed
+              </span>
+            </div>
+          </div>
         </div>
       </main>
-      <footer className="row-start-3 flex gap-[24px] flex-wrap items-center justify-center">
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/file.svg"
-            alt="File icon"
-            width={16}
-            height={16}
-          />
-          Learn
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/window.svg"
-            alt="Window icon"
-            width={16}
-            height={16}
-          />
-          Examples
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/globe.svg"
-            alt="Globe icon"
-            width={16}
-            height={16}
-          />
-          Go to nextjs.org →
-        </a>
+
+      {/* Footer */}
+      <footer className="border-t border-[var(--border-color)] bg-[var(--background-elevated)] mt-16">
+        <div className="max-w-[1200px] mx-auto px-8 py-6 text-center text-[var(--foreground-muted)] text-sm">
+          <p>Built for HackAging 2025 - Sequence-to-Function Challenge</p>
+        </div>
       </footer>
     </div>
   );
