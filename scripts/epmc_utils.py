@@ -6,8 +6,10 @@ from __future__ import annotations
 
 import re
 import time
+import hashlib
 import requests
 import pandas as pd
+from collections import deque
 from typing import Optional, Iterable, Mapping, Any, Tuple
 
 # ---------- Europe PMC endpoints ----------
@@ -266,3 +268,198 @@ def list_citations_epmc(item_or_dict: ResolvedInput, page_size: int = 100, delay
         time.sleep(max(0.0, delay))
 
     return pd.DataFrame(rows, columns=["PMID","PMCID","DOI","title","journal","year","source_url"])
+
+
+def _standardize_meta(meta_like: Mapping[str, Any]) -> dict:
+    """
+    Coerce varied Europe PMC payloads (JSON dicts or DataFrame rows) into a uniform dict.
+    """
+    def _clean(value: Any) -> Any:
+        if value is None:
+            return None
+        # Handle pandas NA/NaN values gracefully
+        try:
+            if pd.isna(value):
+                return None
+        except Exception:
+            pass
+        return value
+
+    pmcid = _clean(meta_like.get("PMCID") or meta_like.get("pmcid"))
+    pmid = _clean(meta_like.get("PMID") or meta_like.get("pmid"))
+    doi = _clean(meta_like.get("DOI") or meta_like.get("doi"))
+    title = _clean(meta_like.get("title"))
+    journal = _clean(meta_like.get("journal") or meta_like.get("journalTitle"))
+    year = _clean(meta_like.get("year") or meta_like.get("pubYear"))
+    source_url = _clean(meta_like.get("source_url"))
+
+    if isinstance(year, (int, float)) and not isinstance(year, bool):
+        if float(year).is_integer():
+            year = int(year)
+    elif isinstance(year, str) and year.isdigit():
+        year = int(year)
+
+    return {
+        "PMC": _pmc_numeric(pmcid) if pmcid else None,
+        "PMID": str(pmid) if pmid is not None else None,
+        "PMCID": str(pmcid) if pmcid is not None else None,
+        "DOI": str(doi) if doi is not None else None,
+        "title": title,
+        "journal": journal,
+        "year": year,
+        "source_url": source_url,
+    }
+
+
+def _make_node_key(meta: Mapping[str, Any]) -> str:
+    """
+    Generate a stable key for a paper using available identifiers.
+    """
+    parts: list[str] = []
+    for field in ("PMID", "PMCID", "DOI"):
+        value = meta.get(field)
+        if value:
+            parts.append(str(value).strip().lower())
+
+    title = meta.get("title")
+    if title and not parts:
+        parts.append(re.sub(r"\s+", " ", str(title)).strip().lower())
+
+    source_url = meta.get("source_url")
+    if source_url and not parts:
+        parts.append(str(source_url).strip().lower())
+
+    if parts:
+        return "|".join(parts)
+
+    # Last resort: stable hash of sorted items
+    digest = hashlib.sha1(repr(sorted(meta.items())).encode("utf-8", "ignore")).hexdigest()
+    return f"anon:{digest}"
+
+
+def expand_literature_network_epmc(
+    seeds: Iterable[ResolvedInput] | ResolvedInput,
+    *,
+    max_depth: int = 1,
+    include: Iterable[str] | None = None,
+    delay: float = 0.05
+) -> pd.DataFrame:
+    """
+    Explore references and/or citations starting from one or more seed papers.
+
+    Args:
+        seeds: A single seed (string or fetch_europe_pmc_best dict) or an iterable of seeds.
+        max_depth: How many hops to follow beyond the seeds (depth 0 = seeds).
+            max_depth=1 collects direct references/citations; >1 continues breadth-first.
+        include: Iterable subset of {"references", "citations"} to control which edges to follow.
+        delay: Courtesy sleep between API calls.
+
+    Returns:
+        pandas.DataFrame with one row per unique paper encountered. Columns include
+        Europe PMC identifiers plus:
+            - node_key: internal stable key
+            - depth: minimum hop count from any seed
+            - relations: semicolon-joined labels ("seed", "reference", "citation")
+            - parent_keys: semicolon-joined parent node keys (if any)
+            - n_parents: count of distinct parents
+    """
+    if isinstance(seeds, (str, Mapping)):
+        seed_items = [seeds]
+    else:
+        seed_items = list(seeds)
+
+    if not seed_items:
+        return pd.DataFrame(columns=[
+            "node_key","depth","relations","n_parents","parent_keys",
+            "PMC","PMID","PMCID","DOI","title","journal","year","source_url"
+        ])
+
+    include_set = {"references", "citations"}
+    if include is not None:
+        include_filtered = {opt.lower() for opt in include if opt and isinstance(opt, str)}
+        include_set &= include_filtered
+        if not include_set:
+            # Nothing to expand, just return seed metadata
+            include_set = set()
+
+    max_depth = max(0, int(max_depth))
+
+    nodes: dict[str, dict[str, Any]] = {}
+
+    def register(meta_like: Mapping[str, Any], relation: str, depth: int, parent_key: Optional[str]) -> tuple[str, dict[str, Any]]:
+        base_meta = _standardize_meta(meta_like)
+        node_key = _make_node_key(base_meta)
+        node = nodes.get(node_key)
+        if node is None:
+            node = dict(base_meta)
+            node["node_key"] = node_key
+            node["depth"] = depth
+            node["relations"] = {relation}
+            node["parent_keys"] = set([parent_key] if parent_key else [])
+            nodes[node_key] = node
+        else:
+            node["depth"] = min(node["depth"], depth)
+            node["relations"].add(relation)
+            if parent_key:
+                node["parent_keys"].add(parent_key)
+        return node_key, node
+
+    queue: deque[tuple[str, dict[str, Any]]] = deque()
+    queued_depth: dict[str, int] = {}
+
+    for seed in seed_items:
+        if isinstance(seed, Mapping):
+            seed_meta = seed
+        else:
+            seed_meta = fetch_europe_pmc_best(str(seed), delay=delay)
+        key, node = register(seed_meta, "seed", 0, None)
+        if max_depth > 0:
+            queue.append((key, node))
+            queued_depth[key] = 0
+
+    while queue:
+        current_key, current_node = queue.popleft()
+        current_depth = current_node.get("depth", 0)
+        if current_depth >= max_depth:
+            continue
+
+        if "references" in include_set:
+            refs_df = list_references_epmc(current_node, delay=delay)
+            for _, row in refs_df.iterrows():
+                ref_dict = row.to_dict()
+                child_key, child_node = register(ref_dict, "reference", current_depth + 1, current_key)
+                if (current_depth + 1) < max_depth:
+                    prior_depth = queued_depth.get(child_key)
+                    if prior_depth is None or prior_depth > current_depth + 1:
+                        queue.append((child_key, child_node))
+                        queued_depth[child_key] = current_depth + 1
+
+        if "citations" in include_set:
+            cites_df = list_citations_epmc(current_node, delay=delay)
+            for _, row in cites_df.iterrows():
+                cite_dict = row.to_dict()
+                child_key, child_node = register(cite_dict, "citation", current_depth + 1, current_key)
+                if (current_depth + 1) < max_depth:
+                    prior_depth = queued_depth.get(child_key)
+                    if prior_depth is None or prior_depth > current_depth + 1:
+                        queue.append((child_key, child_node))
+                        queued_depth[child_key] = current_depth + 1
+
+    records: list[dict[str, Any]] = []
+    for node in nodes.values():
+        rec = dict(node)
+        relations = sorted(rec.pop("relations", []))
+        parents = sorted(pk for pk in rec.pop("parent_keys", set()) if pk)
+        rec["relations"] = ";".join(relations) if relations else None
+        rec["parent_keys"] = ";".join(parents) if parents else None
+        rec["n_parents"] = len(parents)
+        records.append(rec)
+
+    df = pd.DataFrame.from_records(records)
+    if not df.empty:
+        df = df.sort_values(["depth", "title"], na_position="last").reset_index(drop=True)
+
+    return df[[
+        "node_key","depth","relations","n_parents","parent_keys",
+        "PMC","PMID","PMCID","DOI","title","journal","year","source_url"
+    ]]
