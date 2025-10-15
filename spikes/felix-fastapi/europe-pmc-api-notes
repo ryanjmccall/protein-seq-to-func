@@ -1,0 +1,150 @@
+# Europe PMC API Guide (for protein-seq-to-func project)
+
+## Overview
+This document explains how our FastAPI endpoints interact with the Europe PMC REST API to fetch scientific literature related to specific proteins.  
+We focus on **Open Access (OA)** papers first (for full-text retrieval and embeddings) and optionally include **non-OA abstracts** later for additional context and ranking.
+
+Our goal:  
+1. Retrieve relevant literature for a given protein (e.g., "SIRT6").  
+2. Download full-text XML for Open Access papers.  
+3. Store abstracts and full-text chunks (as embeddings) in the same vector database, with metadata for ranking and filtering.
+
+---
+
+## Base URLs
+
+**Search endpoint**  
+https://www.ebi.ac.uk/europepmc/webservices/rest/search
+
+
+**Fulltext XML endpoint**  
+https://www.ebi.ac.uk/europepmc/webservices/rest/{ID}/fullTextXML
+
+Replace `{ID}` with the PMCID (e.g., `PMC1234567`).
+
+---
+
+## Data returned by `/search`
+
+The `/search` endpoint returns metadata in JSON format:
+- Paper title, abstract, authors, year, journal
+- IDs: PMID, PMCID, DOI
+- Open Access flag (`isOpenAccess`)
+- OA download links (`fullTextUrlList`)
+- Citation count
+- Various metadata fields (`resultType=core`)
+
+We use this metadata to decide which papers to fetch in full.
+
+---
+
+## Parameters used
+
+| Parameter | Example | Meaning / Usage |
+|------------|----------|----------------|
+| `query` | `(TEXT:"SIRT6") AND OPEN_ACCESS:Y` | Search expression; we include the protein name in the `TEXT:` field and restrict to OA papers first. |
+| `resultType` | `core` | Returns all standard metadata fields (title, abstract, journal, year, IDs, etc.). |
+| `format` | `json` | JSON output for easy parsing in Python. |
+| `pageSize` | `25` | Number of results per page (1–1000). |
+| `sort` | `CITED desc` | Sort by number of citations (most cited first). Other options: `RELEVANCE desc`, `PUB_YEAR desc`. |
+| `synonym` | `Y` | Expands search with known gene/protein synonyms (e.g., NRF2 ↔ NFE2L2). |
+| `OPEN_ACCESS:Y` | inside query | Ensures only Open Access papers are returned (full text available). |
+
+Example query:
+(TEXT:"SIRT6") AND OPEN_ACCESS:Y
+
+
+---
+
+## Why we separate OA and non-OA
+
+- **Open Access papers:** full text can be legally downloaded and embedded.  
+  We use `/fullTextXML` to retrieve the complete JATS XML, clean it (remove `<ref-list>`, `<table-wrap>`, `<fig>`), and split into sections for embedding.
+
+- **Non-Open Access papers:** only abstracts are freely accessible.  
+  We include their **abstract text** and metadata in our vector database for **ranking and context**, but do not download or embed full text.
+
+---
+
+## Workflow summary
+
+1. **Search** via `/search`  
+   - Query with `TEXT:"{protein}" AND OPEN_ACCESS:Y`.  
+   - Parse JSON response.  
+   - Print or store PMCID/DOI/PMID, title, abstract, and OA status.
+
+2. **Fulltext fetch** via `/rest/{PMCID}/fullTextXML`  
+   - For each OA paper, download XML.  
+   - Extract body sections (exclude `<ref-list>`).  
+   - Convert to plain text chunks (e.g., 800–1200 tokens).
+
+3. **Embeddings & storage**  
+   - Both abstracts and fulltext chunks go into the **same vector database**.  
+   - Each entry has metadata: `doc_id`, `source_type` ("abstract"/"fulltext"), `pmcid`, `doi`, `year`, `journal`, `oa`, `section`, etc.  
+   - Queries later retrieve both, with ranking based on:
+     - embedding similarity  
+     - source_type (abstract gets small boost)
+     - citation count or publication year (optional boost)
+
+4. **Ranking and deduplication**  
+   - Deduplicate by DOI/PMCID.  
+   - Boost sections with keyword matches in title/abstract.  
+   - Discard hits found only in `<ref-list>`.
+
+---
+
+## Example use in FastAPI
+
+We defined two GET endpoints:
+
+- `/europepmc-search`  
+  Fetches OA papers for a hard-coded protein (for testing).  
+  Prints top results in terminal.
+
+- `/europe-pmc-fulltext-xml`  
+  Downloads and prints the first 1000 chars of the JATS XML for a given PMCID.
+
+Later, these will be extended to accept query parameters.
+
+---
+
+## Rate limiting
+Europe PMC does not publish strict numeric limits.  
+Recommended practice:
+- 3–5 search requests per second  
+- 1–2 fulltext requests per second  
+- Use pagination (`pageSize`, `cursorMark`) and exponential backoff on errors (429, 503).  
+
+---
+
+## Typical response snippet (simplified)
+```json
+{
+  "resultList": {
+    "result": [
+      {
+        "id": "PMC3439153",
+        "title": "An integrated encyclopedia of DNA elements in the human genome.",
+        "pubYear": "2012",
+        "doi": "10.1038/nature11247",
+        "pmid": "22955616",
+        "pmcid": "PMC3439153",
+        "isOpenAccess": "Y",
+        "abstractText": "This paper describes...",
+        "journalTitle": "Nature",
+        "authorString": "ENCODE Consortium"
+      }
+    ]
+  }
+}
+
+Notes
+
+XML full text is encoded in JATS format — structured with <sec> for sections and <ref-list> for references.
+Perfect for parsing and selective text extraction.
+
+Full text HTML is also available, but less clean for machine parsing.
+
+Embedding abstracts from non-OA papers is fine for semantic search and ranking, but not for redistributing text.
+
+Keep a global limit (e.g., 200 OA papers per protein) for quick iteration and manageable storage.

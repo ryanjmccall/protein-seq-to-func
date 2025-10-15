@@ -1,0 +1,11 @@
+{
+  "pmcid": "PMC1000002",
+  "doi": "10.5555/pmc1000002.demo",
+  "title": "NRF2 activation and lifespan extension in models",
+  "year": 2021,
+  "journal": "Demo Geroscience",
+  "protein_hits": ["NRF2"],
+  "xml": null,
+  "plain_text": "Genetic activation of NRF2 increases stress resistance and extends lifespan in nematodes; pharmacological activation shows similar trends in flies.",
+  "source_url": null
+}
