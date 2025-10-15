@@ -1,2 +1,4 @@
-# TODO
-
+# backend/requirements.txt
+fastapi
+uvicorn[standard]
+psycopg2-binary # For connecting to PostgreSQL
