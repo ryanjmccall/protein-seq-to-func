@@ -16,6 +16,7 @@ from .epmc_utils import (
     expand_literature_network_epmc,
     fetch_europe_pmc_best,
     fetch_epmc_article_details,
+    fetch_epmc_full_text,
 )
 
 NUMBER_RE = re.compile(r"\d+(?:\.\d+)?")
@@ -273,6 +274,59 @@ def score_reference_dataframe(
     )
 
     return scored.sort_values("composite_score", ascending=False, ignore_index=True)
+
+
+def attach_full_text_columns(
+    df: pd.DataFrame,
+    *,
+    delay: float = 0.1,
+    include_xml: bool = True,
+) -> pd.DataFrame:
+    """
+    Ensure the DataFrame contains abstract and full-text content for each row.
+
+    Args:
+        df: DataFrame of Europe PMC articles.
+        delay: Courtesy delay between API calls.
+        include_xml: If True, include the raw full-text XML alongside extracted text.
+    """
+    if df is None or df.empty:
+        return pd.DataFrame() if df is None else df.copy()
+
+    enriched = df.copy()
+    abstracts: list[str | None] = []
+    full_texts: list[str | None] = []
+    full_text_xmls: list[str | None] = []
+
+    for _, row in enriched.iterrows():
+        lookup = {
+            "PMID": row.get("PMID"),
+            "PMCID": row.get("PMCID"),
+            "DOI": row.get("DOI"),
+            "title": row.get("title"),
+        }
+
+        abstract_value = row.get("abstract_text")
+        if not abstract_value:
+            detail = fetch_epmc_article_details(lookup, include_fulltext=False, delay=delay)
+            detail_abstract = None
+            if isinstance(detail, Mapping):
+                detail_abstract = detail.get("abstractText")
+            if isinstance(detail_abstract, str) and detail_abstract.strip():
+                abstract_value = detail_abstract.strip()
+
+        text_payload = fetch_epmc_full_text(lookup, delay=delay, include_xml=include_xml)
+        full_texts.append(text_payload.get("text"))
+        abstracts.append(abstract_value)
+        if include_xml:
+            full_text_xmls.append(text_payload.get("xml"))
+
+    enriched["abstract_text"] = abstracts
+    enriched["full_text"] = full_texts
+    if include_xml:
+        enriched["full_text_xml"] = full_text_xmls
+
+    return enriched
 
 
 def select_top_scoring_articles(
