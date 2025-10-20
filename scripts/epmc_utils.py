@@ -11,6 +11,7 @@ import hashlib
 import requests
 import pandas as pd
 from pathlib import Path
+from xml.etree import ElementTree as ET
 from collections import deque
 from typing import Optional, Iterable, Mapping, Any, Tuple
 
@@ -83,6 +84,7 @@ def _search_epmc(query: str, page_size: int = 25, result_type: str = "core") -> 
     return (r.json().get("resultList", {}) or {}).get("result", []) or []
 
 _DETAIL_CACHE: dict[tuple[str, str, bool], dict] = {}
+_FULLTEXT_CACHE: dict[tuple[str, str], dict] = {}
 
 def _coerce_structured_abstract(data: Any) -> str:
     if isinstance(data, str):
@@ -141,6 +143,61 @@ def fetch_epmc_article_details(
 
     _DETAIL_CACHE[cache_key] = dict(result)
     return dict(result)
+
+def _extract_text_from_xml(xml_text: str | None) -> Optional[str]:
+    if not xml_text:
+        return None
+    try:
+        root = ET.fromstring(xml_text)
+    except ET.ParseError:
+        return None
+    pieces: list[str] = []
+    for chunk in root.itertext():
+        if chunk and chunk.strip():
+            pieces.append(chunk.strip())
+    if not pieces:
+        return None
+    return re.sub(r"\s+", " ", " ".join(pieces)).strip()
+
+def fetch_epmc_full_text(
+    item_or_dict: ResolvedInput,
+    *,
+    delay: float = 0.1,
+    include_xml: bool = True,
+) -> dict[str, Optional[str]]:
+    """
+    Retrieve full-text XML (if available) and extract a plain-text version.
+    Only PMC records expose full text; other sources may return empty results.
+    """
+    source, id_ = _resolve_source_and_id(item_or_dict, delay=delay)
+    if not source or not id_:
+        return {"xml": None, "text": None}
+
+    cache_key = (source, str(id_))
+    cached = _FULLTEXT_CACHE.get(cache_key)
+    if cached is not None:
+        base = dict(cached)
+        if not include_xml:
+            base.pop("xml", None)
+        return base
+
+    url = f"{EPMC_BASE}/{source}/{id_}/fullTextXML"
+    try:
+        resp = requests.get(url, timeout=30)
+        resp.raise_for_status()
+        xml_blob = resp.text or None
+    except requests.RequestException:
+        xml_blob = None
+
+    text_blob = _extract_text_from_xml(xml_blob)
+    base_payload = {"xml": xml_blob, "text": text_blob}
+    _FULLTEXT_CACHE[cache_key] = base_payload
+
+    time.sleep(max(0.0, delay))
+    result = dict(base_payload)
+    if not include_xml:
+        result.pop("xml", None)
+    return result
 
 def _multi_try_search(kind: str, val: str) -> list[dict]:
     """
