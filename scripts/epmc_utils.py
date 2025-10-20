@@ -6,9 +6,11 @@ from __future__ import annotations
 
 import re
 import time
+import json
 import hashlib
 import requests
 import pandas as pd
+from pathlib import Path
 from collections import deque
 from typing import Optional, Iterable, Mapping, Any, Tuple
 
@@ -50,6 +52,27 @@ def _source_url_from_ids(pmcid: Optional[str], pmid: Optional[str], doi: Optiona
         return _src_url("DOI", doi)
     return None
 
+def _json_safe(value: Any) -> Any:
+    """
+    Convert pandas/numpy scalars into plain Python types that json can handle.
+    """
+    if value is None:
+        return None
+    try:
+        if pd.isna(value):
+            return None
+    except TypeError:
+        # Likely a list/dict/str that pd.isna cannot interpret.
+        pass
+    if isinstance(value, (pd.Timestamp, pd.Timedelta)):
+        return value.isoformat()
+    if hasattr(value, "item"):
+        try:
+            return value.item()
+        except Exception:
+            pass
+    return value
+
 def _search_epmc(query: str, page_size: int = 25, result_type: str = "core") -> list[dict]:
     r = requests.get(
         EPMC_SEARCH,
@@ -58,6 +81,66 @@ def _search_epmc(query: str, page_size: int = 25, result_type: str = "core") -> 
     )
     r.raise_for_status()
     return (r.json().get("resultList", {}) or {}).get("result", []) or []
+
+_DETAIL_CACHE: dict[tuple[str, str, bool], dict] = {}
+
+def _coerce_structured_abstract(data: Any) -> str:
+    if isinstance(data, str):
+        return data
+    if isinstance(data, list):
+        parts = []
+        for item in data:
+            if isinstance(item, Mapping):
+                text = item.get("text") or item.get("label")
+                if text:
+                    parts.append(str(text))
+        return " ".join(parts)
+    return ""
+
+def fetch_epmc_article_details(
+    item_or_dict: ResolvedInput,
+    *,
+    include_fulltext: bool = False,
+    delay: float = 0.1
+) -> dict:
+    """
+    Retrieve detailed metadata (title, abstract, keywords, etc.) for an article.
+    """
+    source, id_ = _resolve_source_and_id(item_or_dict, delay=delay)
+    if not source or not id_:
+        return {}
+
+    cache_key = (source, str(id_), bool(include_fulltext))
+    cached = _DETAIL_CACHE.get(cache_key)
+    if cached is not None:
+        return dict(cached)
+
+    params = {"format": "json"}
+    if include_fulltext:
+        params["resultType"] = "core"
+
+    try:
+        resp = requests.get(f"{EPMC_BASE}/{source}/{id_}", params=params, timeout=30)
+        resp.raise_for_status()
+        payload = resp.json() or {}
+    except requests.RequestException:
+        return {}
+
+    # Some responses nest the result under "result".
+    result = payload.get("result") if isinstance(payload, Mapping) else None
+    if not result and isinstance(payload, Mapping):
+        result = payload
+
+    if not isinstance(result, Mapping):
+        result = {}
+
+    # Normalize structured abstract if present.
+    structured = result.get("structuredAbstract")
+    if structured and not result.get("abstractText"):
+        result["abstractText"] = _coerce_structured_abstract(structured)
+
+    _DETAIL_CACHE[cache_key] = dict(result)
+    return dict(result)
 
 def _multi_try_search(kind: str, val: str) -> list[dict]:
     """
@@ -268,6 +351,65 @@ def list_citations_epmc(item_or_dict: ResolvedInput, page_size: int = 100, delay
         time.sleep(max(0.0, delay))
 
     return pd.DataFrame(rows, columns=["PMID","PMCID","DOI","title","journal","year","source_url"])
+
+
+def save_dataframe_rows_as_json(
+    df: pd.DataFrame,
+    directory: str | Path,
+    *,
+    id_column: str = "PMID",
+    filename_prefix: str = "",
+    indent: int = 2,
+    drop_missing: bool = False,
+) -> list[Path]:
+    """
+    Persist each row of a DataFrame as an individual JSON file.
+
+    Args:
+        df: DataFrame to export.
+        directory: Folder where JSON files should be written.
+        id_column: Column used to derive the identifier portion of the filename.
+        filename_prefix: Optional string prefixed to each filename.
+        indent: JSON indentation level.
+        drop_missing: If True, omit keys with null/NA values from the output.
+
+    Returns:
+        list[pathlib.Path]: Paths to the files that were written.
+    """
+    if df is None or df.empty:
+        return []
+
+    target_dir = Path(directory)
+    target_dir.mkdir(parents=True, exist_ok=True)
+
+    saved_paths: list[Path] = []
+    for idx, row in df.reset_index(drop=True).iterrows():
+        identifier: Optional[str] = None
+        if id_column and id_column in row and pd.notna(row[id_column]):
+            identifier = str(row[id_column]).strip()
+        if not identifier:
+            identifier = f"row{idx:04d}"
+
+        safe_name = re.sub(r"[^A-Za-z0-9._-]+", "_", identifier)
+        if filename_prefix:
+            safe_name = f"{filename_prefix}{safe_name}"
+
+        filepath = target_dir / f"{safe_name}.json"
+
+        payload = {
+            str(col): _json_safe(val)
+            for col, val in row.items()
+        }
+        if drop_missing:
+            payload = {k: v for k, v in payload.items() if v is not None}
+
+        # json.dump already defaults to ASCII-only output, which keeps filenames portable.
+        with filepath.open("w", encoding="utf-8") as handle:
+            json.dump(payload, handle, indent=indent)
+
+        saved_paths.append(filepath)
+
+    return saved_paths
 
 
 def _standardize_meta(meta_like: Mapping[str, Any]) -> dict:
