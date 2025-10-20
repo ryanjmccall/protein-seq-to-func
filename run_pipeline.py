@@ -10,21 +10,19 @@ def main():
     """Runs the entire offline pipeline from start to finish."""
     print("--- Starting Offline Pipeline Skeleton ---")
     
-    # Step 1: Create fake paper files
+    # Step 1: Fetch all source data and store as json files.
     build_corpus()
     
-    # Step 2: Index those files in SQLite
+    # Step 2: Index json files in SQLite
     manage_corpus_index()
     
-    # Step 3: Create a vector index in ChromaDB
+    # Step 3: Create a vector index with LlamaIndex and ChromaDB
     vector_index = create_vector_index()
     
-    # Step 4 & 5: Extract and synthesize an article for the first target protein
-    # We only run for one protein to keep the demo simple
-    if TARGET_PROTEINS:
-        article = extract_and_synthesize(vector_index, TARGET_PROTEINS[0])
-        print("\n--- Final Generated Article ---")
-        print(article)
+    # Step 4 & 5: Extract and synthesize an html article for each protein. 
+    # this involves two LLM calls to Nebius
+    for prot in TARGET_PROTEINS:
+        extract_and_synthesize(vector_index, prot)
 
     print("\n--- Offline Pipeline Skeleton Finished Successfully ---")
 
