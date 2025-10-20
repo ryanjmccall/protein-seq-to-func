@@ -190,6 +190,7 @@ dependencies:
       - duckdb==1.4.1
       - durationpy==0.10
       - et-xmlfile==2.0.0
+      - fastapi==0.119.1
       - filelock==3.20.0
       - flatbuffers==25.9.23
       - fonttools==4.60.1
@@ -266,6 +267,7 @@ dependencies:
       - setuptools==80.9.0
       - shellingham==1.5.4
       - sqlglot==25.34.1
+      - starlette==0.48.0
       - sympy==1.14.0
       - tokenizers==0.22.1
       - typer==0.19.2
