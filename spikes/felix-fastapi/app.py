@@ -1,16 +1,14 @@
 import httpx
-import os, json
+import os, json, shutil
 from fastapi import FastAPI, HTTPException
 from pydantic_settings import BaseSettings
 from typing import List, Optional, Dict, Any
-from llama_index.core import Document, Settings, VectorStoreIndex, StorageContext
+from llama_index.core import Document
 from llama_index.core.node_parser import SentenceSplitter
-from llama_index.embeddings.openai import OpenAIEmbedding  # OpenAI-compatible; works with Nebius base_url
-#from llama_index.embeddings.nebius import NebiusEmbedding
-from llama_index.core.base.embeddings.base import BaseEmbedding
 from openai import OpenAI
-from llama_index.vector_stores.chroma import ChromaVectorStore
 import chromadb
+import numpy as np
+import faiss
 
 
 class Settings(BaseSettings):
@@ -21,64 +19,40 @@ class Settings(BaseSettings):
 
 settings = Settings()
 
-class NebiusStudioEmbedding(BaseEmbedding):
-    """Nebius AI Studio embeddings via OpenAI-compatible client.
-    Akzeptiert Nebius-Modelle wie 'Qwen3-Embedding-8B', 'BGE-ICL', etc.
-    """
-    def __init__(self, api_key: str, base_url: str, model: str):
-        super().__init__()
-        self.client = OpenAI(api_key=api_key, base_url=base_url)  # base_url sollte auf /v1/ enden
-        self.model = model
-
-    # --- sync: text ---
-    def _get_text_embedding(self, text: str) -> List[float]:
-        r = self.client.embeddings.create(model=self.model, input=text)
-        return r.data[0].embedding
-
-    def _get_text_embedding_batch(self, texts: List[str]) -> List[List[float]]:
-        r = self.client.embeddings.create(model=self.model, input=texts)
-        return [d.embedding for d in r.data]
-
-    # --- sync: query -> delegiert auf text ---
-    def _get_query_embedding(self, query: str) -> List[float]:
-        return self._get_text_embedding(query)
-
-    def _get_query_embedding_batch(self, queries: List[str]) -> List[List[float]]:
-        return self._get_text_embedding_batch(queries)
-
-    # --- async: delegiert auf die sync-Methoden ---
-    async def _aget_text_embedding(self, text: str) -> List[float]:
-        loop = asyncio.get_event_loop()
-        return await loop.run_in_executor(None, self._get_text_embedding, text)
-
-    async def _aget_text_embedding_batch(self, texts: List[str]) -> List[List[float]]:
-        loop = asyncio.get_event_loop()
-        return await loop.run_in_executor(None, self._get_text_embedding_batch, texts)
-
-    async def _aget_query_embedding(self, query: str) -> List[float]:
-        return await self._aget_text_embedding(query)
-
-    async def _aget_query_embedding_batch(self, queries: List[str]) -> List[List[float]]:
-        return await self._aget_text_embedding_batch(queries)
-
 app = FastAPI(title="Felix Spike", version="0.0.1")
 
 # ------- Public, non-secret config (hard-coded) -------
 PAPERS_DIR = "papers"
 CHROMA_PATH = "./chroma_db"            # local on-disk store
 CHROMA_COLLECTION = "longevity_s2f"    # name of the vector collection
+# Separate test DB (for debugging Chroma without touching the main DB)
+CHROMA_TEST_PATH = "./chroma_db_test"
+CHROMA_TEST_COLLECTION = "test_basic"
+# FAISS storage directory (index + metadata JSONL)
+FAISS_DIR = "./faiss_store"
 # Configure a single, global splitter. We do not enable embeddings here.
 # chunk_size ~800 tokens with ~120 overlap is a common default for scientific text.
 #SPLITTER = SentenceSplitter(chunk_size=800, chunk_overlap=120)
 # OpenAI-compatible base URL from Nebius Quickstart (documented).
 # We keep this constant in code (not secret).
-NEBIUS_BASE_URL = "https://api.studio.nebius.com/v1"  # docs: /v1/chat/completions
+NEBIUS_BASE_URL = "https://api.studio.nebius.com/v1/"  # docs: /v1/chat/completions
 NEBIUS_MODEL = "openai/gpt-oss-120b"  # inexpensive, open-source model suitable for tests
-NEBIUS_EMBED_MODEL = "Qwen3-Embedding-8B"
+NEBIUS_EMBED_MODEL = "Qwen/Qwen3-Embedding-8B"
 #NEBIUS_MODEL = "meta-llama/Meta-Llama-3.1-8B-Instruct-fast"
 
 os.environ["OPENAI_API_KEY"] = settings.nebius_api_key
 os.environ["OPENAI_BASE_URL"] = NEBIUS_BASE_URL
+
+
+@app.get("/nebius-embed-hello")
+def nebius_embed_hello():
+    from openai import OpenAI
+    client = OpenAI(api_key=settings.nebius_api_key, base_url=NEBIUS_BASE_URL)
+    r = client.embeddings.create(model=NEBIUS_EMBED_MODEL, input=["hello", "protein longevity"])
+    print("[EMBED HELLO] dims:", len(r.data[0].embedding), len(r.data[1].embedding))
+    return {"status": "ok"}
+
+
 
 @app.get("/nebius-hello")
 def nebius_hello():
@@ -91,7 +65,7 @@ def nebius_hello():
     """
     api_key = settings.nebius_api_key
 
-    url = f"{NEBIUS_BASE_URL}/chat/completions"
+    url = f"{NEBIUS_BASE_URL}chat/completions"
     headers = {
         "Authorization": f"Bearer {api_key}",
         "Content-Type": "application/json",
@@ -208,6 +182,57 @@ def europepmc_search():
     return {"status": "ok"}
 
 
+@app.get("/chroma-test-basic")
+def chroma_test_basic():
+    """
+    Minimal Chroma smoke test:
+    - Creates/opens a SEPARATE test DB folder (CHROMA_TEST_PATH).
+    - Creates/opens collection CHROMA_TEST_COLLECTION.
+    - Adds two tiny 2D vectors with simple metadata.
+    - Returns count and sample query results.
+    """
+    try:
+        # Ensure a fresh test directory
+        if os.path.exists(CHROMA_TEST_PATH):
+            print(f"[TEST] Removing test DB dir: {CHROMA_TEST_PATH}")
+            shutil.rmtree(CHROMA_TEST_PATH, ignore_errors=True)
+        os.makedirs(CHROMA_TEST_PATH, exist_ok=True)
+        print("[TEST] Fresh test DB dir ready")
+
+        # Open test client and collection
+        client = chromadb.PersistentClient(path=CHROMA_TEST_PATH)
+        coll = client.get_or_create_collection(CHROMA_TEST_COLLECTION)
+        print(f"[TEST] Opened collection '{CHROMA_TEST_COLLECTION}'")
+
+        # Prepare tiny demo data
+        ids = ["v1", "v2"]
+        docs = ["alpha", "beta"]
+        metas = [{"label": "A"}, {"label": "B"}]
+        vecs = [[0.1, 0.2], [0.2, 0.3]]
+
+        # Add to Chroma
+        print("[TEST] Adding 2 vectors to test collection...")
+        coll.add(ids=ids, documents=docs, metadatas=metas, embeddings=vecs)
+        print("[TEST] Add completed")
+
+        # Count
+        count = coll.count()
+        print(f"[TEST] Count after add: {count}")
+
+        # Simple query
+        print("[TEST] Running query for 'alpha'...")
+        q = coll.query(query_texts=["alpha"], n_results=2)
+        print("[TEST] Query result:", q)
+
+        return {
+            "status": "ok",
+            "count": count,
+            "query": q,
+        }
+    except Exception as e:
+        print(f"[TEST][error] {e}")
+        raise HTTPException(status_code=500, detail=f"chroma-test-basic failed: {str(e)}")
+
 @app.get("/europe-pmc-fulltext-xml")
 def europe_pmc_fulltext_xml():
     """
@@ -251,7 +276,7 @@ def index_batch(limit: int = 200, offset: int = 0):
     - Convert to LlamaIndex Documents.
     - Split into ~800-token chunks (with overlap).
     - Create embeddings via Nebius (OpenAI-compatible).
-    - Persist vectors+metadata into a local Chroma DB.
+    - Persist vectors+metadata into a local FAISS index (index.faiss) + JSONL metadata (meta.jsonl) under FAISS_DIR.
     Prints detailed stats to the terminal; returns only {"status": "ok"}.
     """
 
@@ -310,6 +335,17 @@ def index_batch(limit: int = 200, offset: int = 0):
         print("[INDEX] No usable documents in this batch (all had empty 'plain_text' or failed to load).")
         return {"status": "ok"}
 
+    # Verbose dump of Documents for full transparency
+    print("[INDEX][DEBUG] Dumping Documents...")
+    for d in docs:
+        try:
+            print(f"--- Document doc_id={d.doc_id}")
+            print(f"metadata={json.dumps(d.metadata, ensure_ascii=False)}")
+            print("text:")
+            print(d.text)
+        except Exception as e:
+            print(f"[INDEX][DEBUG][doc dump error] {e}")
+
     # --- Chunking (no embeddings yet) ---
     # Explanation:
     # - chunk_size ~800 tokens is a common sweet spot for scientific text.
@@ -318,61 +354,171 @@ def index_batch(limit: int = 200, offset: int = 0):
     nodes = splitter.get_nodes_from_documents(docs)
     print(f"[INDEX] chunks_created={len(nodes)}")
 
+    # Verbose dump of Nodes (post-splitting)
+    print("[INDEX][DEBUG] Dumping Nodes...")
+    for i, n in enumerate(nodes):
+        try:
+            print(f"--- Node {i} id={n.id_} ref_doc_id={n.ref_doc_id}")
+            print(f"metadata={json.dumps(n.metadata or {}, ensure_ascii=False)}")
+            content = n.get_content(metadata_mode="none")
+            print("content:")
+            print(content)
+        except Exception as e:
+            print(f"[INDEX][DEBUG][node dump error] {e}")
+
     # Set stable node IDs: <ref_doc_id>::chunk-<counter>
-    from collections import defaultdict
-    per_doc_counter = defaultdict(int)
-    for node in nodes:
-        ref = node.ref_doc_id or "NO_DOC_ID"
-        k = per_doc_counter[ref]
-        node.id_ = f"{ref}::chunk-{k}"
-        per_doc_counter[ref] += 1
+    # NOTE: Disabled because we perform a full DB reset each run; stable IDs are not required.
+    # from collections import defaultdict
+    # per_doc_counter = defaultdict(int)
+    # for node in nodes:
+    #     ref = node.ref_doc_id or "NO_DOC_ID"
+    #     k = per_doc_counter[ref]
+    #     node.id_ = f"{ref}::chunk-{k}"
+    #     per_doc_counter[ref] += 1
 
     if not nodes:
         print("[INDEX] No chunks created (unexpected if plain_text had content).")
         return {"status": "ok"}
 
-    # --- Configure the embedding model (OpenAI-compatible call to Nebius) ---
-    # Why this and not a chat model?
-    # - Embeddings require a dedicated embedding model; chat models (like gpt-oss-120b) are for generation/extraction later.
-    Settings.embed_model = NebiusStudioEmbedding(
-        model=NEBIUS_EMBED_MODEL,
-        api_key=api_key,
-        base_url=NEBIUS_BASE_URL,   # OpenAI-compatible endpoint at Nebius
-    )
+    # # --- CHROMA FULL RESET: Delete and recreate the entire DB ---
+    # try:
+    #     if os.path.exists(CHROMA_PATH):
+    #         print(f"[INDEX][RESET] Removing Chroma directory: {CHROMA_PATH}")
+    #         shutil.rmtree(CHROMA_PATH, ignore_errors=True)
+    #     os.makedirs(CHROMA_PATH, exist_ok=True)
+    #     print("[INDEX][RESET] Fresh Chroma directory ready.")
+    # except Exception as e:
+    #     print(f"[INDEX][RESET error] {e}")
+    #     raise HTTPException(status_code=500, detail="Failed to reset Chroma directory")
 
-    # NebiusEmbedding talks directly to Nebius AI Studio; model is a Nebius model id.
-    #Settings.embed_model = NebiusEmbedding(
-    #    api_key=api_key,
-    #    model=NEBIUS_EMBED_MODEL,  # explicit + well-supported on Nebius
-    #)
+    # # --- Set up persistent Chroma (on-disk) ---
+    # print("[INDEX][DEBUG] Setting up Chroma client...")
+    # chroma_client = chromadb.PersistentClient(path=CHROMA_PATH)
+    # print("[INDEX][DEBUG] Getting or creating Chroma collection...")
+    # chroma_collection = chroma_client.get_or_create_collection(CHROMA_COLLECTION)
+    # print(f"[INDEX][DEBUG] Chroma collection ready: {CHROMA_COLLECTION}")
 
+    # --- Embeddings directly via Nebius (OpenAI-compatible) and upsert to Chroma ---
+    print("[INDEX][DEBUG] Creating OpenAI client for Nebius...")
+    client = OpenAI(api_key=settings.nebius_api_key, base_url=NEBIUS_BASE_URL)
 
-    # --- Set up persistent Chroma (on-disk) and wrap it with LlamaIndex VectorStore ---
-    chroma_client = chromadb.PersistentClient(path=CHROMA_PATH)
-    chroma_collection = chroma_client.get_or_create_collection(CHROMA_COLLECTION)
-    vector_store = ChromaVectorStore(chroma_collection=chroma_collection)
-    storage_context = StorageContext.from_defaults(vector_store=vector_store)
+    # Prepare texts for embedding (one embedding per node)
+    print("[INDEX][DEBUG] Preparing node IDs and texts...")
+    node_ids = [n.id_ for n in nodes]
+    node_texts = [n.get_content(metadata_mode="none") for n in nodes]   # extract text content only
+    print(f"[INDEX][DEBUG] Prepared {len(node_ids)} node IDs and {len(node_texts)} texts")
+    
+    # Clean metadata for Chroma (convert lists to JSON strings, keep only simple types)
+    def clean_metadata_for_chroma(meta: Dict[str, Any]) -> Dict[str, Any]:
+        """Convert metadata to Chroma-compatible format (str, int, float, bool only - NO None!)."""
+        cleaned = {}
+        for key, value in (meta or {}).items():
+            if value is None:
+                # Use type-appropriate defaults for known fields to maintain consistent types
+                # Based on actual JSON structure: pmcid, doi, title, year, journal, protein_hits, source_url
+                if key == "year":
+                    cleaned[key] = 0  # year is numeric field, default to 0
+                else:
+                    cleaned[key] = ""  # all other fields (pmcid, doi, title, journal, source_url, protein_hits) get empty string
+            elif isinstance(value, (str, int, float, bool)):
+                cleaned[key] = value  # keep simple types as-is
+            elif isinstance(value, list):
+                cleaned[key] = json.dumps(value)  # convert lists to JSON string (e.g., protein_hits)
+            elif isinstance(value, dict):
+                cleaned[key] = json.dumps(value)  # convert dicts to JSON string
+            else:
+                cleaned[key] = str(value)  # fallback: convert to string
+        return cleaned
+    
+    print("[INDEX][DEBUG] Cleaning metadata for Chroma...")
+    node_metas = [clean_metadata_for_chroma(n.metadata) for n in nodes]  # extract and clean metadata
+    print(f"[INDEX][DEBUG] Cleaned {len(node_metas)} metadata entries")
 
-# >>>>>>> ADD THIS PRE-DELETE BLOCK (ensures true upsert-by-id) <<<<<<<
+    # Request embeddings in a single batch from Nebius
     try:
-        ids_to_replace = [n.id_ for n in nodes]
-        chroma_collection.delete(ids=ids_to_replace)
-        print(f"[INDEX] predelete: removed up to {len(ids_to_replace)} existing ids (if they existed).")
+        print(f"[INDEX] Embedding with model='{NEBIUS_EMBED_MODEL}' at base_url='{NEBIUS_BASE_URL}' ...")
+        print(f"[INDEX][DEBUG] Sending {len(node_texts)} texts to Nebius for embedding...")
+        emb_resp = client.embeddings.create(model=NEBIUS_EMBED_MODEL, input=node_texts)
+        print("[INDEX][DEBUG] Received response from Nebius, extracting embeddings...")
+        embeddings = [d.embedding for d in emb_resp.data]  # extract embedding vectors
+        print(f"[INDEX][DEBUG] Extracted {len(embeddings)} embeddings")
     except Exception as e:
-        print(f"[INDEX] predelete warning: {e}")
-    # >>>>>>> END PRE-DELETE BLOCK <<<<<<<
+        print(f"[INDEX][embed error] {e}")
+        raise HTTPException(status_code=500, detail="Nebius embedding request failed")
 
-    # --- Build/merge the index: this step computes embeddings and upserts to Chroma ---
-    # Note: VectorStoreIndex(nodes, ...) will call the embed model under the hood and persist into Chroma.
-    print(f"[INDEX] Embedding with model='{NEBIUS_EMBED_MODEL}' at base_url='{NEBIUS_BASE_URL}' ...")
-    _index = VectorStoreIndex(nodes, storage_context=storage_context)
+    # Sanity check: ensure we got one embedding per node
+    if len(embeddings) != len(node_ids):
+        print(f"[INDEX][embed mismatch] ids={len(node_ids)} vs embeds={len(embeddings)}")
+        raise HTTPException(status_code=500, detail="Embedding count mismatch")
 
-    # --- Optional: show current vector count in the collection for visibility ---
+    # Debug: Check embedding dimensions
+    if embeddings:
+        emb_dim = len(embeddings[0])
+        print(f"[INDEX][DEBUG] Embedding dimensions: {emb_dim} (first vector)")
+
+    # === FAISS: Minimalpersistenz (ein Index + eine JSONL mit Metadaten), APPEND-ONLY ===
+    # Ensure target directory exists (no deletion between batches)
     try:
-        current_count = chroma_collection.count()
-        print(f"[INDEX] chroma_collection='{CHROMA_COLLECTION}' count={current_count}")
+        os.makedirs(FAISS_DIR, exist_ok=True)
     except Exception as e:
-        print(f"[INDEX] Could not read Chroma count: {e}")
+        print(f"[INDEX][FAISS dir error] {e}")
+        raise HTTPException(status_code=500, detail="Failed to create FAISS directory")
 
-    print("[INDEX] Batch done.")
+    # Embeddings -> numpy array (float32); normalize for cosine-like IP search
+    X = np.array(embeddings, dtype="float32")
+    if X.ndim != 2 or X.shape[0] == 0:
+        raise HTTPException(status_code=500, detail="No embeddings to index")
+    faiss.normalize_L2(X)
+
+    dim = int(X.shape[1])
+    faiss_path = os.path.join(FAISS_DIR, "index.faiss")
+    dim_path = os.path.join(FAISS_DIR, "dim.txt")
+
+    # If an index exists, load and validate dimension; else create new
+    if os.path.isfile(faiss_path):
+        index = faiss.read_index(faiss_path)
+        if int(index.d) != dim:
+            raise HTTPException(status_code=400, detail=f"FAISS dim mismatch: index has {int(index.d)}, new vectors have {dim}")
+        print(f"[INDEX][FAISS] Loaded existing index: {faiss_path} (ntotal={index.ntotal}, dim={int(index.d)})")
+    else:
+        index = faiss.IndexFlatIP(dim)
+        print(f"[INDEX][FAISS] Created new IndexFlatIP dim={dim}")
+
+    # Persist/verify dimension helper file
+    try:
+        if os.path.isfile(dim_path):
+            try:
+                with open(dim_path, "r", encoding="utf-8") as g:
+                    prev_dim = int((g.read() or "").strip() or "0")
+                if prev_dim != dim:
+                    raise HTTPException(status_code=400, detail=f"FAISS dim mismatch: stored dim.txt={prev_dim}, new vectors have {dim}")
+            except ValueError:
+                print("[INDEX][FAISS dim warn] dim.txt is not an integer; rewriting")
+                with open(dim_path, "w", encoding="utf-8") as g:
+                    g.write(str(dim))
+        else:
+            with open(dim_path, "w", encoding="utf-8") as g:
+                g.write(str(dim))
+    except HTTPException:
+        raise
+    except Exception as e:
+        print(f"[INDEX][FAISS dim write warn] {e}")
+
+    # Append new vectors
+    index.add(X)
+    faiss.write_index(index, faiss_path)
+    print(f"[INDEX][FAISS] Saved index: {faiss_path} (ntotal={index.ntotal})")
+
+    # Append metadata aligned with vector order: lines correspond to new appended vectors
+    meta_path = os.path.join(FAISS_DIR, "meta.jsonl")
+    try:
+        with open(meta_path, "a", encoding="utf-8") as f:
+            for _id, _txt, _meta in zip(node_ids, node_texts, node_metas):
+                f.write(json.dumps({"id": _id, "text": _txt, "meta": _meta}, ensure_ascii=False) + "\n")
+        print(f"[INDEX][FAISS] Appended metadata JSONL: {meta_path} (+{len(node_ids)} lines)")
+    except Exception as e:
+        print(f"[INDEX][FAISS meta write error] {e}")
+        raise HTTPException(status_code=500, detail="Failed to write FAISS metadata JSONL")
+
+    print("[INDEX] Batch done (FAISS append).")
     return {"status": "ok"}
