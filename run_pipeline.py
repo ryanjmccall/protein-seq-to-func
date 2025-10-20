@@ -8,7 +8,7 @@ from pipeline.s4_knowledge_extractor import extract_and_synthesize
 
 def main():
     """Runs the entire offline pipeline from start to finish."""
-    print("--- Starting Offline Pipeline Skeleton ---")
+    print("--- Starting Offline Pipeline ---")
     
     # Step 1: Fetch all source data and store as json files.
     build_corpus()
@@ -24,7 +24,7 @@ def main():
     for prot in TARGET_PROTEINS:
         extract_and_synthesize(vector_index, prot)
 
-    print("\n--- Offline Pipeline Skeleton Finished Successfully ---")
+    print("\n--- Offline Pipeline Finished ---")
 
 if __name__ == "__main__":
     main()
