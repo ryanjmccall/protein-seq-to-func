@@ -5,3 +5,7 @@ __pycache__/
 
 # Harvested papers (generated)
 papers/
+papers01/
+papers02/
+papers03/
+papers_apoe_notcomplete/
