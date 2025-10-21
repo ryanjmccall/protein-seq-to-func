@@ -512,6 +512,7 @@ def fetch_epmc(
             - full_text_xml: raw XML (only when include_xml=True)
             - abstract_text: abstract retrieved via XML, metadata, or search fallback
     """
+    print("Fetching EPMC metadata for:", item)
     meta = _fetch_epmc_metadata(item, delay=delay)
 
     def _ensure_abstract(target: dict[str, Any]) -> None:

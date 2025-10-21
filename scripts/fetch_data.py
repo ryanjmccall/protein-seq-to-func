@@ -55,6 +55,7 @@ def fetch_uniprot_data(genes: str | Iterable[str]) -> pd.DataFrame:
     rows = []
 
     for gene in genes:
+        print(f"Fetching UniProt data for {gene}")
         # 1) Search: get the best accession for Homo sapiens
         params = {
             "query": f'gene_exact:{gene} AND organism_id:9606',
