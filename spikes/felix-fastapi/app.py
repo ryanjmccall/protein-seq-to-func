@@ -280,9 +280,6 @@ def index_batch(limit: int = 200, offset: int = 0):
     Prints detailed stats to the terminal; returns only {"status": "ok"}.
     """
 
-    # --- Read secret key from your existing Pydantic Settings (you already have this in your file) ---
-    api_key = settings.nebius_api_key
-
     # --- Gather JSON files (no filtering) ---
     # We slice by offset/limit so you can index in small, safe batches and keep RAM steady.
     if not os.path.isdir(PAPERS_DIR):
@@ -366,37 +363,10 @@ def index_batch(limit: int = 200, offset: int = 0):
         except Exception as e:
             print(f"[INDEX][DEBUG][node dump error] {e}")
 
-    # Set stable node IDs: <ref_doc_id>::chunk-<counter>
-    # NOTE: Disabled because we perform a full DB reset each run; stable IDs are not required.
-    # from collections import defaultdict
-    # per_doc_counter = defaultdict(int)
-    # for node in nodes:
-    #     ref = node.ref_doc_id or "NO_DOC_ID"
-    #     k = per_doc_counter[ref]
-    #     node.id_ = f"{ref}::chunk-{k}"
-    #     per_doc_counter[ref] += 1
 
     if not nodes:
         print("[INDEX] No chunks created (unexpected if plain_text had content).")
         return {"status": "ok"}
-
-    # # --- CHROMA FULL RESET: Delete and recreate the entire DB ---
-    # try:
-    #     if os.path.exists(CHROMA_PATH):
-    #         print(f"[INDEX][RESET] Removing Chroma directory: {CHROMA_PATH}")
-    #         shutil.rmtree(CHROMA_PATH, ignore_errors=True)
-    #     os.makedirs(CHROMA_PATH, exist_ok=True)
-    #     print("[INDEX][RESET] Fresh Chroma directory ready.")
-    # except Exception as e:
-    #     print(f"[INDEX][RESET error] {e}")
-    #     raise HTTPException(status_code=500, detail="Failed to reset Chroma directory")
-
-    # # --- Set up persistent Chroma (on-disk) ---
-    # print("[INDEX][DEBUG] Setting up Chroma client...")
-    # chroma_client = chromadb.PersistentClient(path=CHROMA_PATH)
-    # print("[INDEX][DEBUG] Getting or creating Chroma collection...")
-    # chroma_collection = chroma_client.get_or_create_collection(CHROMA_COLLECTION)
-    # print(f"[INDEX][DEBUG] Chroma collection ready: {CHROMA_COLLECTION}")
 
     # --- Embeddings directly via Nebius (OpenAI-compatible) and upsert to Chroma ---
     print("[INDEX][DEBUG] Creating OpenAI client for Nebius...")
@@ -458,23 +428,33 @@ def index_batch(limit: int = 200, offset: int = 0):
 
     # === FAISS: Minimalpersistenz (ein Index + eine JSONL mit Metadaten), APPEND-ONLY ===
     # Ensure target directory exists (no deletion between batches)
+    # Ensure the FAISS storage directory exists (append-only; do not delete between batches)
     try:
-        os.makedirs(FAISS_DIR, exist_ok=True)
+        os.makedirs(FAISS_DIR, exist_ok=True)  # create the directory if missing; no error if it already exists
     except Exception as e:
         print(f"[INDEX][FAISS dir error] {e}")
         raise HTTPException(status_code=500, detail="Failed to create FAISS directory")
 
-    # Embeddings -> numpy array (float32); normalize for cosine-like IP search
+    # Convert embeddings to a contiguous float32 matrix that FAISS expects: shape [num_vectors, embedding_dim]
+    # FAISS operates on float32 arrays; this makes dtype and memory layout compatible and fast.
     X = np.array(embeddings, dtype="float32")
     if X.ndim != 2 or X.shape[0] == 0:
         raise HTTPException(status_code=500, detail="No embeddings to index")
+    # L2-normalize each vector so that inner product (IP) behaves like cosine similarity (IP of unit vectors = cosine)
     faiss.normalize_L2(X)
 
+    # Embedding dimensionality (number of features per vector). Must stay constant across all batches for the same index.
     dim = int(X.shape[1])
+    # Build file paths:
+    # - faiss_path is the persisted index file; os.path.join safely constructs the path for the current OS.
+    #   The file may or may not exist yet; existence is handled below.
+    # - dim_path is a tiny helper file storing the embedding dimension for consistency checks across batches.
     faiss_path = os.path.join(FAISS_DIR, "index.faiss")
     dim_path = os.path.join(FAISS_DIR, "dim.txt")
 
     # If an index exists, load and validate dimension; else create new
+    # Load existing index (resume) if it exists and its dimension matches; otherwise create a fresh IndexFlatIP.
+    # IndexFlatIP uses inner product; combined with L2 normalization this yields cosine-like retrieval.
     if os.path.isfile(faiss_path):
         index = faiss.read_index(faiss_path)
         if int(index.d) != dim:
@@ -488,16 +468,17 @@ def index_batch(limit: int = 200, offset: int = 0):
     try:
         if os.path.isfile(dim_path):
             try:
+                # 'with' is a Python context manager: it opens the file and guarantees it will be closed automatically.
                 with open(dim_path, "r", encoding="utf-8") as g:
                     prev_dim = int((g.read() or "").strip() or "0")
                 if prev_dim != dim:
                     raise HTTPException(status_code=400, detail=f"FAISS dim mismatch: stored dim.txt={prev_dim}, new vectors have {dim}")
             except ValueError:
                 print("[INDEX][FAISS dim warn] dim.txt is not an integer; rewriting")
-                with open(dim_path, "w", encoding="utf-8") as g:
+                with open(dim_path, "w", encoding="utf-8") as g:  # context manager ensures the file is closed properly
                     g.write(str(dim))
         else:
-            with open(dim_path, "w", encoding="utf-8") as g:
+            with open(dim_path, "w", encoding="utf-8") as g:  # first-time write of the embedding dimension
                 g.write(str(dim))
     except HTTPException:
         raise
@@ -509,11 +490,21 @@ def index_batch(limit: int = 200, offset: int = 0):
     faiss.write_index(index, faiss_path)
     print(f"[INDEX][FAISS] Saved index: {faiss_path} (ntotal={index.ntotal})")
 
-    # Append metadata aligned with vector order: lines correspond to new appended vectors
-    meta_path = os.path.join(FAISS_DIR, "meta.jsonl")
+    # Append metadata aligned with vector order: each new JSONL line corresponds to a newly added vector
+    # JSONL (JSON Lines) = one JSON object per line; ideal for append-only writes and easy streaming reads
+    meta_path = os.path.join(FAISS_DIR, "meta.jsonl")  # target metadata file (append-only across batches)
     try:
+        # 'a' = append mode; preserves previous content and adds new lines for the current batch
+        # 'f' is the opened writable file handle; the context manager ensures it is closed automatically
         with open(meta_path, "a", encoding="utf-8") as f:
+            # zip iterates the three equal-length lists in lockstep: (node_id, node_text, node_meta) per vector
+            # Fields:
+            #   - id: the node identifier (string)
+            #   - text: the chunk text associated with the vector (string)
+            #   - meta: cleaned metadata dict for the node (dict of primitive/JSON-serializable values)
             for _id, _txt, _meta in zip(node_ids, node_texts, node_metas):
+                # ensure_ascii=False preserves non-ASCII characters as UTF-8 instead of escaping
+                # the trailing "\n" ensures exactly one JSON object per line (JSONL format)
                 f.write(json.dumps({"id": _id, "text": _txt, "meta": _meta}, ensure_ascii=False) + "\n")
         print(f"[INDEX][FAISS] Appended metadata JSONL: {meta_path} (+{len(node_ids)} lines)")
     except Exception as e:
