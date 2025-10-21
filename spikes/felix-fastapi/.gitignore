@@ -9,3 +9,6 @@ papers01/
 papers02/
 papers03/
 papers_apoe_notcomplete/
+**/papers*/
+
+faiss_store/
