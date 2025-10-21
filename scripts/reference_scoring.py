@@ -119,6 +119,7 @@ def collect_reference_network_for_genes(
 
     frames: list[pd.DataFrame] = []
     for _, row in source_df.iterrows():
+        print(f"Processing gene: {row.get('gene_symbol')}")
         gene_symbol = row.get("gene_symbol")
         uniprot_id = row.get("uniprot_id")
         title_list = split_colon_list(row.get("citation_titles"))
