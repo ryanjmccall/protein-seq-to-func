@@ -1,0 +1,17 @@
+{
+    "PMC": "185787",
+    "DOI": "10.1172/jci118200",
+    "PMID": "7657831",
+    "PMCID": "PMC185787",
+    "title": "Apolipoprotein E deficiency in mice: gene replacement and prevention of atherosclerosis using adenovirus vectors.",
+    "year": 1995,
+    "source_url": "https://europepmc.org/article/PMC/PMC185787",
+    "source": "MED",
+    "full_text_abstract": "Apolipoprotein E (apoE)-deficient mice develop marked hyperlipidemia as well as atherosclerosis and thus are an excellent animal model for evaluating the potential for gene therapy in human genetic dyslipoproteinemias. Recombinant adenovirus containing either human apoE (rAdv.apoE) or the reporter gene luciferase (rAdv.luc) were generated and infused intravenously in apoE-deficient mice with preinfusion plasma total cholesterol of 644 +/- 149 mg/dl an cholesterol rich VLDL/IDL. After a single infusion of rAdv.apoE, plasma concentrations of human apoE ranging from 1.5 to 650 mg/dl were achieved. Adenovirus-mediated apoE replacement resulted in normalization of the lipid and lipoprotein profile with markedly decreased total cholesterol (103 +/- 18mg/dl), VLDL, IDL, and LDL, as well as increased HDL. Measurement of aortic atherosclerosis 1 mo after adenoviral infusion demonstrated a marked reduction in the mean lesion area of mice infused with rAdv.apoE (58 +/- 8 x 10(3) microns2) when compared with control mice infused with rAdv.luc (161 +/- 10 x 10(3) microns2; P < 0.0001). Thus, apoE expression for 4 wk was sufficient to markedly reduce atherosclerosis, demonstrating the feasibility of gene therapy for correction of genetic hyperlipidemias resulting in atherosclerosis. The combined use of adenovirus vectors and the apoE-deficient mouse represents a new in vivo approach that will permit rapid screening of candidate genes for the prevention of atherosclerosis.",
+    "function_signal": 0.0,
+    "longevity_signal": 0.0,
+    "year_score": 0.03225806451612903,
+    "functionality_score": 0.0,
+    "longevity_score": 0.0,
+    "composite_score": 0.012903225806451613
+}

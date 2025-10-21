@@ -1,0 +1,15 @@
+{
+    "DOI": "10.1074/jbc.m005906200",
+    "PMID": "10903326",
+    "title": "Virus-mediated transduction of apolipoprotein E (ApoE)-sendai develops lipoprotein glomerulopathy in ApoE-deficient mice.",
+    "year": 2000,
+    "source_url": "https://europepmc.org/article/MED/10903326",
+    "source": "MED",
+    "full_text_abstract": "Lipoprotein glomerulopathy (LPG) is a unique renal disease characterized by thrombus-like substances in markedly dilated glomerular capillaries, dysbetalipoproteinemia, and elevated plasma concentrations of apoE. Recent studies identified several apoE mutations in patients with LPG, including apoE2(R145P) Sendai (apoE-Sendai). Virus-mediated transduction of apoE-Sendai in apoE-deficient hypercholesterolemic mice resulted in insufficient correction of hypercholesterolemia and a marked and temporal induction of plasma triglyceride levels. In vitro binding studies showed that apoE-Sendai has a reduced affinity for the low density lipoprotein receptor, suggesting that dysbetalipoproteinemia in LPG is caused by the apoE mutation. Furthermore, histological examination revealed marked intraglomerular depositions of apoE-containing lipoproteins in mice injected with apoE-Sendai virus. These LPG-like depositions were detected 6 days after virus injection and were sustained for at least 60 days. Our results demonstrated that apoE-Sendai is an etiological cause of LPG.",
+    "function_signal": 0.0,
+    "longevity_signal": 0.0,
+    "year_score": 0.038461538461538464,
+    "functionality_score": 0.0,
+    "longevity_score": 0.0,
+    "composite_score": 0.015384615384615385
+}

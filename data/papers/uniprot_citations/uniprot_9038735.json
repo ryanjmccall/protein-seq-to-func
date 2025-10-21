@@ -1,0 +1,17 @@
+{
+    "PMC": "499646",
+    "DOI": "10.1136/jcp.49.12.985",
+    "PMID": "9038735",
+    "PMCID": "PMC499646",
+    "title": "Severe xanthomatosis associated with familial apolipoprotein E deficiency.",
+    "year": 1996,
+    "source_url": "https://europepmc.org/article/PMC/PMC499646",
+    "source": "MED",
+    "full_text_abstract": "<h4>Aim</h4>To present the clinical, dermatological, and histological features of a patient with generalised xanthomatosis, familial apolipoprotein (apo) E deficiency, and unusual type III hyperlipoproteinaemia (HLP).<h4>Methods</h4>The underlying molecular defect was disclosed using molecular biological techniques. The unusual xanthomas were histologically analysed and the morphology of the abnormal lipoprotein particles examined using electron microscopy.<h4>Results</h4>A 10 base pair deletion in exon 4 of the proband's apo epsilon gene (base pairs 4037-4046 coding for amino acids 209-212 of the mature protein) was identified. This is predictive for a reading frameshift encoding a premature stop (TGA) in codon 229. The mutation is responsible for delayed catabolism of atherogenic lipoprotein remnants, lipid storage in monocyte/macrophages, and phenotypic expression of xanthomatosis early in life.<h4>Conclusions</h4>Familial apo E deficiency is a rare genetic disease which offers the unique opportunity to study the impact of apo E on lipoprotein metabolism and development of atherosclerosis in humans.",
+    "function_signal": 0.0,
+    "longevity_signal": 0.0,
+    "year_score": 0.03333333333333333,
+    "functionality_score": 0.0,
+    "longevity_score": 0.0,
+    "composite_score": 0.013333333333333334
+}
