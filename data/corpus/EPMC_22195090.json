@@ -1,0 +1,16 @@
+{
+    "PMC": "3243242",
+    "PMID": "22195090",
+    "PMCID": "PMC3243242",
+    "title": "Exploring the use of social media to measure journal article impact.",
+    "year": 2011,
+    "source_url": "https://europepmc.org/article/PMC/PMC3243242",
+    "source": "MED",
+    "full_text_abstract": "Science blogs, Twitter commentary, and comments on journal websites represent an immediate response to journal articles, and may help in identifying relevant publications. However, the use of these media for establishing paper impact is not well studied. Using Wikipedia as a proxy for other social media, we explore the correlation between inclusion of a journal article in Wikipedia, and article impact as measured by citation count. We start by cataloging features of PubMed articles cited in Wikipedia. We find that Wikipedia pages referencing the most journal articles are about disorders and diseases, while the most referenced articles in Wikipedia are about genomics. We note that journal articles in Wikipedia have significantly higher citation counts than an equivalent random article subset. We also observe that articles are included in Wikipedia soon after publication. Our data suggest that social media may represent a largely untapped post-publication review resource for assessing paper impact.",
+    "function_signal": 0.0,
+    "longevity_signal": 0.0,
+    "year_score": 0.06666666666666667,
+    "functionality_score": 0.0,
+    "longevity_score": 0.0,
+    "composite_score": 0.02666666666666667
+}

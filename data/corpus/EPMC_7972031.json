@@ -1,0 +1,17 @@
+{
+    "PMC": "45191",
+    "DOI": "10.1073/pnas.91.23.11183",
+    "PMID": "7972031",
+    "PMCID": "PMC45191",
+    "title": "Isoform-specific interactions of apolipoprotein E with microtubule-associated protein tau: implications for Alzheimer disease.",
+    "year": 1994,
+    "source_url": "https://europepmc.org/article/PMC/PMC45191",
+    "source": "MED",
+    "full_text_abstract": "The apolipoprotein E (apoE) type 4 allele (APOE4) is a susceptibility gene for late-onset familial and sporadic Alzheimer disease. ApoE is found in some neurofibrillary tangle-bearing neurons, one of the major pathologic hallmarks of the disease. Neurofibrillary tangles contain paired helical filaments formed from hyperphosphorylated microtubule-associated protein tau. In vitro, tau binds avidly to apoE3, but not to apoE4, forming a bimolecular complex. Tau phosphorylated with a brain extract does not bind either isoform. ApoE3 binds to the microtubule-binding repeat region of tau, which is also the region that is thought to cause self-assembly into the paired helical filament. Binding studies with fragments of ApoE demonstrate that the tau-binding region of apoE3 corresponds to its receptor-binding domain and is distinct from the region that binds lipoprotein particles or beta/A4 peptide. Isoform-specific interactions of apoE with tau may regulate intraneuronal tau metabolism in Alzheimer disease and alter the rate of formation of paired helical filaments and neurofibrillary tangles.",
+    "function_signal": 0.0,
+    "longevity_signal": 0.0,
+    "year_score": 0.03125,
+    "functionality_score": 0.0,
+    "longevity_score": 0.0,
+    "composite_score": 0.0125
+}
