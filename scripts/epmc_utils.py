@@ -84,7 +84,59 @@ def _search_epmc(query: str, page_size: int = 25, result_type: str = "core") -> 
     return (r.json().get("resultList", {}) or {}).get("result", []) or []
 
 _DETAIL_CACHE: dict[tuple[str, str, bool], dict] = {}
-_FULLTEXT_CACHE: dict[tuple[str, str], dict] = {}
+_FULLTEXT_CACHE: dict[str, dict[str, Optional[str]]] = {}
+
+_PMCID_CLEAN_RE = re.compile(r"PMC(\d+)", re.I)
+
+
+def _normalize_pmcid(value: Any) -> Optional[str]:
+    """
+    Return an uppercase PMCID string (e.g., 'PMC1234567') if value looks like one.
+    """
+    if not value:
+        return None
+    text = str(value).strip()
+    if not text:
+        return None
+    match = _PMCID_CLEAN_RE.search(text)
+    if match:
+        return f"PMC{match.group(1)}"
+    if text.upper().startswith("PMC"):
+        return text.upper()
+    return None
+
+
+def _fetch_epmc_search_abstract(source: str, identifier: str, delay: float = 0.1) -> Optional[str]:
+    """
+    Use the search endpoint to fetch a core record and return abstractText if present.
+    """
+    if not source or not identifier:
+        return None
+
+    source = source.upper()
+
+    query_id = identifier if source != "DOI" else identifier.strip()
+    query = f'EXT_ID:"{query_id}" AND SRC:{source}'
+
+    try:
+        resp = requests.get(
+            EPMC_SEARCH,
+            params={"query": query, "format": "json", "resultType": "core"},
+            timeout=30,
+        )
+        resp.raise_for_status()
+        results = (resp.json().get("resultList", {}) or {}).get("result", []) or []
+    except requests.RequestException:
+        return None
+
+    time.sleep(max(0.0, delay))
+    if not results:
+        return None
+
+    abstract = results[0].get("abstractText")
+    if isinstance(abstract, str) and abstract.strip():
+        return abstract.strip()
+    return None
 
 def _coerce_structured_abstract(data: Any) -> str:
     if isinstance(data, str):
@@ -144,20 +196,52 @@ def fetch_epmc_article_details(
     _DETAIL_CACHE[cache_key] = dict(result)
     return dict(result)
 
-def _extract_text_from_xml(xml_text: str | None) -> Optional[str]:
-    if not xml_text:
-        return None
-    try:
-        root = ET.fromstring(xml_text)
-    except ET.ParseError:
+def _element_to_plaintext(node: ET.Element | None) -> Optional[str]:
+    if node is None:
         return None
     pieces: list[str] = []
-    for chunk in root.itertext():
+    for chunk in node.itertext():
         if chunk and chunk.strip():
             pieces.append(chunk.strip())
     if not pieces:
         return None
     return re.sub(r"\s+", " ", " ".join(pieces)).strip()
+
+def _collect_abstract_from_root(root: ET.Element) -> Optional[str]:
+    abstract_texts: list[str] = []
+    # Common placements for abstracts in JATS/PMC XML
+    abstract_paths = [
+        ".//{*}abstract",
+        ".//{*}sec[@sec-type='abstract']",
+        ".//{*}sec[@sec-type='summary']",
+    ]
+    for path in abstract_paths:
+        for node in root.findall(path):
+            text_val = _element_to_plaintext(node)
+            if text_val:
+                abstract_texts.append(text_val)
+
+    if not abstract_texts:
+        return None
+
+    seen: set[str] = set()
+    ordered: list[str] = []
+    for text_val in abstract_texts:
+        if text_val not in seen:
+            seen.add(text_val)
+            ordered.append(text_val)
+    return "\n\n".join(ordered) if ordered else None
+
+def _parse_fulltext_xml(xml_text: str | None) -> tuple[Optional[str], Optional[str]]:
+    if not xml_text:
+        return None, None
+    try:
+        root = ET.fromstring(xml_text)
+    except ET.ParseError:
+        return None, None
+    full_text = _element_to_plaintext(root)
+    abstract_text = _collect_abstract_from_root(root)
+    return full_text, abstract_text
 
 def fetch_epmc_full_text(
     item_or_dict: ResolvedInput,
@@ -166,35 +250,140 @@ def fetch_epmc_full_text(
     include_xml: bool = True,
 ) -> dict[str, Optional[str]]:
     """
-    Retrieve full-text XML (if available) and extract a plain-text version.
-    Only PMC records expose full text; other sources may return empty results.
+    Retrieve full-text XML (if available) and extract plain-text plus abstract snippets.
+    Europe PMC exposes full text via PMCID-specific endpoints, so we need a PMCID to succeed.
+    Returns a dict containing "text", "abstract", and (optionally) "xml". When full text XML is
+    unavailable, attempts to recover the abstract via search/metadata endpoints.
     """
-    source, id_ = _resolve_source_and_id(item_or_dict, delay=delay)
-    if not source or not id_:
-        return {"xml": None, "text": None}
 
-    cache_key = (source, str(id_))
-    cached = _FULLTEXT_CACHE.get(cache_key)
-    if cached is not None:
-        base = dict(cached)
+    def _add_candidate(value: Any, collector: list[str]) -> None:
+        pmcid_norm = _normalize_pmcid(value)
+        if pmcid_norm and pmcid_norm not in collector:
+            collector.append(pmcid_norm)
+
+    pmcid_candidates: list[str] = []
+    fallback_abs: Optional[str] = None
+    search_source: Optional[str] = None
+    search_identifier: Optional[str] = None
+
+    if isinstance(item_or_dict, Mapping):
+        for key in ("PMCID", "pmcid", "PMC", "pmc"):
+            _add_candidate(item_or_dict.get(key), pmcid_candidates)
+        fallback_abs = (
+            item_or_dict.get("abstract_text")
+            or item_or_dict.get("abstractText")
+            or item_or_dict.get("abstract")
+        )
+        source_hint = item_or_dict.get("source")
+        if isinstance(source_hint, str) and source_hint:
+            search_source = source_hint.upper()
+
+        if item_or_dict.get("PMCID"):
+            search_identifier = str(item_or_dict["PMCID"])
+        elif item_or_dict.get("PMID"):
+            search_identifier = str(item_or_dict["PMID"])
+        elif item_or_dict.get("DOI"):
+            search_identifier = str(item_or_dict["DOI"])
+    else:
+        _add_candidate(item_or_dict, pmcid_candidates)
+
+    resolved_source, resolved_id = _resolve_source_and_id(item_or_dict, delay=delay)
+    if resolved_source == "PMC":
+        _add_candidate(resolved_id, pmcid_candidates)
+    if resolved_source and resolved_id and not search_identifier:
+        search_source = resolved_source.upper()
+        search_identifier = str(resolved_id)
+
+    if not pmcid_candidates:
+        lookup_values: list[Any] = []
+        if isinstance(item_or_dict, Mapping):
+            for key in ("PMID", "pmid", "DOI", "doi", "title"):
+                val = item_or_dict.get(key)
+                if val:
+                    lookup_values.append(val)
+        else:
+            lookup_values.append(item_or_dict)
+
+        for candidate in lookup_values:
+            meta = _fetch_epmc_metadata(str(candidate), delay=delay)
+            _add_candidate(meta.get("PMCID"), pmcid_candidates)
+            if not fallback_abs and isinstance(meta.get("abstract_text"), str):
+                fallback_abs = meta["abstract_text"]
+            if meta.get("PMCID"):
+                search_source, search_identifier = "PMC", str(meta["PMCID"])
+            elif meta.get("PMID"):
+                search_source, search_identifier = "MED", str(meta["PMID"])
+            elif meta.get("DOI"):
+                search_source, search_identifier = "DOI", str(meta["DOI"])
+            elif meta.get("source"):
+                source_val = meta.get("source")
+                if isinstance(source_val, str) and source_val:
+                    search_source = source_val.upper()
+            if pmcid_candidates:
+                break
+
+    if not pmcid_candidates:
+        result = {"xml": None, "text": None, "abstract": None}
+        if isinstance(fallback_abs, str) and fallback_abs.strip():
+            result["abstract"] = fallback_abs.strip()
+        elif search_source and search_identifier:
+            alt_abs = _fetch_epmc_search_abstract(str(search_source), str(search_identifier), delay=delay)
+            if alt_abs:
+                result["abstract"] = alt_abs
         if not include_xml:
-            base.pop("xml", None)
-        return base
+            result.pop("xml", None)
+        return result
 
-    url = f"{EPMC_BASE}/{source}/{id_}/fullTextXML"
-    try:
-        resp = requests.get(url, timeout=30)
-        resp.raise_for_status()
-        xml_blob = resp.text or None
-    except requests.RequestException:
-        xml_blob = None
+    payload: dict[str, Optional[str]] | None = None
+    last_cache_key: Optional[str] = None
 
-    text_blob = _extract_text_from_xml(xml_blob)
-    base_payload = {"xml": xml_blob, "text": text_blob}
-    _FULLTEXT_CACHE[cache_key] = base_payload
+    for pmcid in pmcid_candidates:
+        cache_key = pmcid
+        cached = _FULLTEXT_CACHE.get(cache_key)
+        if cached is not None:
+            current = dict(cached)
+            if "abstract" not in current or (current.get("text") is None and current.get("xml")):
+                text_blob, abstract_blob = _parse_fulltext_xml(current.get("xml"))
+                if current.get("text") is None:
+                    current["text"] = text_blob
+                if current.get("abstract") is None:
+                    current["abstract"] = abstract_blob
+                _FULLTEXT_CACHE[cache_key] = dict(current)
+        else:
+            url = f"{EPMC_BASE}/{pmcid}/fullTextXML"
+            try:
+                resp = requests.get(url, timeout=30)
+                resp.raise_for_status()
+                xml_blob = resp.text or None
+            except requests.RequestException:
+                xml_blob = None
 
-    time.sleep(max(0.0, delay))
-    result = dict(base_payload)
+            text_blob, abstract_blob = _parse_fulltext_xml(xml_blob)
+            current = {"xml": xml_blob, "text": text_blob, "abstract": abstract_blob}
+            _FULLTEXT_CACHE[cache_key] = dict(current)
+            time.sleep(max(0.0, delay))
+
+        payload = current
+        last_cache_key = cache_key
+        if payload.get("xml") or payload.get("text") or payload.get("abstract"):
+            break
+
+    if payload is None:
+        payload = {"xml": None, "text": None, "abstract": None}
+
+    result = dict(payload)
+
+    if not result.get("abstract"):
+        if isinstance(fallback_abs, str) and fallback_abs.strip():
+            result["abstract"] = fallback_abs.strip()
+        elif search_source and search_identifier:
+            alt_abs = _fetch_epmc_search_abstract(str(search_source), str(search_identifier), delay=delay)
+            if alt_abs:
+                result["abstract"] = alt_abs
+
+    if last_cache_key:
+        _FULLTEXT_CACHE[last_cache_key] = dict(result)
+
     if not include_xml:
         result.pop("xml", None)
     return result
@@ -250,15 +439,10 @@ def _normalize_row(r: dict) -> dict:
     }
 
 # ---------- Public API ----------
-def fetch_europe_pmc_best(item: str, delay: float = 0.1) -> dict:
+def _fetch_epmc_metadata(item: str, delay: float = 0.1) -> dict:
     """
-    Query Europe PMC by DOI, PMID, PMCID, or title and return:
-    {
-      "PMC", "DOI", "PMID", "PMCID", "title", "journal", "year", "source_url"
-    }
-    All keys are present; unknowns are None.
-    - PMC is the numeric part of PMCID (e.g., 'PMC1234567' -> '1234567').
-    - If the input was a title and no match is found, 'title' echoes the input.
+    Internal helper to query Europe PMC by DOI, PMID, PMCID, or title.
+    Returns core bibliographic metadata without fetching full text.
     """
     kind, norm = _classify(item)
     results = _multi_try_search(kind, norm)
@@ -284,6 +468,8 @@ def fetch_europe_pmc_best(item: str, delay: float = 0.1) -> dict:
     title  = hit.get("title")
     year   = hit.get("pubYear")
     journal= hit.get("journalTitle")
+    abstract = hit.get("abstractText")
+    source = hit.get("source")
 
     out = {
         "PMC": _pmc_numeric(pmcid),
@@ -294,24 +480,100 @@ def fetch_europe_pmc_best(item: str, delay: float = 0.1) -> dict:
         "journal": journal,
         "year": int(year) if year and str(year).isdigit() else year,
         "source_url": _source_url_from_ids(pmcid, pmid, doi),
+        "source": source,
     }
+
+    if isinstance(abstract, str) and abstract.strip():
+        out["abstract_text"] = abstract.strip()
 
     time.sleep(max(0.0, delay))
     return out
 
-def fetch_europe_pmc_best_batch(items: Iterable[str], delay: float = 0.1) -> list[dict]:
+def fetch_epmc(
+    item: str,
+    delay: float = 0.1,
+    *,
+    include_full_text: bool = True,
+    include_xml: bool = False,
+) -> dict:
     """
-    Batch wrapper for fetch_europe_pmc_best.
+    Query Europe PMC and return bibliographic metadata along with optional full text.
+
+    Args:
+        item: DOI, PMID, PMCID, or title string.
+        delay: Courtesy delay applied to network calls.
+        include_full_text: If True (default), fetch plain-text/XML full text immediately.
+        include_xml: When include_full_text is True, include raw XML alongside parsed text.
+
+    Returns:
+        Dict of bibliographic fields plus:
+            - full_text: plain-text body (if available)
+            - full_text_abstract: abstract extracted from XML (if available)
+            - full_text_xml: raw XML (only when include_xml=True)
+            - abstract_text: abstract retrieved via XML, metadata, or search fallback
     """
-    return [fetch_europe_pmc_best(it, delay=delay) for it in items]
+    meta = _fetch_epmc_metadata(item, delay=delay)
+
+    def _ensure_abstract(target: dict[str, Any]) -> None:
+        if target.get("abstract_text"):
+            return
+        source, identifier = _resolve_source_and_id(target, delay=delay)
+        if source and identifier:
+            abstract = _fetch_epmc_search_abstract(str(source), str(identifier), delay=delay)
+            if abstract:
+                target["abstract_text"] = abstract
+                return
+        detail = fetch_epmc_article_details(target, include_fulltext=False, delay=delay)
+        if isinstance(detail, Mapping):
+            detail_abstract = detail.get("abstractText")
+            if isinstance(detail_abstract, str) and detail_abstract.strip():
+                target["abstract_text"] = detail_abstract.strip()
+
+    if not include_full_text:
+        _ensure_abstract(meta)
+        return meta
+
+    payload = fetch_epmc_full_text(meta, delay=delay, include_xml=include_xml)
+    meta["full_text"] = payload.get("text")
+    meta["full_text_abstract"] = payload.get("abstract")
+    if include_xml:
+        meta["full_text_xml"] = payload.get("xml")
+    elif "full_text_xml" in meta:
+        meta.pop("full_text_xml", None)
+
+    if payload.get("abstract") and not meta.get("abstract_text"):
+        meta["abstract_text"] = payload["abstract"]
+    _ensure_abstract(meta)
+
+    return meta
+
+def fetch_epmc_batch(
+    items: Iterable[str],
+    delay: float = 0.1,
+    *,
+    include_full_text: bool = True,
+    include_xml: bool = False,
+) -> list[dict]:
+    """
+    Batch wrapper for fetch_epmc.
+    """
+    return [
+        fetch_epmc(
+            it,
+            delay=delay,
+            include_full_text=include_full_text,
+            include_xml=include_xml,
+        )
+        for it in items
+    ]
 
 ResolvedInput = str | Mapping[str, Any]
 
 def _resolve_source_and_id(inp: ResolvedInput, delay: float = 0.1) -> Tuple[Optional[str], Optional[str]]:
     """
     Resolve to a Europe PMC (source, id):
-      - If a dict (output of fetch_europe_pmc_best), prefer PMID (MED) then PMCID (PMC).
-      - If a string, call fetch_europe_pmc_best on it.
+      - If a dict (output of fetch_epmc), prefer PMID (MED) then PMCID (PMC).
+      - If a string, call fetch_epmc on it.
       - If dict lacks PMID/PMCID but has DOI/title, try a second-pass resolve using those.
     Returns (source, id) or (None, None).
     """
@@ -326,7 +588,7 @@ def _resolve_source_and_id(inp: ResolvedInput, delay: float = 0.1) -> Tuple[Opti
         # Fallback via DOI or title if provided
         fallback_key = inp.get("DOI") or inp.get("title")
         if fallback_key:
-            resolved = fetch_europe_pmc_best(str(fallback_key), delay=delay)
+            resolved = _fetch_epmc_metadata(str(fallback_key), delay=delay)
             if resolved.get("PMID"):
                 return "MED", str(resolved["PMID"])
             if resolved.get("PMCID"):
@@ -334,7 +596,7 @@ def _resolve_source_and_id(inp: ResolvedInput, delay: float = 0.1) -> Tuple[Opti
         return None, None
 
     # Case 2: raw string
-    meta = fetch_europe_pmc_best(inp, delay=delay)
+    meta = _fetch_epmc_metadata(inp, delay=delay)
     if meta.get("PMID"):
         return "MED", str(meta["PMID"])
     if meta.get("PMCID"):
@@ -347,7 +609,7 @@ def list_references_epmc(item_or_dict: ResolvedInput, page_size: int = 100, dela
     List all papers that THIS paper CITES.
     Accepts:
       - DOI/PMID/PMCID/title string, or
-      - dict from fetch_europe_pmc_best(...)
+      - dict from fetch_epmc(...)
     Returns DataFrame: PMID, PMCID, DOI, title, journal, year, source_url
     """
     source, id_ = _resolve_source_and_id(item_or_dict, delay=delay)
@@ -381,7 +643,7 @@ def list_citations_epmc(item_or_dict: ResolvedInput, page_size: int = 100, delay
     List all papers that CITE THIS paper.
     Accepts:
       - DOI/PMID/PMCID/title string, or
-      - dict from fetch_europe_pmc_best(...)
+      - dict from fetch_epmc(...)
     Returns DataFrame: PMID, PMCID, DOI, title, journal, year, source_url
     """
     source, id_ = _resolve_source_and_id(item_or_dict, delay=delay)
@@ -547,7 +809,7 @@ def expand_literature_network_epmc(
     Explore references and/or citations starting from one or more seed papers.
 
     Args:
-        seeds: A single seed (string or fetch_europe_pmc_best dict) or an iterable of seeds.
+        seeds: A single seed (string or fetch_epmc dict) or an iterable of seeds.
         max_depth: How many hops to follow beyond the seeds (depth 0 = seeds).
             max_depth=1 collects direct references/citations; >1 continues breadth-first.
         include: Iterable subset of {"references", "citations"} to control which edges to follow.
@@ -610,7 +872,7 @@ def expand_literature_network_epmc(
         if isinstance(seed, Mapping):
             seed_meta = seed
         else:
-            seed_meta = fetch_europe_pmc_best(str(seed), delay=delay)
+            seed_meta = fetch_epmc(str(seed), delay=delay, include_full_text=False)
         key, node = register(seed_meta, "seed", 0, None)
         if max_depth > 0:
             queue.append((key, node))

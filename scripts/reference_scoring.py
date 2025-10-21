@@ -14,7 +14,7 @@ import pandas as pd
 from .fetch_data import fetch_uniprot_data, split_colon_list
 from .epmc_utils import (
     expand_literature_network_epmc,
-    fetch_europe_pmc_best,
+    fetch_epmc,
     fetch_epmc_article_details,
     fetch_epmc_full_text,
 )
@@ -98,7 +98,7 @@ def collect_reference_network_for_genes(
 
         seeds = []
         for title in title_list:
-            meta = fetch_europe_pmc_best(title, delay=delay)
+            meta = fetch_epmc(title, delay=delay)
             if meta:
                 meta = dict(meta)
                 meta["seed_source_title"] = title
@@ -296,6 +296,7 @@ def attach_full_text_columns(
     enriched = df.copy()
     abstracts: list[str | None] = []
     full_texts: list[str | None] = []
+    plain_texts: list[str | None] = []
     full_text_xmls: list[str | None] = []
 
     for _, row in enriched.iterrows():
@@ -307,6 +308,11 @@ def attach_full_text_columns(
         }
 
         abstract_value = row.get("abstract_text")
+        text_payload = fetch_epmc_full_text(lookup, delay=delay, include_xml=include_xml)
+        xml_abstract = text_payload.get("abstract")
+        if not abstract_value and isinstance(xml_abstract, str) and xml_abstract.strip():
+            abstract_value = xml_abstract.strip()
+
         if not abstract_value:
             detail = fetch_epmc_article_details(lookup, include_fulltext=False, delay=delay)
             detail_abstract = None
@@ -315,14 +321,18 @@ def attach_full_text_columns(
             if isinstance(detail_abstract, str) and detail_abstract.strip():
                 abstract_value = detail_abstract.strip()
 
-        text_payload = fetch_epmc_full_text(lookup, delay=delay, include_xml=include_xml)
-        full_texts.append(text_payload.get("text"))
+        full_text = text_payload.get("text")
+        full_texts.append(full_text)
         abstracts.append(abstract_value)
+        plain_val = full_text or abstract_value or ""
+        plain_texts.append(plain_val)
         if include_xml:
             full_text_xmls.append(text_payload.get("xml"))
 
     enriched["abstract_text"] = abstracts
     enriched["full_text"] = full_texts
+    enriched["plain_text"] = plain_texts
+    enriched["Full text"] = enriched["plain_text"].fillna("")
     if include_xml:
         enriched["full_text_xml"] = full_text_xmls
 
