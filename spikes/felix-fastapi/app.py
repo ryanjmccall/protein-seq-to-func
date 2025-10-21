@@ -335,15 +335,15 @@ def index_batch(limit: int = 200, offset: int = 0):
         return {"status": "ok"}
 
     # Verbose dump of Documents for full transparency
-    print("[INDEX][DEBUG] Dumping Documents...")
-    for d in docs:
-        try:
-            print(f"--- Document doc_id={d.doc_id}")
-            print(f"metadata={json.dumps(d.metadata, ensure_ascii=False)}")
-            print("text:")
-            print(d.text)
-        except Exception as e:
-            print(f"[INDEX][DEBUG][doc dump error] {e}")
+    # print("[INDEX][DEBUG] Dumping Documents...")
+    # for d in docs:
+    #     try:
+    #         print(f"--- Document doc_id={d.doc_id}")
+    #         print(f"metadata={json.dumps(d.metadata, ensure_ascii=False)}")
+    #         print("text:")
+    #         print(d.text)
+    #     except Exception as e:
+    #         print(f"[INDEX][DEBUG][doc dump error] {e}")
 
     # --- Chunking (no embeddings yet) ---
     # Explanation:
@@ -354,16 +354,16 @@ def index_batch(limit: int = 200, offset: int = 0):
     print(f"[INDEX] chunks_created={len(nodes)}")
 
     # Verbose dump of Nodes (post-splitting)
-    print("[INDEX][DEBUG] Dumping Nodes...")
-    for i, n in enumerate(nodes):
-        try:
-            print(f"--- Node {i} id={n.id_} ref_doc_id={n.ref_doc_id}")
-            print(f"metadata={json.dumps(n.metadata or {}, ensure_ascii=False)}")
-            content = n.get_content(metadata_mode="none")
-            print("content:")
-            print(content)
-        except Exception as e:
-            print(f"[INDEX][DEBUG][node dump error] {e}")
+    # print("[INDEX][DEBUG] Dumping Nodes...")
+    # for i, n in enumerate(nodes):
+    #     try:
+    #         print(f"--- Node {i} id={n.id_} ref_doc_id={n.ref_doc_id}")
+    #         print(f"metadata={json.dumps(n.metadata or {}, ensure_ascii=False)}")
+    #         content = n.get_content(metadata_mode="none")
+    #         print("content:")
+    #         print(content)
+    #     except Exception as e:
+    #         print(f"[INDEX][DEBUG][node dump error] {e}")
 
 
     if not nodes:
@@ -419,9 +419,12 @@ def index_batch(limit: int = 200, offset: int = 0):
         # --- simples Batching für Embeddings (keine Retries, kein Backoff) ---
         BATCH_SIZE = 96  # z.B. 64–128; 96 ist ein guter Start
         embeddings = []
+        total_batches = (len(node_texts) + BATCH_SIZE - 1) // BATCH_SIZE
         for start in range(0, len(node_texts), BATCH_SIZE):
             batch = node_texts[start:start + BATCH_SIZE]
-            print(f"[INDEX][DEBUG] Embedding batch {start//BATCH_SIZE + 1} ({len(batch)} texts, {start}..{start+len(batch)-1})")
+            batch_num = start // BATCH_SIZE + 1
+            if batch_num == 1 or batch_num % 10 == 0 or batch_num == total_batches:
+                print(f"[INDEX][EMB] batch {batch_num}/{total_batches} (+{len(batch)} texts)")
             resp = client.embeddings.create(model=NEBIUS_EMBED_MODEL, input=batch)
             # Reihenfolge bleibt wie Input; wir hängen nur an
             embeddings.extend([item.embedding for item in resp.data])
@@ -603,10 +606,10 @@ def index_batch(limit: int = 200, offset: int = 0):
                 query_hits.append(hit)
 
         # -- 8) Print a human-readable preview to the server console for inspection --
-        print(f"[QUERY] text='{QUERY}' | top_k={query_top_k}")
-        for h in query_hits:
-            print(f"  #{h['rank']:02d} score={h['score']:.4f} | {h['pmcid']} | {h['doi']} | {h['title']}")
-            print(f"      {h['text_preview']}")
+    # print(f"[QUERY] text='{QUERY}' | top_k={query_top_k}")
+    # for h in query_hits:
+    #     print(f"  #{h['rank']:02d} score={h['score']:.4f} | {h['pmcid']} | {h['doi']} | {h['title']}")
+    #     print(f"      {h['text_preview']}")
     except Exception as e:
         # If anything goes wrong during the query phase, keep indexing result intact and log the error only.
         print(f"[QUERY][error] {e}")
@@ -721,11 +724,11 @@ def index_batch(limit: int = 200, offset: int = 0):
             }
         }
 
-        print(f"[EXTRACT] Calling Nebius LLM for chunk #{i} | PMCID={hit.get('pmcid','')} | title='{hit.get('title','')[:80]}'")
+        # print(f"[EXTRACT] Calling Nebius LLM for chunk #{i} | PMCID={hit.get('pmcid','')} | title='{hit.get('title','')[:80]}'")
         try:
             with httpx.Client(timeout=90) as neb_client:
                 resp = neb_client.post(neb_url, json=payload, headers=neb_headers)
-            print(f"[EXTRACT] HTTP {resp.status_code}")
+            # print(f"[EXTRACT] HTTP {resp.status_code}")
 
             # Try to parse model's JSON response
             data = resp.json()
@@ -760,14 +763,15 @@ def index_batch(limit: int = 200, offset: int = 0):
 
             # Pretty-print a compact summary to terminal
             try:
-                print(
-                    "[EXTRACT][OK]",
-                    f"protein={extracted_obj.get('protein','')!r}",
-                    f"mod={extracted_obj.get('modification','')!r}",
-                    f"fx={extracted_obj.get('functional_effect','')!r}",
-                    f"longevity={extracted_obj.get('longevity_effect','')!r}",
-                    f"conf={extracted_obj.get('confidence', 0.0)}",
-                )
+                # print(
+                #     "[EXTRACT][OK]",
+                #     f"protein={extracted_obj.get('protein','')!r}",
+                #     f"mod={extracted_obj.get('modification','')!r}",
+                #     f"fx={extracted_obj.get('functional_effect','')!r}",
+                #     f"longevity={extracted_obj.get('longevity_effect','')!r}",
+                #     f"conf={extracted_obj.get('confidence', 0.0)}",
+                # )
+                pass
             except Exception:
                 print("[EXTRACT][OK] (unprintable chars)")
 
@@ -918,6 +922,504 @@ def index_batch(limit: int = 200, offset: int = 0):
 
 
 
+@app.post("/index/faiss_batch")
+def index_faiss_batch(limit: int = 200, offset: int = 0):
+# call e.g.: POST http://localhost:8000/index/faiss_batch?limit=1000&offset=0
+
+    """
+    Indexing-only endpoint:
+    - Loads JSON files from 'papers/' sliced by offset/limit
+    - Builds chunks, embeds via Nebius, appends to FAISS index and meta.jsonl
+    - Does NOT run query/extraction/article generation
+    Returns only {"status": "ok"} (plus small counters).
+    """
+
+    # --- Gather JSON files (no filtering) ---
+    if not os.path.isdir(PAPERS_DIR):
+        print(f"[INDEX] Folder '{PAPERS_DIR}' does not exist. Create it and drop JSON files inside.")
+        return {"status": "ok"}
+
+    all_files = [os.path.join(PAPERS_DIR, fn) for fn in os.listdir(PAPERS_DIR) if fn.endswith(".json")]
+    all_files.sort()
+    files = all_files[offset: offset + limit]
+
+    print(f"[INDEX-ONLY] files_seen_total={len(all_files)} | batch_offset={offset} | batch_limit={limit} | batch_files={len(files)}")
+    if not files:
+        print("[INDEX-ONLY] Nothing to do for this batch.")
+        return {"status": "ok", "files": 0}
+
+    # --- Build Documents ---
+    docs: List[Document] = []
+    skipped_empty = 0
+    for path in files:
+        try:
+            with open(path, "r", encoding="utf-8") as f:
+                paper: Dict[str, Any] = json.load(f)
+            text = (paper.get("plain_text") or "").strip()
+            if not text:
+                skipped_empty += 1
+                continue
+            metadata = {
+                "pmcid": paper.get("pmcid"),
+                "doi": paper.get("doi"),
+                "title": paper.get("title"),
+                "year": paper.get("year"),
+                "journal": paper.get("journal"),
+                "protein_hits": paper.get("protein_hits"),
+                "source_url": paper.get("source_url"),
+            }
+            pmcid = paper.get("pmcid")
+            if pmcid and isinstance(pmcid, str) and pmcid.strip():
+                doc_id = pmcid.strip()
+            else:
+                base = os.path.basename(path)
+                doc_id = os.path.splitext(base)[0]
+            docs.append(Document(text=text, metadata=metadata, doc_id=doc_id))
+        except Exception as e:
+            print(f"[INDEX-ONLY][skip broken] {os.path.basename(path)}: {e}")
+
+    print(f"[INDEX-ONLY] docs_used={len(docs)} | docs_skipped_empty={skipped_empty}")
+    if not docs:
+        print("[INDEX-ONLY] No usable documents in this batch (empty/plain_text or load fail).")
+        return {"status": "ok", "docs": 0}
+
+    # --- Chunking ---
+    splitter = SentenceSplitter(chunk_size=800, chunk_overlap=120)
+    nodes = splitter.get_nodes_from_documents(docs)
+    print(f"[INDEX-ONLY] chunks_created={len(nodes)}")
+    if not nodes:
+        print("[INDEX-ONLY] No chunks created.")
+        return {"status": "ok", "chunks": 0}
+
+    # --- Embeddings via Nebius ---
+    print("[INDEX-ONLY] Creating OpenAI client for Nebius...")
+    client = OpenAI(api_key=settings.nebius_api_key, base_url=NEBIUS_BASE_URL)
+    node_ids = [n.id_ for n in nodes]
+    node_texts = [n.get_content(metadata_mode="none") for n in nodes]
+    print(f"[INDEX-ONLY] Prepared {len(node_ids)} node IDs and {len(node_texts)} texts")
+
+    def clean_metadata_for_chroma(meta: Dict[str, Any]) -> Dict[str, Any]:
+        cleaned = {}
+        for key, value in (meta or {}).items():
+            if value is None:
+                if key == "year":
+                    cleaned[key] = 0
+                else:
+                    cleaned[key] = ""
+            elif isinstance(value, (str, int, float, bool)):
+                cleaned[key] = value
+            elif isinstance(value, list):
+                cleaned[key] = json.dumps(value)
+            elif isinstance(value, dict):
+                cleaned[key] = json.dumps(value)
+            else:
+                cleaned[key] = str(value)
+        return cleaned
+
+    print("[INDEX-ONLY] Cleaning metadata for Chroma...")
+    node_metas = [clean_metadata_for_chroma(n.metadata) for n in nodes]
+    print(f"[INDEX-ONLY] Cleaned {len(node_metas)} metadata entries")
+
+    try:
+        print(f"[INDEX-ONLY] Embedding with model='{NEBIUS_EMBED_MODEL}' at base_url='{NEBIUS_BASE_URL}' ...")
+        print(f"[INDEX-ONLY] Sending {len(node_texts)} texts to Nebius for embedding...")
+        BATCH_SIZE = 96
+        embeddings = []
+        total_batches = (len(node_texts) + BATCH_SIZE - 1) // BATCH_SIZE
+        for start in range(0, len(node_texts), BATCH_SIZE):
+            batch = node_texts[start:start + BATCH_SIZE]
+            batch_num = start // BATCH_SIZE + 1
+            if batch_num == 1 or batch_num % 10 == 0 or batch_num == total_batches:
+                print(f"[INDEX-ONLY][EMB] batch {batch_num}/{total_batches} (+{len(batch)} texts)")
+            resp = client.embeddings.create(model=NEBIUS_EMBED_MODEL, input=batch)
+            embeddings.extend([item.embedding for item in resp.data])
+        print(f"[INDEX-ONLY] Total embeddings: {len(embeddings)}")
+    except Exception as e:
+        print(f"[INDEX-ONLY][embed error] {e}")
+        raise HTTPException(status_code=500, detail="Nebius embedding request failed (index-only)")
+
+    if len(embeddings) != len(node_ids):
+        print(f"[INDEX-ONLY][embed mismatch] ids={len(node_ids)} vs embeds={len(embeddings)}")
+        raise HTTPException(status_code=500, detail="Embedding count mismatch (index-only)")
+
+    if embeddings:
+        emb_dim = len(embeddings[0])
+        print(f"[INDEX-ONLY] Embedding dimensions: {emb_dim} (first vector)")
+
+    # --- FAISS append-only ---
+    try:
+        os.makedirs(FAISS_DIR, exist_ok=True)
+    except Exception as e:
+        print(f"[INDEX-ONLY][FAISS dir error] {e}")
+        raise HTTPException(status_code=500, detail="Failed to create FAISS directory (index-only)")
+
+    X = np.array(embeddings, dtype="float32")
+    if X.ndim != 2 or X.shape[0] == 0:
+        raise HTTPException(status_code=500, detail="No embeddings to index (index-only)")
+    faiss.normalize_L2(X)
+
+    dim = int(X.shape[1])
+    faiss_path = os.path.join(FAISS_DIR, "index.faiss")
+    dim_path = os.path.join(FAISS_DIR, "dim.txt")
+
+    if os.path.isfile(faiss_path):
+        index = faiss.read_index(faiss_path)
+        if int(index.d) != dim:
+            raise HTTPException(status_code=400, detail=f"FAISS dim mismatch: index has {int(index.d)}, new vectors have {dim}")
+        print(f"[INDEX-ONLY][FAISS] Loaded existing index: {faiss_path} (ntotal={index.ntotal}, dim={int(index.d)})")
+    else:
+        index = faiss.IndexFlatIP(dim)
+        print(f"[INDEX-ONLY][FAISS] Created new IndexFlatIP dim={dim}")
+
+    try:
+        if os.path.isfile(dim_path):
+            try:
+                with open(dim_path, "r", encoding="utf-8") as g:
+                    prev_dim = int((g.read() or "").strip() or "0")
+                if prev_dim != dim:
+                    raise HTTPException(status_code=400, detail=f"FAISS dim mismatch: stored dim.txt={prev_dim}, new vectors have {dim}")
+            except ValueError:
+                print("[INDEX-ONLY][FAISS dim warn] dim.txt is not an integer; rewriting")
+                with open(dim_path, "w", encoding="utf-8") as g:
+                    g.write(str(dim))
+        else:
+            with open(dim_path, "w", encoding="utf-8") as g:
+                g.write(str(dim))
+    except HTTPException:
+        raise
+    except Exception as e:
+        print(f"[INDEX-ONLY][FAISS dim write warn] {e}")
+
+    index.add(X)
+    faiss.write_index(index, faiss_path)
+    print(f"[INDEX-ONLY][FAISS] Saved index: {faiss_path} (ntotal={index.ntotal})")
+
+    meta_path = os.path.join(FAISS_DIR, "meta.jsonl")
+    try:
+        with open(meta_path, "a", encoding="utf-8") as f:
+            for _id, _txt, _meta in zip(node_ids, node_texts, node_metas):
+                f.write(json.dumps({"id": _id, "text": _txt, "meta": _meta}, ensure_ascii=False) + "\n")
+        print(f"[INDEX-ONLY][FAISS] Appended metadata JSONL: {meta_path} (+{len(node_ids)} lines)")
+    except Exception as e:
+        print(f"[INDEX-ONLY][FAISS meta write error] {e}")
+        raise HTTPException(status_code=500, detail="Failed to write FAISS metadata JSONL (index-only)")
+
+    print("[INDEX-ONLY] Batch done (FAISS append).")
+    return {"status": "ok", "files": len(files), "docs": len(docs), "chunks": len(node_ids)}
+
+
+@app.post("/article/generate")
+def article_generate(query: Optional[str] = None, top_k: int = 100, protein_name: str = "APOE"):
+    """
+    Article-only endpoint:
+    - Loads existing FAISS index + meta.jsonl
+    - Runs semantic query, per-chunk extractions (LLM), and article generation (LLM)
+    - Saves HTML into FAISS_DIR/articles and returns {"status": "ok"}
+    """
+
+    # Prepare Nebius client
+    client = OpenAI(api_key=settings.nebius_api_key, base_url=NEBIUS_BASE_URL)
+
+    # Prepare query
+    QUERY = query or "APOE variant longevity lifespan"
+    query_top_k = int(top_k)
+
+    try:
+        q_emb_resp = client.embeddings.create(model=NEBIUS_EMBED_MODEL, input=[QUERY])
+        qvec = np.array(q_emb_resp.data[0].embedding, dtype="float32").reshape(1, -1)
+        faiss.normalize_L2(qvec)
+
+        faiss_path = os.path.join(FAISS_DIR, "index.faiss")
+        q_index = faiss.read_index(faiss_path)
+
+        D, I = q_index.search(qvec, query_top_k)
+
+        meta_path = os.path.join(FAISS_DIR, "meta.jsonl")
+        with open(meta_path, "r", encoding="utf-8") as f:
+            meta_lines = [json.loads(l) for l in f]
+
+        query_hits = []
+        for rank, (score, idx) in enumerate(zip(D[0].tolist(), I[0].tolist()), start=1):
+            if 0 <= idx < len(meta_lines):
+                rec = meta_lines[idx]
+                preview_text = rec.get("text", "")
+                if len(preview_text) > 300:
+                    preview_text = preview_text[:300] + "…"
+                hit = {
+                    "rank": rank,
+                    "score": float(score),
+                    "id": rec.get("id"),
+                    "pmcid": (rec.get("meta") or {}).get("pmcid", ""),
+                    "doi": (rec.get("meta") or {}).get("doi", ""),
+                    "title": (rec.get("meta") or {}).get("title", ""),
+                    "year": (rec.get("meta") or {}).get("year", 0),
+                    "journal": (rec.get("meta") or {}).get("journal", ""),
+                    "source_url": (rec.get("meta") or {}).get("source_url", ""),
+                    "text_preview": preview_text,
+                }
+                query_hits.append(hit)
+    except Exception as e:
+        print(f"[ARTICLE][query error] {e}")
+        raise HTTPException(status_code=500, detail="FAISS query failed (article)")
+
+    # Extraction LLM setup (schema and prompts)
+    extraction_schema = {
+        "name": "s2f_extraction",
+        "schema": {
+            "type": "object",
+            "properties": {
+                "protein": {"type": "string", "description": "Canonical protein/gene name if explicitly mentioned; otherwise empty."},
+                "organism": {"type": "string", "description": "Species/organism context if stated; otherwise empty."},
+                "sequence_interval": {"type": "string", "description": "Residue or nucleotide interval (e.g., 'aa 120-145', or motif/domain) if inferable; otherwise empty."},
+                "modification": {"type": "string", "description": "Exact sequence change (e.g., 'E4 (Arg112/Arg158)', 'Cys->Ser at pos 151)', 'domain deletion') if present; otherwise empty."},
+                "functional_effect": {"type": "string", "description": "Functional change on the protein/gene (e.g., binding, stability, transcriptional activity)."},
+                "longevity_effect": {"type": "string", "description": "Effect on lifespan/healthspan if present (e.g., increased lifespan in C.elegans)."},
+                "evidence_type": {"type": "string", "description": "Type of evidence (e.g., genetic manipulation, mutant strain, CRISPR edit, overexpression, knockdown)."},
+                "figure_or_panel": {"type": "string", "description": "Figure/panel if explicitly cited (e.g., 'Fig. 2B'); otherwise empty."},
+                "citation_hint": {"type": "string", "description": "Any DOI/PMCID/PMID text in the chunk; empty if none. Do not invent IDs."},
+                "confidence": {"type": "number", "description": "0.0–1.0 subjective confidence derived from the chunk only."}
+            },
+            "required": ["protein", "modification", "functional_effect", "longevity_effect", "confidence"],
+            "additionalProperties": False
+        },
+        "strict": True
+    }
+
+    SYSTEM_PROMPT = (
+        "You are a careful scientific text-miner for protein/gene sequence-to-function relationships in the context of longevity. "
+        "Extract only what is explicitly supported by the provided chunk. Do not hallucinate unknown IDs or effects. "
+        "If a field is not present in the text, return an empty string for that field (or 0.0 for confidence)."
+    )
+
+    USER_INSTRUCTION_PREFIX = (
+        "From the following paper chunk, extract ONLY facts about sequence modifications (mutations, domain edits, variants) "
+        "and their functional outcomes, especially any lifespan/healthspan associations. "
+        "Work strictly chunk-local: do not infer from general knowledge. "
+        "Return a single JSON object that conforms to the provided schema."
+        "\n\n--- BEGIN CHUNK ---\n"
+    )
+    USER_INSTRUCTION_SUFFIX = "\n--- END CHUNK ---"
+
+    neb_url = f"{NEBIUS_BASE_URL}chat/completions"
+    neb_headers = {
+        "Authorization": f"Bearer {settings.nebius_api_key}",
+        "Content-Type": "application/json",
+    }
+
+    # Ensure meta_lines is loaded (from above during query mapping)
+    meta_path = os.path.join(FAISS_DIR, "meta.jsonl")
+    with open(meta_path, "r", encoding="utf-8") as f:
+        meta_lines = [json.loads(l) for l in f]
+
+    extractions = []
+    max_chunks_for_extraction = len(query_hits)
+    for i, hit in enumerate(query_hits[:max_chunks_for_extraction], start=1):
+        node_id = hit.get("id")
+        full_text = ""
+        for rec in meta_lines:
+            if rec.get("id") == node_id:
+                full_text = rec.get("text", "")
+                break
+        if not full_text:
+            full_text = hit.get("text_preview", "")
+
+        user_content = USER_INSTRUCTION_PREFIX + full_text + USER_INSTRUCTION_SUFFIX
+        payload = {
+            "model": NEBIUS_MODEL,
+            "messages": [
+                {"role": "system", "content": SYSTEM_PROMPT},
+                {"role": "user", "content": user_content}
+            ],
+            "temperature": 0.1,
+            "max_tokens": 600,
+            "response_format": {
+                "type": "json_schema",
+                "json_schema": extraction_schema
+            }
+        }
+
+        try:
+            with httpx.Client(timeout=90) as neb_client:
+                resp = neb_client.post(neb_url, json=payload, headers=neb_headers)
+            # Try to parse model's JSON response
+            data = resp.json()
+            content = ""
+            if isinstance(data, dict) and "choices" in data and data["choices"]:
+                content = data["choices"][0]["message"]["content"] or ""
+            extracted_obj = {}
+            if content:
+                try:
+                    extracted_obj = json.loads(content)
+                except json.JSONDecodeError:
+                    extracted_obj = {"_raw": content}
+            extracted_obj["_provenance"] = {
+                "pmcid": hit.get("pmcid", ""),
+                "doi": hit.get("doi", ""),
+                "title": hit.get("title", ""),
+                "year": hit.get("year", 0),
+                "journal": hit.get("journal", ""),
+                "source_url": hit.get("source_url", ""),
+                "rank": hit.get("rank", i),
+                "score": hit.get("score", None),
+                "node_id": node_id,
+            }
+            extractions.append(extracted_obj)
+        except Exception as e:
+            print(f"[ARTICLE][extract error] {e}")
+            extractions.append({
+                "_error": str(e),
+                "_provenance": {
+                    "pmcid": hit.get("pmcid", ""),
+                    "title": hit.get("title", ""),
+                    "rank": hit.get("rank", i),
+                    "node_id": node_id,
+                }
+            })
+
+    print(f"[ARTICLE] Completed {len(extractions)}/{max_chunks_for_extraction} chunk extractions.")
+
+    # Prepare article generation
+    compact_extractions = []
+    for ex in extractions:
+        if not isinstance(ex, dict):
+            continue
+        compact_extractions.append({
+            "protein": ex.get("protein", ""),
+            "organism": ex.get("organism", ""),
+            "sequence_interval": ex.get("sequence_interval", ""),
+            "modification": ex.get("modification", ""),
+            "functional_effect": ex.get("functional_effect", ""),
+            "longevity_effect": ex.get("longevity_effect", ""),
+            "evidence_type": ex.get("evidence_type", ""),
+            "figure_or_panel": ex.get("figure_or_panel", ""),
+            "citation_hint": ex.get("citation_hint", ""),
+            "confidence": ex.get("confidence", 0.0),
+            "_provenance": ex.get("_provenance", {}),
+        })
+
+    article_schema = {
+        "name": "wikicrow_article",
+        "schema": {
+            "type": "object",
+            "properties": {
+                "title": {"type": "string"},
+                "html": {"type": "string"}
+            },
+            "required": ["title", "html"],
+            "additionalProperties": False
+        },
+        "strict": True
+    }
+
+    ARTICLE_SYSTEM = (
+        "You are a senior scientific editor. Write concise HTML articles "
+        "summarizing protein sequence-to-function relationships related to longevity. "
+        "Use the provided extraction data only; do not invent facts or citations. "
+        "Return the article as clean, minimal HTML suitable for web display."
+    )
+
+    article_user_instruction = (
+        "Compose a WikiCrow-style HTML article for the protein '"
+        + protein_name
+        + "'. Use these extraction objects as factual input. "
+        "Include sections for Overview, Sequence→Function Table, and Notes. "
+        "Use semantic HTML tags only (<h1>, <h2>, <table>, <tr>, <td>, <ul>, <li>, <p>). "
+        "The table must have columns: Interval, Modification, Functional Effect, "
+        "Longevity Effect, Evidence, Citation. Do not include external CSS or scripts. "
+        "\n\nExtraction data:\n"
+        + json.dumps({"protein": protein_name, "extractions": compact_extractions}, ensure_ascii=False)
+    )
+
+    article_payload = {
+        "model": NEBIUS_MODEL,
+        "messages": [
+            {"role": "system", "content": ARTICLE_SYSTEM},
+            {"role": "user", "content": article_user_instruction}
+        ],
+        "temperature": 0.2,
+        "max_tokens": 1800,
+        "response_format": {
+            "type": "json_schema",
+            "json_schema": article_schema
+        }
+    }
+
+    print(f"[ARTICLE] Generating HTML article for protein={protein_name!r} using {NEBIUS_MODEL}")
+    try:
+        with httpx.Client(timeout=120) as neb_client:
+            aresp = neb_client.post(
+                f"{NEBIUS_BASE_URL}chat/completions",
+                json=article_payload,
+                headers={
+                    "Authorization": f"Bearer {settings.nebius_api_key}",
+                    "Content-Type": "application/json",
+                },
+            )
+        print(f"[ARTICLE] HTTP {aresp.status_code}")
+
+        article_title = f"{protein_name} — Sequence-to-Function & Longevity"
+        article_html = "<h1>Draft</h1><p>No content returned.</p>"
+
+        adata = aresp.json()
+        if isinstance(adata, dict) and adata.get("choices"):
+            acontent = adata["choices"][0]["message"]["content"] or ""
+            try:
+                aobj = json.loads(acontent)
+                article_title = aobj.get("title") or article_title
+                article_html = aobj.get("html") or article_html
+            except json.JSONDecodeError:
+                article_html = f"<h1>{article_title}</h1><pre>{acontent}</pre>"
+
+        out_dir = os.path.join(FAISS_DIR, "articles")
+        os.makedirs(out_dir, exist_ok=True)
+        safe_name = re.sub(r"[^A-Za-z0-9._-]+", "_", protein_name)
+        out_path = os.path.join(out_dir, f"{safe_name}.html")
+
+        with open(out_path, "w", encoding="utf-8") as f:
+            f.write(article_html)
+        print(f"[ARTICLE] Saved article HTML: {out_path}")
+
+        preview = article_html[:800] + ("…" if len(article_html) > 800 else "")
+        print("[ARTICLE][preview]\n", preview)
+
+    except Exception as e:
+        print(f"[ARTICLE][error] {e}")
+
+    return {"status": "ok"}
+
+
+@app.post("/index/run_all")
+def index_run_all(batch_size: int = 1000, protein_name: str = "APOE", query: Optional[str] = None, top_k: int = 10):
+    """
+    Orchestrator:
+    - Iterates papers/ in batches, calling /index/faiss_batch until all are indexed
+    - Then calls /article/generate once to produce the final article from the full index
+    """
+
+    if not os.path.isdir(PAPERS_DIR):
+        return {"status": "ok", "note": f"Folder '{PAPERS_DIR}' not found", "indexed": 0}
+
+    all_files = [fn for fn in os.listdir(PAPERS_DIR) if fn.endswith(".json")]
+    total = len(all_files)
+    if total == 0:
+        return {"status": "ok", "note": "No JSON files in papers/", "indexed": 0}
+
+    processed = 0
+    for offset in range(0, total, int(batch_size)):
+        limit = min(int(batch_size), total - offset)
+        print(f"[RUN-ALL] Index batch offset={offset} limit={limit}")
+        try:
+            index_faiss_batch(limit=limit, offset=offset)
+            processed += limit
+        except HTTPException as e:
+            print(f"[RUN-ALL][index error] {e.detail}")
+            raise
+
+    print("[RUN-ALL] Indexing complete. Generating article...")
+    article_generate(query=query, top_k=top_k, protein_name=protein_name)
+    print("[RUN-ALL] Done.")
+    return {"status": "ok", "indexed": processed, "total": total}
+
 @app.get("/harvest/apoe")
 def harvest_apoe():
     """
@@ -944,7 +1446,8 @@ def harvest_apoe():
     # TEXT: searches title, abstract, AND full text (if available).
     # synonym=Y: expand common gene/protein synonyms on EPMC side.
     # OPEN_ACCESS:Y: restricts to OA articles so we can fetch full JATS XML.
-    base_query = f'(TEXT:"{PROTEIN}") AND OPEN_ACCESS:Y'
+    base_query = f'(TEXT:"{PROTEIN}") AND OPEN_ACCESS:Y AND (TAXON_ID:9606 OR ORGANISM:"Homo sapiens")'
+
 
     # -------------------- Small helpers (pure stdlib) ----------------------
     def _normalize_ws(s: str) -> str:
