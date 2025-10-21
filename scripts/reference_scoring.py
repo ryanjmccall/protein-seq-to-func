@@ -84,8 +84,10 @@ def collect_reference_network_for_genes(
 
     Optionally accepts a pre-built DataFrame of UniProt citation metadata (e.g., the
     output of fetch_epmc) and limits the number of reference/citation articles per
-    seed to a configurable number (default = 10 combined between references and
-    citing articles).
+    seed article to a configurable number (default = 10 combined between references
+    and citing articles). Each UniProt citation is processed independently: its
+    reference/citation network is expanded, scored, trimmed to the top-N articles,
+    and enriched with full-text data if requested before moving on to the next seed.
     """
     source_df: pd.DataFrame | None
     if uniprot_df is not None:
@@ -137,44 +139,46 @@ def collect_reference_network_for_genes(
         if not seeds:
             continue
 
-        network = expand_literature_network_epmc(
-            seeds,
-            include=include,
-            max_depth=max_depth,
-            delay=delay,
-        )
-        if network is None or network.empty:
-            continue
-
-        network = network.assign(
-            gene_symbol=gene_symbol,
-            uniprot_id=uniprot_id,
-            seed_titles="; ".join(title_list) if title_list else None,
-        )
-        network["relation_primary"] = network["relations"].apply(_primary_relation)
-        scored_network = score_reference_dataframe(
-            network,
-            delay=delay,
-            include_fulltext=False,
-        )
-
-        filtered = scored_network[
-            scored_network["relation_primary"].isin({"reference", "citation"})
-        ].copy()
-        if filtered.empty:
-            continue
-
-        if top_n_per_seed is not None and top_n_per_seed > 0:
-            filtered = filtered.head(top_n_per_seed)
-
-        if include_fulltext:
-            filtered = attach_full_text_columns(
-                filtered,
+        for seed_meta in seeds:
+            network = expand_literature_network_epmc(
+                seed_meta,
+                include=include,
+                max_depth=max_depth,
                 delay=delay,
-                include_xml=include_fulltext_xml,
+            )
+            if network is None or network.empty:
+                continue
+
+            seed_title = seed_meta.get("seed_source_title") or seed_meta.get("title")
+            network = network.assign(
+                gene_symbol=gene_symbol,
+                uniprot_id=uniprot_id,
+                seed_titles=seed_title,
+            )
+            network["relation_primary"] = network["relations"].apply(_primary_relation)
+            scored_network = score_reference_dataframe(
+                network,
+                delay=delay,
+                include_fulltext=False,
             )
 
-        frames.append(filtered)
+            filtered = scored_network[
+                scored_network["relation_primary"].isin({"reference", "citation"})
+            ].copy()
+            if filtered.empty:
+                continue
+
+            if top_n_per_seed is not None and top_n_per_seed > 0:
+                filtered = filtered.head(top_n_per_seed)
+
+            if include_fulltext:
+                filtered = attach_full_text_columns(
+                    filtered,
+                    delay=delay,
+                    include_xml=include_fulltext_xml,
+                )
+
+            frames.append(filtered)
 
     if not frames:
         base_columns = [
