@@ -74,6 +74,8 @@ def collect_reference_network_for_genes(
     include: Sequence[str] | None = ("references", "citations"),
     max_depth: int = 1,
     delay: float = 0.1,
+    include_fulltext: bool = True,
+    include_fulltext_xml: bool = False,
 ) -> pd.DataFrame:
     """
     Gather UniProt-linked seed articles plus their references/citations in one DataFrame.
@@ -122,6 +124,12 @@ def collect_reference_network_for_genes(
             seed_titles="; ".join(title_list) if title_list else None,
         )
         network["relation_primary"] = network["relations"].apply(_primary_relation)
+        if include_fulltext:
+            network = attach_full_text_columns(
+                network,
+                delay=delay,
+                include_xml=include_fulltext_xml,
+            )
         frames.append(network)
 
     if not frames:
@@ -298,6 +306,7 @@ def attach_full_text_columns(
     full_texts: list[str | None] = []
     plain_texts: list[str | None] = []
     full_text_xmls: list[str | None] = []
+    full_text_abstracts: list[str | None] = []
 
     for _, row in enriched.iterrows():
         lookup = {
@@ -310,6 +319,7 @@ def attach_full_text_columns(
         abstract_value = row.get("abstract_text")
         text_payload = fetch_epmc_full_text(lookup, delay=delay, include_xml=include_xml)
         xml_abstract = text_payload.get("abstract")
+        full_text_abstracts.append(xml_abstract)
         if not abstract_value and isinstance(xml_abstract, str) and xml_abstract.strip():
             abstract_value = xml_abstract.strip()
 
@@ -331,6 +341,7 @@ def attach_full_text_columns(
 
     enriched["abstract_text"] = abstracts
     enriched["full_text"] = full_texts
+    enriched["full_text_abstract"] = full_text_abstracts
     enriched["plain_text"] = plain_texts
     enriched["Full text"] = enriched["plain_text"].fillna("")
     if include_xml:
