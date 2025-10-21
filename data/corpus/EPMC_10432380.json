@@ -1,0 +1,15 @@
+{
+    "DOI": "10.1046/j.1523-1755.1999.00572.x",
+    "PMID": "10432380",
+    "title": "A novel apolipoprotein E mutation, E2 (Arg25Cys), in lipoprotein glomerulopathy.",
+    "year": 1999,
+    "source_url": "https://europepmc.org/article/MED/10432380",
+    "source": "MED",
+    "full_text_abstract": "<h4>Background</h4>Lipoprotein glomerulopathy (LPG) is characterized by intraglomerular lipoprotein thrombosis and high plasma concentrations of apolipoprotein (apo) E. An apo E variant, apo E2 (Arg145Pro) Sendai, was recently identified in three patients with LPG. We detected a novel point mutation in the apo E gene in a patient with LPG, and we characterized the mutant apo E.<h4>Methods</h4>The propositus was a 32-year-old male patient on maintenance hemodialysis because of LPG. The mutation was detected by sequencing of genomic DNA from the patient and was confirmed by restriction fragment length polymorphism (RFLP) with Aor51HI. Recombinant apo E2 (Arg25Cys) Kyoto and normal apo E3 were expressed from COS-1 cells. Low-density lipoprotein (LDL) receptor-binding activities of the variants were determined in an in vitro competition assay.<h4>Results</h4>The propositus had the apo E phenotype E2/E4, as determined by isoelectric focusing, and the genotype epsilon3/epsilon4, as determined by RFLP with HhaI. Sequence analysis of amplified DNA showed a C to T transition, changing the codon for residue 25 from arginine to cysteine. The proband was a heterozygous carrier for apo E2 (Arg25Cys) Kyoto. A family study showed that the mother was a heterozygous carrier of apo E2 Kyoto and had dysbetalipoproteinemia, but no LPG. The pathophysiological effect of this mutation was investigated in vitro by binding studies of recombinant apo E2 Kyoto to LDL receptors on human fibroblasts. The ability of recombinant apo E2 Kyoto to displace LDL was reduced to 10% compared with recombinant apo E3.<h4>Conclusions</h4>Apo E2 (Arg25Cys) Kyoto is a novel mutation of apo E that is etiologically related to LPG. However, our case indicates that the development of LPG may involve other genetic or environmental factors. Furthermore, our data suggest that arginine-25 of apo E plays an important functional role by influencing the receptor-binding ability of apo E.",
+    "function_signal": 0.0,
+    "longevity_signal": 0.0,
+    "year_score": 0.037037037037037035,
+    "functionality_score": 0.0,
+    "longevity_score": 0.0,
+    "composite_score": 0.014814814814814815
+}

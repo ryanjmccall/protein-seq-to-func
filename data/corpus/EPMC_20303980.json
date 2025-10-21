@@ -1,0 +1,17 @@
+{
+    "PMC": "2880916",
+    "DOI": "10.1016/j.jmb.2010.03.022",
+    "PMID": "20303980",
+    "PMCID": "PMC2880916",
+    "title": "Structure of the minimal interface between ApoE and LRP.",
+    "year": 2010,
+    "source_url": "https://europepmc.org/article/PMC/PMC2880916",
+    "source": "MED",
+    "full_text_abstract": "Clusters of complement-type ligand-binding repeats (CRs) in the low-density lipoprotein receptor (LDLR) family are thought to mediate the interactions with their various ligands. Apolipoprotein E (ApoE), a key ligand for cholesterol homeostasis, has been shown to interact with LDLR-related protein 1 (LRP) through these clusters. The segment comprising the receptor-binding portion of ApoE (residues 130-149) has been found to have a weak affinity for isolated CRs. We have fused this region of ApoE to a high-affinity CR from LRP (CR17) for structural elucidation of the complex. The interface reveals a motif that has previously been observed in CR domains with other binding partners, but with several novel features. Comparison to free CR17 reveals that very few structural changes result from this binding event, but significant changes in intrinsic dynamics are observed upon binding. NMR perturbation experiments suggest that this interface may be similar to several other ligand interactions with LDLRs.",
+    "function_signal": 0.0,
+    "longevity_signal": 0.0,
+    "year_score": 0.0625,
+    "functionality_score": 0.0,
+    "longevity_score": 0.0,
+    "composite_score": 0.025
+}

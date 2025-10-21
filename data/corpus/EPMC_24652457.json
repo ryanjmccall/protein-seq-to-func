@@ -1,0 +1,17 @@
+{
+    "PMC": "5562666",
+    "DOI": "10.1007/s12264-013-1422-z",
+    "PMID": "24652457",
+    "PMCID": "PMC5562666",
+    "title": "Apolipoprotein E, amyloid-beta, and neuroinflammation in Alzheimer's disease.",
+    "year": 2014,
+    "source_url": "https://europepmc.org/article/PMC/PMC5562666",
+    "source": "MED",
+    "full_text_abstract": "Alzheimer's disease (AD) is characterized by the accumulation and deposition of amyloid-beta (A\u03b2) peptides in the brain. Neuroinflammation occurs in the AD brain and plays a critical role in the neurodegenerative pathology. Particularly, A\u03b2 evokes an inflammatory response that leads to synaptic dysfunction, neuronal death, and neurodegeneration. Apolipoprotein E (ApoE) proteins are involved in cholesterol transport, A\u03b2 binding and clearance, and synaptic functions in the brain. The ApoE4 isoform is a key risk factor for AD, while the ApoE2 isoform has a neuroprotective effect. However, studies have reached different conclusions about the roles of the isoforms; some show that both ApoE3 and ApoE4 have anti-inflammatory effects, while others show that ApoE4 causes a predisposition to inflammation or promotes an inflammatory response following lipopolysaccharide treatment. These discrepancies may result from the differences in models, cell types, experimental conditions, and inflammatory stimuli used. Further, little was known about the role of ApoE isoforms in the A\u03b2-induced inflammatory response and in the neuroinflammation of AD. Our recent work showed that ApoE isoforms differentially regulate and modify the A\u03b2-induced inflammatory response in neural cells, with ApoE2 suppressing and ApoE4 promoting the response. In this article, we review the roles, mechanisms, and interrelations among A\u03b2, ApoE, and neuroinflammation in AD.",
+    "function_signal": 0.0,
+    "longevity_signal": 0.0,
+    "year_score": 0.08333333333333333,
+    "functionality_score": 0.0,
+    "longevity_score": 0.0,
+    "composite_score": 0.03333333333333333
+}
