@@ -7,7 +7,7 @@ from __future__ import annotations
 import math
 import re
 from datetime import datetime
-from typing import Iterable, Mapping, Sequence
+from typing import Mapping, Sequence
 
 import pandas as pd
 
@@ -39,12 +39,6 @@ LONGEVITY_KEYWORDS = [
 DEFAULT_WEIGHTS = {"year": 0.4, "function": 0.35, "longevity": 0.25}
 
 
-def _ensure_gene_iterable(genes: str | Iterable[str]) -> list[str]:
-    if isinstance(genes, str):
-        return [genes]
-    return [g for g in genes]
-
-
 def _normalize_weights(weights: Mapping[str, float] | None) -> dict[str, float]:
     if not weights:
         weights = DEFAULT_WEIGHTS
@@ -67,157 +61,240 @@ def _primary_relation(relations: str | None) -> str | None:
     return parts[0] if parts else None
 
 
-def collect_reference_network_for_genes(
-    genes: str | Iterable[str] | None = None,
+def _empty_reference_network(include_fulltext: bool, include_fulltext_xml: bool) -> pd.DataFrame:
+    columns = [
+        "node_key",
+        "depth",
+        "relations",
+        "relation_primary",
+        "n_parents",
+        "parent_keys",
+        "PMC",
+        "PMID",
+        "PMCID",
+        "DOI",
+        "title",
+        "journal",
+        "year",
+        "source_url",
+        "gene_symbol",
+        "uniprot_id",
+        "seed_titles",
+        "function_signal",
+        "longevity_signal",
+        "year_score",
+        "functionality_score",
+        "longevity_score",
+        "composite_score",
+        "abstract_text",
+        "full_text",
+        "full_text_abstract",
+        "plain_text",
+        "Full text",
+    ]
+    if include_fulltext and include_fulltext_xml:
+        columns.append("full_text_xml")
+    return pd.DataFrame(columns=columns)
+
+
+def _prepare_citation_metadata(
+    citation: Mapping[str, object] | pd.Series | str,
     *,
-    uniprot_df: pd.DataFrame | None = None,
-    uniprot_citations_df: pd.DataFrame | None = None,
+    delay: float,
+) -> dict[str, object]:
+    """
+    Normalize citation inputs into a metadata dict suitable for Europe PMC expansion.
+    """
+    if isinstance(citation, pd.Series):
+        base = citation.to_dict()
+    elif isinstance(citation, Mapping):
+        base = dict(citation)
+    else:
+        base = {}
+
+    identifier: str | None = None
+    for field in ("PMCID", "PMID", "DOI", "title"):
+        value = base.get(field)
+        if isinstance(value, str) and value.strip():
+            identifier = value.strip()
+            break
+        if value not in (None, ""):
+            identifier = str(value)
+            break
+
+    if isinstance(citation, str) and citation.strip():
+        identifier = citation.strip()
+
+    fetched: dict[str, object] | None = None
+    if identifier:
+        fetched = fetch_epmc(
+            identifier,
+            delay=delay,
+            include_full_text=False,
+            include_xml=False,
+        )
+    elif isinstance(base.get("title"), str) and base["title"].strip():
+        fetched = fetch_epmc(
+            base["title"],
+            delay=delay,
+            include_full_text=False,
+            include_xml=False,
+        )
+    else:
+        fetched = {}
+
+    combined: dict[str, object] = {}
+    if fetched:
+        combined.update(fetched)
+    if base:
+        combined.update(base)
+    if isinstance(citation, str) and citation and not combined.get("seed_source_title"):
+        combined["seed_source_title"] = citation
+
+    combined.setdefault("title", combined.get("seed_source_title"))
+    return combined
+
+
+def collect_reference_network_for_citation(
+    citation: Mapping[str, object] | pd.Series | str,
+    *,
+    gene_symbol: str | None = None,
+    uniprot_id: str | None = None,
     include: Sequence[str] | None = ("references", "citations"),
     max_depth: int = 1,
     delay: float = 0.1,
     include_fulltext: bool = True,
     include_fulltext_xml: bool = False,
-    top_n_per_seed: int | None = 10,
+    top_n: int | None = 10,
 ) -> pd.DataFrame:
     """
-    Gather UniProt-linked seed articles plus their references/citations in one DataFrame.
-
-    Optionally accepts a pre-built DataFrame of UniProt citation metadata (e.g., the
-    output of fetch_epmc) and limits the number of reference/citation articles per
-    seed article to a configurable number (default = 10 combined between references
-    and citing articles). Each UniProt citation is processed independently: its
-    reference/citation network is expanded, scored, trimmed to the top-N articles,
-    and enriched with full-text data if requested before moving on to the next seed.
+    Build a reference/citation network for a single UniProt-linked citation.
     """
-    source_df: pd.DataFrame | None
-    if uniprot_df is not None:
-        source_df = uniprot_df.copy()
-    else:
-        gene_list = _ensure_gene_iterable(genes) if genes is not None else []
-        if not gene_list:
-            return pd.DataFrame()
-        source_df = fetch_uniprot_data(gene_list)
+    if citation is None:
+        return _empty_reference_network(include_fulltext, include_fulltext_xml)
 
-    if source_df is None or source_df.empty:
-        return pd.DataFrame()
+    seed_meta = _prepare_citation_metadata(citation, delay=delay)
+    if not seed_meta:
+        return _empty_reference_network(include_fulltext, include_fulltext_xml)
 
-    citation_lookup: dict[str, Mapping[str, object]] = {}
-    if uniprot_citations_df is not None and not uniprot_citations_df.empty:
-        for _, citation_row in uniprot_citations_df.iterrows():
-            record = citation_row.to_dict()
-            keys: list[str] = []
-            for field in ("PMCID", "PMID", "DOI"):
-                value = record.get(field)
-                if isinstance(value, str) and value.strip():
-                    keys.append(value.strip().lower())
-            title_val = record.get("title")
-            if isinstance(title_val, str) and title_val.strip():
-                keys.append(title_val.strip().lower())
-            for key in keys:
-                # Preserve the first occurrence; subsequent duplicates can be ignored.
-                citation_lookup.setdefault(key, record)
+    if gene_symbol is None:
+        gene_symbol = seed_meta.get("gene_symbol")
+    if uniprot_id is None:
+        uniprot_id = seed_meta.get("uniprot_id")
+
+    seed_title = seed_meta.get("seed_source_title") or seed_meta.get("title")
+    network = expand_literature_network_epmc(
+        seed_meta,
+        include=include,
+        max_depth=max_depth,
+        delay=delay,
+    )
+    if network is None or network.empty:
+        return _empty_reference_network(include_fulltext, include_fulltext_xml)
+
+    network = network.assign(
+        gene_symbol=gene_symbol,
+        uniprot_id=uniprot_id,
+        seed_titles=seed_title,
+    )
+    network["relation_primary"] = network["relations"].apply(_primary_relation)
+
+    scored_network = score_reference_dataframe(
+        network,
+        delay=delay,
+        include_fulltext=False,
+    )
+    filtered = scored_network[
+        scored_network["relation_primary"].isin({"reference", "citation"})
+    ].copy()
+    if filtered.empty:
+        return _empty_reference_network(include_fulltext, include_fulltext_xml)
+
+    if top_n is not None and top_n > 0:
+        filtered = filtered.head(top_n)
+
+    if include_fulltext:
+        filtered = attach_full_text_columns(
+            filtered,
+            delay=delay,
+            include_xml=include_fulltext_xml,
+        )
+
+    return filtered
+
+
+def collect_reference_network_for_citations(
+    citations: (
+        pd.DataFrame
+        | Sequence[Mapping[str, object] | pd.Series | str]
+        | Mapping[str, object]
+        | pd.Series
+        | str
+        | None
+    ),
+    *,
+    gene_symbol: str | None = None,
+    uniprot_id: str | None = None,
+    include: Sequence[str] | None = ("references", "citations"),
+    max_depth: int = 1,
+    delay: float = 0.1,
+    include_fulltext: bool = True,
+    include_fulltext_xml: bool = False,
+    top_n: int | None = 10,
+) -> pd.DataFrame:
+    """
+    Apply collect_reference_network_for_citation across many citations and combine results.
+    """
+    if citations is None:
+        return _empty_reference_network(include_fulltext, include_fulltext_xml)
 
     frames: list[pd.DataFrame] = []
-    for _, row in source_df.iterrows():
-        print(f"Processing gene: {row.get('gene_symbol')}")
-        gene_symbol = row.get("gene_symbol")
-        uniprot_id = row.get("uniprot_id")
-        title_list = split_colon_list(row.get("citation_titles"))
 
-        seeds = []
-        for title in title_list:
-            meta: Mapping[str, object] | None = None
-            lookup_key = title.lower().strip() if isinstance(title, str) else None
-            if lookup_key and lookup_key in citation_lookup:
-                meta = dict(citation_lookup[lookup_key])
-            else:
-                meta = fetch_epmc(title, delay=delay)
-            if meta:
-                meta = dict(meta)
-                meta["seed_source_title"] = title
-                seeds.append(meta)
+    if isinstance(citations, pd.DataFrame):
+        iterator = (row for _, row in citations.iterrows())
+    elif isinstance(citations, (pd.Series, Mapping, str)):
+        iterator = (citations,)
+    else:
+        try:
+            iterator = iter(citations)
+        except TypeError:
+            iterator = (citations,)
 
-        if not seeds:
+    for entry in iterator:
+        entry_dict: dict[str, object] | None = None
+        if isinstance(entry, pd.Series):
+            entry_dict = entry.to_dict()
+        elif isinstance(entry, Mapping):
+            entry_dict = dict(entry)
+
+        entry_gene = entry_dict.get("gene_symbol") if entry_dict else None
+        entry_uniprot = entry_dict.get("uniprot_id") if entry_dict else None
+
+        frame = collect_reference_network_for_citation(
+            entry,
+            gene_symbol=entry_gene or gene_symbol,
+            uniprot_id=entry_uniprot or uniprot_id,
+            include=include,
+            max_depth=max_depth,
+            delay=delay,
+            include_fulltext=include_fulltext,
+            include_fulltext_xml=include_fulltext_xml,
+            top_n=top_n,
+        )
+        if frame.empty:
             continue
 
-        for seed_meta in seeds:
-            network = expand_literature_network_epmc(
-                seed_meta,
-                include=include,
-                max_depth=max_depth,
-                delay=delay,
-            )
-            if network is None or network.empty:
-                continue
+        if (entry_gene or gene_symbol) and "gene_symbol" in frame.columns:
+            frame["gene_symbol"] = frame["gene_symbol"].fillna(entry_gene or gene_symbol)
+        if (entry_uniprot or uniprot_id) and "uniprot_id" in frame.columns:
+            frame["uniprot_id"] = frame["uniprot_id"].fillna(entry_uniprot or uniprot_id)
 
-            seed_title = seed_meta.get("seed_source_title") or seed_meta.get("title")
-            network = network.assign(
-                gene_symbol=gene_symbol,
-                uniprot_id=uniprot_id,
-                seed_titles=seed_title,
-            )
-            network["relation_primary"] = network["relations"].apply(_primary_relation)
-            scored_network = score_reference_dataframe(
-                network,
-                delay=delay,
-                include_fulltext=False,
-            )
-
-            filtered = scored_network[
-                scored_network["relation_primary"].isin({"reference", "citation"})
-            ].copy()
-            if filtered.empty:
-                continue
-
-            if top_n_per_seed is not None and top_n_per_seed > 0:
-                filtered = filtered.head(top_n_per_seed)
-
-            if include_fulltext:
-                filtered = attach_full_text_columns(
-                    filtered,
-                    delay=delay,
-                    include_xml=include_fulltext_xml,
-                )
-
-            frames.append(filtered)
+        frames.append(frame)
 
     if not frames:
-        base_columns = [
-            "node_key",
-            "depth",
-            "relations",
-            "relation_primary",
-            "n_parents",
-            "parent_keys",
-            "PMC",
-            "PMID",
-            "PMCID",
-            "DOI",
-            "title",
-            "journal",
-            "year",
-            "source_url",
-            "gene_symbol",
-            "uniprot_id",
-            "seed_titles",
-            "function_signal",
-            "longevity_signal",
-            "year_score",
-            "functionality_score",
-            "longevity_score",
-            "composite_score",
-            "abstract_text",
-            "full_text",
-            "full_text_abstract",
-            "plain_text",
-            "Full text",
-        ]
-        if include_fulltext and include_fulltext_xml:
-            base_columns.append("full_text_xml")
-        return pd.DataFrame(columns=base_columns)
+        return _empty_reference_network(include_fulltext, include_fulltext_xml)
 
-    combined = pd.concat(frames, ignore_index=True)
-    return combined
+    return pd.concat(frames, ignore_index=True)
 
 
 def _combine_article_text(row: Mapping[str, object], detail: Mapping[str, object]) -> str:
