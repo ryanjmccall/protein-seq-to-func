@@ -1,0 +1,15 @@
+{
+    "DOI": "10.1111/febs.13096",
+    "PMID": "25283965",
+    "title": "Structural basis for the binding of the membrane-proximal C-terminal region of chemokine receptor CCR2 with the cytosolic regulator FROUNT.",
+    "year": 2014,
+    "source_url": "https://europepmc.org/article/MED/25283965",
+    "source": "MED",
+    "full_text_abstract": "The membrane-proximal C-terminal region (Pro-C) is important for the regulation of G-protein-coupled receptors (GPCRs), but the binding of the Pro-C region to a cytosolic regulator has not been structurally analyzed. The chemokine receptor CCR2 is a member of the GPCR superfamily, and the Pro-C region of CCR2 binds to the cytosolic regulator FROUNT. Studying the interaction between CCR2 Pro-C and FROUNT at an atomic level provides a basis for understanding the signal transduction mechanism via GPCRs. NOE-based NMR experiments showed that, when bound to FROUNT, CCR2 Pro-C adopted a helical conformation, as well as when embedded in dodecylphosphocholine micelles. A comparison of two types of cross-saturation-based NMR experiments, applied to a three-component mixture of Pro-C, FROUNT and micelles or a two-component mixture of Pro-C and micelles, revealed that the hydrophobic binding surface on Pro-C for FROUNT mostly overlapped with the binding site for micelles, suggesting competitive binding of Pro-C between FROUNT and micelles. Leu316 was important for both FROUNT and micelle binding. Phe319 was newly identified to be crucial for FROUNT binding, by NMR and mutational analyses. The association and dissociation rates of CCR2 Pro-C for lipid bilayer biomembranes were faster than those for FROUNT. We previously reported that FROUNT binding to CCR2 is detectable even in unstimulated cells and increases in response to chemokine stimulation. Taken together, these results support a model of CCR2 equilibrium: chemokine binding changes the conformational equilibrium of CCR2 toward the active state, and Pro-C switches its binding partner from the membrane to FROUNT.",
+    "function_signal": 0.0,
+    "longevity_signal": 0,
+    "year_score": 0.08333333333333333,
+    "functionality_score": 0.0,
+    "longevity_score": 0.0,
+    "composite_score": 0.03333333333333333
+}

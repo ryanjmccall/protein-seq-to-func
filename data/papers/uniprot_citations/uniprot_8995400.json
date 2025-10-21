@@ -1,0 +1,15 @@
+{
+    "DOI": "10.1074/jbc.272.2.1038",
+    "PMID": "8995400",
+    "title": "Organization and differential expression of the human monocyte chemoattractant protein 1 receptor gene. Evidence for the role of the carboxyl-terminal tail in receptor trafficking.",
+    "year": 1997,
+    "source_url": "https://europepmc.org/article/MED/8995400",
+    "source": "MED",
+    "full_text_abstract": "Two forms of the monocyte chemoattractant protein-1 receptors (the type A monocyte chemoattractant protein 1 (MCP-1) receptor CCR-2A and the type B MCP-1 receptor (CCR-2B) have been recently cloned and found to differ only in their terminal carboxyl tails. Here, we report that the two isoforms are alternatively spliced variants of a single MCP-1 receptor gene. Sequencing of the gene revealed that the 47-amino acid carboxyl tail of CCR2B was located in the same exon as the seven transmembrane domains of the receptor, and the 61-amino acid tail of CCR2A was in a downstream exon. Examination of freshly isolated human monocytes by reverse transcriptase-polymerase chain reaction revealed that CCR2B was the predominant isoform and that message levels of both CCR2A and CCR2B decreased as the monocytes differentiated into macrophages. In stably transfected cell lines, CCR2B trafficked well to the cell surface, but CCR2A was found predominantly in the cytoplasm. Equilibrium binding studies revealed that those CCR2A receptors that successfully trafficked to the cell surface bound MCP-1 with high affinity (Kd = 310 pM), similar to CCR2B. In signaling studies, both CCR2A and CCR2B mediated agonist-dependent calcium mobilization, as well as inhibition of adenylyl cyclase. Creation of chimeras between CCR2A and the human thrombin receptor revealed that the cytoplasmic retention of CCR2A was due to its terminal carboxyl tail. Progressive truncation of the carboxyl tail indicated that a cytoplasmic retention signal(s) was located between residues 316 and 349. These data indicate that the alternatively spliced form of the human MCP-1 receptor (CCR2A) binds MCP-1 with high affinity and is a functional receptor and that expression at the cell surface is controlled by amino acid sequences located in the terminal carboxyl tail.",
+    "function_signal": 0.0,
+    "longevity_signal": 0,
+    "year_score": 0.034482758620689655,
+    "functionality_score": 0.0,
+    "longevity_score": 0.0,
+    "composite_score": 0.013793103448275862
+}

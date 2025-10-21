@@ -13,8 +13,8 @@ import chromadb
 from chromadb.config import Settings
 
 # --- 1. SETUP ---
-if "OPENAI_API_KEY" not in os.environ:
-    raise EnvironmentError("OPENAI_API_KEY environment variable not set.")
+# if "OPENAI_API_KEY" not in os.environ:
+#     raise EnvironmentError("OPENAI_API_KEY environment variable not set.")
 
 # Europe PMC API endpoints
 EPMC_SEARCH_URL = "https://www.ebi.ac.uk/europepmc/webservices/rest/search"
@@ -43,6 +43,7 @@ def load_genage_data(csv_file_path: str) -> List[Document]:
         header = next(csv_reader)  # Skip the header row
         
         for row in csv_reader:
+            print("reading row")
             if len(row) < 6:  # Ensure we have enough columns
                 continue
                 
