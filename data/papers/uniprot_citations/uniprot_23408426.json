@@ -1,0 +1,17 @@
+{
+    "PMC": "3617241",
+    "DOI": "10.1074/jbc.m112.447359",
+    "PMID": "23408426",
+    "PMCID": "PMC3617241",
+    "title": "Tyrosine sulfation of chemokine receptor CCR2 enhances interactions with both monomeric and dimeric forms of the chemokine monocyte chemoattractant protein-1 (MCP-1).",
+    "year": 2013,
+    "source_url": "https://europepmc.org/article/PMC/PMC3617241",
+    "source": "MED",
+    "full_text_abstract": "Chemokine receptors are commonly post-translationally sulfated on tyrosine residues in their N-terminal regions, the initial site of binding to chemokine ligands. We have investigated the effect of tyrosine sulfation of the chemokine receptor CCR2 on its interactions with the chemokine monocyte chemoattractant protein-1 (MCP-1/CCL2). Inhibition of CCR2 sulfation, by growth of expressing cells in the presence of sodium chlorate, significantly reduced the potency for MCP-1 activation of CCR2. MCP-1 exists in equilibrium between monomeric and dimeric forms. The obligate monomeric mutant MCP-1(P8A) was similar to wild type MCP-1 in its ability to induce leukocyte recruitment in vivo, whereas the obligate dimeric mutant MCP-1(T10C) was less effective at inducing leukocyte recruitment in vivo. In two-dimensional NMR experiments, sulfated peptides derived from the N-terminal region of CCR2 bound to both the monomeric and dimeric forms of wild type MCP-1 and shifted the equilibrium to favor the monomeric form. Similarly, MCP-1(P8A) bound more tightly than MCP-1(T10C) to the CCR2-derived sulfopeptides. NMR chemical shift mapping using the MCP-1 mutants showed that the sulfated N-terminal region of CCR2 binds to the same region (N-loop and \u03b23-strand) of both monomeric and dimeric MCP-1 but that binding to the dimeric form also influences the environment of chemokine N-terminal residues, which are involved in dimer formation. We conclude that interaction with the sulfated N terminus of CCR2 destabilizes the dimerization interface of inactive dimeric MCP-1, thus inducing dissociation to the active monomeric state.",
+    "function_signal": 0.0,
+    "longevity_signal": 0,
+    "year_score": 0.07692307692307693,
+    "functionality_score": 0.0,
+    "longevity_score": 0.0,
+    "composite_score": 0.03076923076923077
+}

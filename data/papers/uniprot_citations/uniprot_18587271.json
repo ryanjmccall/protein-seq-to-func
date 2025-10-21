@@ -1,0 +1,17 @@
+{
+    "PMC": "2679297",
+    "DOI": "10.3858/emm.2008.40.3.332",
+    "PMID": "18587271",
+    "PMCID": "PMC2679297",
+    "title": "Human LZIP induces monocyte CC chemokine receptor 2 expression leading to enhancement of monocyte chemoattractant protein 1/CCL2-induced cell migration.",
+    "year": 2008,
+    "source_url": "https://europepmc.org/article/PMC/PMC2679297",
+    "source": "MED",
+    "full_text_abstract": "Chemokines and chemokine receptors play a role in migration of circulating leukocytes to the region of inflammation. Human LZIP is an uncharacterized transcription factor and is known to participate in leukotactin (Lkn)-1/CCL15-induced cell migration. We investigated the role of human LZIP in expression of CC chemokine receptors (CCRs) and its involvement in monocyte migration. RNase protection analysis showed that LZIP increased mRNA expression of CCR2 and CCR1 in THP-1 cells. Surface expressions of both CCR2 and CCR1 were also increased by LZIP. Results from an electrophoretic mobility shift assay showed that LZIP binds to the C/EBP element in the CCR2 promoter. LZIP also enhanced the chemotactic activities of monocyte chemoattractant protein-1/CCL2 and Lkn-1. These results suggest that LZIP regulates expression of chemokine receptors that are involved in monocyte migration.",
+    "function_signal": 0.0,
+    "longevity_signal": 0,
+    "year_score": 0.05555555555555555,
+    "functionality_score": 0.0,
+    "longevity_score": 0.0,
+    "composite_score": 0.022222222222222223
+}

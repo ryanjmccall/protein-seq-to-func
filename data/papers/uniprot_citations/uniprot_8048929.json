@@ -1,0 +1,15 @@
+{
+    "DOI": "10.1006/bbrc.1994.2049",
+    "PMID": "8048929",
+    "title": "cDNA cloning and functional expression of a human monocyte chemoattractant protein 1 receptor.",
+    "year": 1994,
+    "source_url": "https://europepmc.org/article/MED/8048929",
+    "source": "MED",
+    "full_text_abstract": "A novel human G-protein-coupled seven-transmembrane-type receptor gene, 24-1, has been cloned from THP-1 cells. The 24-1 was 56% and 34% identical to the macrophage inflammatory protein-1 alpha (MIP-1 alpha) receptor and the interleukin-8 (IL-8) receptors at the amino acid level, respectively. To examine the ligand specificity of the receptor, we have established a stable transfectant of this gene with human kidney 293 cells. Monocyte chemoattractant protein-1 (MCP-1) induced a rapid increase of Ca++ influx in the 24-1-transfectant, while other C-C chemokines tested did not. This indicates that the 24-1 encodes the human MCP-1 receptor.",
+    "function_signal": 1.25,
+    "longevity_signal": 0,
+    "year_score": 0.03125,
+    "functionality_score": 0.8482836399575129,
+    "longevity_score": 0.0,
+    "composite_score": 0.3093992739851295
+}
