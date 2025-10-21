@@ -261,6 +261,7 @@ def collect_reference_network_for_citations(
             iterator = (citations,)
 
     for entry in iterator:
+        print("Parsing entry")
         entry_dict: dict[str, object] | None = None
         if isinstance(entry, pd.Series):
             entry_dict = entry.to_dict()
