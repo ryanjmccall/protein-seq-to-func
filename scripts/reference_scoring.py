@@ -71,14 +71,21 @@ def collect_reference_network_for_genes(
     genes: str | Iterable[str] | None = None,
     *,
     uniprot_df: pd.DataFrame | None = None,
+    uniprot_citations_df: pd.DataFrame | None = None,
     include: Sequence[str] | None = ("references", "citations"),
     max_depth: int = 1,
     delay: float = 0.1,
     include_fulltext: bool = True,
     include_fulltext_xml: bool = False,
+    top_n_per_seed: int | None = 10,
 ) -> pd.DataFrame:
     """
     Gather UniProt-linked seed articles plus their references/citations in one DataFrame.
+
+    Optionally accepts a pre-built DataFrame of UniProt citation metadata (e.g., the
+    output of fetch_epmc) and limits the number of reference/citation articles per
+    seed to a configurable number (default = 10 combined between references and
+    citing articles).
     """
     source_df: pd.DataFrame | None
     if uniprot_df is not None:
@@ -92,6 +99,22 @@ def collect_reference_network_for_genes(
     if source_df is None or source_df.empty:
         return pd.DataFrame()
 
+    citation_lookup: dict[str, Mapping[str, object]] = {}
+    if uniprot_citations_df is not None and not uniprot_citations_df.empty:
+        for _, citation_row in uniprot_citations_df.iterrows():
+            record = citation_row.to_dict()
+            keys: list[str] = []
+            for field in ("PMCID", "PMID", "DOI"):
+                value = record.get(field)
+                if isinstance(value, str) and value.strip():
+                    keys.append(value.strip().lower())
+            title_val = record.get("title")
+            if isinstance(title_val, str) and title_val.strip():
+                keys.append(title_val.strip().lower())
+            for key in keys:
+                # Preserve the first occurrence; subsequent duplicates can be ignored.
+                citation_lookup.setdefault(key, record)
+
     frames: list[pd.DataFrame] = []
     for _, row in source_df.iterrows():
         gene_symbol = row.get("gene_symbol")
@@ -100,7 +123,12 @@ def collect_reference_network_for_genes(
 
         seeds = []
         for title in title_list:
-            meta = fetch_epmc(title, delay=delay)
+            meta: Mapping[str, object] | None = None
+            lookup_key = title.lower().strip() if isinstance(title, str) else None
+            if lookup_key and lookup_key in citation_lookup:
+                meta = dict(citation_lookup[lookup_key])
+            else:
+                meta = fetch_epmc(title, delay=delay)
             if meta:
                 meta = dict(meta)
                 meta["seed_source_title"] = title
@@ -124,16 +152,32 @@ def collect_reference_network_for_genes(
             seed_titles="; ".join(title_list) if title_list else None,
         )
         network["relation_primary"] = network["relations"].apply(_primary_relation)
+        scored_network = score_reference_dataframe(
+            network,
+            delay=delay,
+            include_fulltext=False,
+        )
+
+        filtered = scored_network[
+            scored_network["relation_primary"].isin({"reference", "citation"})
+        ].copy()
+        if filtered.empty:
+            continue
+
+        if top_n_per_seed is not None and top_n_per_seed > 0:
+            filtered = filtered.head(top_n_per_seed)
+
         if include_fulltext:
-            network = attach_full_text_columns(
-                network,
+            filtered = attach_full_text_columns(
+                filtered,
                 delay=delay,
                 include_xml=include_fulltext_xml,
             )
-        frames.append(network)
+
+        frames.append(filtered)
 
     if not frames:
-        columns = [
+        base_columns = [
             "node_key",
             "depth",
             "relations",
@@ -151,8 +195,21 @@ def collect_reference_network_for_genes(
             "gene_symbol",
             "uniprot_id",
             "seed_titles",
+            "function_signal",
+            "longevity_signal",
+            "year_score",
+            "functionality_score",
+            "longevity_score",
+            "composite_score",
+            "abstract_text",
+            "full_text",
+            "full_text_abstract",
+            "plain_text",
+            "Full text",
         ]
-        return pd.DataFrame(columns=columns)
+        if include_fulltext and include_fulltext_xml:
+            base_columns.append("full_text_xml")
+        return pd.DataFrame(columns=base_columns)
 
     combined = pd.concat(frames, ignore_index=True)
     return combined
