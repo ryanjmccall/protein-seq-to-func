@@ -28,6 +28,10 @@ function extractSynopsis(markdown: string): string {
   return paragraphs[0] ?? "Structured protein intelligence, distilled.";
 }
 
+function stripHtml(html: string): string {
+  return html.replace(/<[^>]+>/g, " ").replace(/\s+/g, " ").trim();
+}
+
 function getProteinSummaries(): ProteinSummary[] {
   const dataDirectory = path.join(process.cwd(), "public", "data");
 
@@ -39,21 +43,43 @@ function getProteinSummaries(): ProteinSummary[] {
   }
 
   return files
-    .filter((file) => file.endsWith(".md") && !file.endsWith("_backup.md"))
+    .filter(
+      (file) =>
+        (file.endsWith(".md") && !file.endsWith("_backup.md")) ||
+        file.endsWith(".html"),
+    )
     .map((file) => {
       const filePath = path.join(dataDirectory, file);
       const contents = fs.readFileSync(filePath, "utf-8");
-      const headingMatch = contents.match(/^#\s+(.*)$/m);
-      const title =
-        headingMatch?.[1].trim() ?? file.replace(/\.md$/, "").toUpperCase();
+      const slug = file.replace(/\.(md|html)$/, "");
 
-      const synopsis = truncate(extractSynopsis(contents), 220);
-      const referenceCount = (contents.match(/PMID:/g) ?? []).length;
+      if (file.endsWith(".md")) {
+        const headingMatch = contents.match(/^#\s+(.*)$/m);
+        const title =
+          headingMatch?.[1].trim() ?? slug.toUpperCase();
+        const synopsis = truncate(extractSynopsis(contents), 220);
+        const referenceCount = (contents.match(/PMID:/g) ?? []).length;
+
+        return {
+          slug,
+          title,
+          synopsis,
+          referenceCount,
+        };
+      }
+
+      const headingMatch = contents.match(/<h1[^>]*>([\s\S]*?)<\/h1>/i);
+      const paragraphMatch = contents.match(/<p[^>]*>([\s\S]*?)<\/p>/i);
+      const title = headingMatch ? stripHtml(headingMatch[1]) : slug.toUpperCase();
+      const synopsisText = paragraphMatch
+        ? stripHtml(paragraphMatch[1])
+        : "Structured protein intelligence, distilled.";
+      const referenceCount = (contents.match(/<a\s/gi) ?? []).length;
 
       return {
-        slug: file.replace(/\.md$/, ""),
+        slug,
         title,
-        synopsis,
+        synopsis: truncate(synopsisText, 220),
         referenceCount,
       };
     })
@@ -169,7 +195,7 @@ export default function Home() {
                     </p>
                     <h3 className="mt-2 text-xl font-semibold">{protein.title}</h3>
                   </div>
-                  <span className="rounded-full bg-[var(--accent-soft)] px-3 py-1 text-xs font-medium text-[var(--accent-primary)]">
+                  <span className="min-w-[4rem] rounded-full bg-[var(--accent-soft)] px-3 py-1 text-center text-xs font-medium text-[var(--accent-primary)]">
                     {protein.referenceCount} refs
                   </span>
                 </div>

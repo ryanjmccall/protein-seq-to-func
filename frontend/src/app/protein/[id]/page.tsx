@@ -573,6 +573,26 @@ function parseProteinMarkdown(markdown: string): ParsedProteinArticle {
   };
 }
 
+function parseProteinHtml(html: string, fallbackTitle: string): { title: string; content: string } {
+  if (typeof window === 'undefined') {
+    return {
+      title: fallbackTitle.toUpperCase(),
+      content: html,
+    };
+  }
+
+  const parser = new DOMParser();
+  const document = parser.parseFromString(html, 'text/html');
+  const title =
+    document.querySelector('h1')?.textContent?.trim() || fallbackTitle.toUpperCase();
+  const bodyContent = document.body.innerHTML.trim();
+
+  return {
+    title,
+    content: bodyContent || html,
+  };
+}
+
 export default function ProteinPage() {
   const params = useParams<{ id?: string }>();
   const [activeSection, setActiveSection] = useState<Section>('overview');
@@ -582,29 +602,53 @@ export default function ProteinPage() {
   const [relatedGenes, setRelatedGenes] = useState<
     { symbol: string; name?: string; relationship?: string }[]
   >([]);
+  const [articleMode, setArticleMode] = useState<'structured' | 'html' | null>(null);
+  const [htmlArticle, setHtmlArticle] = useState<{ title: string; content: string } | null>(null);
   const proteinId = params?.id ?? 'ganab';
 
   useEffect(() => {
     async function loadProteinArticle() {
       setIsLoading(true);
       setLoadError(null);
+      setArticleMode(null);
+      setHtmlArticle(null);
 
       try {
-        const articlePath = `/data/${encodeURIComponent(proteinId)}.md`;
-        const response = await fetch(articlePath);
+        const encodedId = encodeURIComponent(proteinId);
+        const markdownPath = `/data/${encodedId}.md`;
+        const markdownResponse = await fetch(markdownPath);
 
-        if (!response.ok) {
-          throw new Error(`Failed fetching protein article for "${proteinId}"`);
+        if (markdownResponse.ok) {
+          const markdown = await markdownResponse.text();
+          const { article, relatedGenes: parsedRelatedGenes } = parseProteinMarkdown(markdown);
+          setProteinData(article);
+          setRelatedGenes(parsedRelatedGenes);
+          setArticleMode('structured');
+          setHtmlArticle(null);
+          setActiveSection('overview');
+          return;
         }
 
-        const markdown = await response.text();
-        const { article, relatedGenes: parsedRelatedGenes } = parseProteinMarkdown(markdown);
-        setProteinData(article);
-        setRelatedGenes(parsedRelatedGenes);
+        const htmlPath = `/data/${encodedId}.html`;
+        const htmlResponse = await fetch(htmlPath);
+
+        if (htmlResponse.ok) {
+          const html = await htmlResponse.text();
+          const parsed = parseProteinHtml(html, proteinId);
+          setHtmlArticle(parsed);
+          setArticleMode('html');
+          setProteinData(null);
+          setRelatedGenes([]);
+          return;
+        }
+
+        throw new Error(`No article found for "${proteinId}"`);
       } catch (error) {
         setLoadError((error as Error).message);
         setProteinData(null);
         setRelatedGenes([]);
+        setArticleMode(null);
+        setHtmlArticle(null);
       } finally {
         setIsLoading(false);
       }
@@ -625,120 +669,151 @@ export default function ProteinPage() {
     );
   }
 
-  if (!proteinData) {
+  if (articleMode === 'html' && htmlArticle) {
     return (
-      <div className="min-h-screen bg-[var(--background)] text-[var(--foreground)] flex items-center justify-center">
-        <div className="rounded-2xl border border-[var(--border-color)] bg-[var(--background-elevated)] px-7 py-6 shadow-[var(--shadow-soft)] text-center space-y-3">
-          <p className="text-base font-semibold text-[var(--foreground)]">
-            Unable to load protein article.
-          </p>
-          {loadError && (
-            <p className="text-sm leading-relaxed text-[var(--foreground-muted)] whitespace-pre-line">
-              {loadError}
-            </p>
-          )}
-        </div>
-      </div>
-    );
-  }
-
-  const geneSymbol = proteinData.protein.gene?.symbol ?? proteinData.protein.name;
-  const overviewParagraphs = proteinData.overview.summary
-    ? proteinData.overview.summary
-        .split(/\n+/)
-        .map((paragraph) => paragraph.trim())
-        .filter(Boolean)
-    : [];
-
-  return (
-    <div className="min-h-screen bg-[var(--background)] text-[var(--foreground)]">
-      <header className="border-b border-[var(--border-color)] bg-white/70 backdrop-blur">
-        <div className="mx-auto flex max-w-5xl flex-col gap-6 px-6 py-8 sm:flex-row sm:items-center sm:justify-between">
-          <div className="space-y-3">
-            <p className="text-xs font-medium uppercase tracking-[0.45em] text-[var(--accent-primary)]">
-              protein dossier
-            </p>
-            <h1 className="text-3xl font-semibold tracking-tight sm:text-4xl">
-              {geneSymbol}
-            </h1>
-            <p className="text-sm text-[var(--foreground-muted)]">
-              UniProt {proteinData.protein.uniprot_id}
-              {proteinData.protein.family ? ` · ${proteinData.protein.family}` : ''}
-            </p>
-          </div>
-          <div className="flex flex-col items-start gap-3 sm:items-end sm:text-right">
+      <div className="min-h-screen bg-[var(--background)] text-[var(--foreground)]">
+        <header className="border-b border-[var(--border-color)] bg-white/70 backdrop-blur">
+          <div className="mx-auto flex max-w-5xl flex-col gap-6 px-6 py-8 sm:flex-row sm:items-center sm:justify-between">
+            <div className="space-y-3">
+              <p className="text-xs font-medium uppercase tracking-[0.45em] text-[var(--accent-primary)]">
+                protein article
+              </p>
+              <h1 className="text-3xl font-semibold tracking-tight sm:text-4xl">
+                {htmlArticle.title}
+              </h1>
+            </div>
             <Link
               href="/"
               className="inline-flex items-center gap-2 rounded-full border border-[var(--accent-primary)] px-5 py-2 text-sm font-medium text-[var(--accent-primary)] transition-colors hover:bg-[var(--accent-primary)] hover:text-white"
             >
               Back to library <span aria-hidden>↩</span>
             </Link>
-            {proteinData.protein.gene?.organism && (
-              <span className="rounded-full bg-[var(--accent-soft)] px-3 py-1 text-xs font-medium text-[var(--accent-primary)]">
-                {proteinData.protein.gene.organism}
-              </span>
-            )}
           </div>
-        </div>
-      </header>
+        </header>
 
-      <main className="mx-auto w-full max-w-5xl px-6 py-10 space-y-10">
-        <section className="rounded-3xl border border-[var(--border-subtle)] bg-white/80 px-8 py-8 shadow-[var(--shadow-soft)]">
-          <h2 className="text-xs font-semibold uppercase tracking-[0.45em] text-[var(--foreground-subtle)]">
-            Executive Summary
-          </h2>
-          <div className="mt-4 space-y-4 text-base leading-relaxed text-[var(--foreground-muted)]">
-            {overviewParagraphs.length > 0 ? (
-              overviewParagraphs.slice(0, 2).map((paragraph, index) => (
-                <p key={index}>{paragraph}</p>
-              ))
-            ) : (
-              <p>No overview summary available for this article.</p>
-            )}
-          </div>
-          {proteinData.overview.key_functions.length > 0 && (
-            <div className="mt-6">
-              <p className="text-xs font-semibold uppercase tracking-[0.35em] text-[var(--foreground-subtle)]">
-                Key Functions
+        <main className="mx-auto w-full max-w-6xl px-6 py-10">
+          <article className="prose-custom max-w-none rounded-3xl border border-[var(--border-subtle)] bg-white/90 px-8 py-10 shadow-[var(--shadow-soft)]">
+            <div className="space-y-6 text-[var(--foreground)] overflow-x-auto" dangerouslySetInnerHTML={{ __html: htmlArticle.content }} />
+          </article>
+        </main>
+      </div>
+    );
+  }
+
+  if (articleMode === 'structured' && proteinData) {
+    const geneSymbol = proteinData.protein.gene?.symbol ?? proteinData.protein.name;
+    const overviewParagraphs = proteinData.overview.summary
+      ? proteinData.overview.summary
+          .split(/\n+/)
+          .map((paragraph) => paragraph.trim())
+          .filter(Boolean)
+      : [];
+
+    return (
+      <div className="min-h-screen bg-[var(--background)] text-[var(--foreground)]">
+        <header className="border-b border-[var(--border-color)] bg-white/70 backdrop-blur">
+          <div className="mx-auto flex max-w-5xl flex-col gap-6 px-6 py-8 sm:flex-row sm:items-center sm:justify-between">
+            <div className="space-y-3">
+              <p className="text-xs font-medium uppercase tracking-[0.45em] text-[var(--accent-primary)]">
+                protein dossier
               </p>
-              <ul className="mt-3 flex flex-wrap gap-2">
-                {proteinData.overview.key_functions.map((fn, index) => (
-                  <li
-                    key={index}
-                    className="rounded-full bg-[var(--accent-soft)] px-3 py-1 text-xs font-medium text-[var(--accent-primary)]"
-                  >
-                    {fn}
-                  </li>
-                ))}
-              </ul>
+              <h1 className="text-3xl font-semibold tracking-tight sm:text-4xl">
+                {geneSymbol}
+              </h1>
+              <p className="text-sm text-[var(--foreground-muted)]">
+                UniProt {proteinData.protein.uniprot_id}
+                {proteinData.protein.family ? ` · ${proteinData.protein.family}` : ''}
+              </p>
             </div>
-          )}
-        </section>
-
-        <section className="grid gap-6 lg:grid-cols-[320px,1fr]">
-          <div className="rounded-3xl border border-[var(--border-subtle)] bg-white/80 p-6 shadow-[var(--shadow-soft)]">
-            <Sidebar protein={proteinData.protein} relatedGenes={relatedGenes} />
-          </div>
-
-          <div className="rounded-3xl border border-[var(--border-subtle)] bg-white/85 p-6 shadow-[var(--shadow-soft)]">
-            <SectionTabs activeSection={activeSection} onSectionChange={setActiveSection} />
-            <div className="mt-6 rounded-2xl border border-[var(--border-subtle)] bg-white px-6 py-6 shadow-[var(--shadow-soft)]">
-              {activeSection === 'overview' && <Overview data={proteinData.overview} />}
-              {activeSection === 'structure' && <Structure data={proteinData.structure} />}
-              {activeSection === 'function' && <Function data={proteinData.functions} />}
-              {activeSection === 'clinical' && (
-                <ClinicalSignificance data={proteinData.clinical_significance} />
-              )}
-              {activeSection === 'interactions' && (
-                <Interactions data={proteinData.interactions} />
-              )}
-              {activeSection === 'references' && (
-                <References publications={proteinData.references} />
+            <div className="flex flex-col items-start gap-3 sm:items-end sm:text-right">
+              <Link
+                href="/"
+                className="inline-flex items-center gap-2 rounded-full border border-[var(--accent-primary)] px-5 py-2 text-sm font-medium text-[var(--accent-primary)] transition-colors hover:bg-[var(--accent-primary)] hover:text-white"
+              >
+                Back to library <span aria-hidden>↩</span>
+              </Link>
+              {proteinData.protein.gene?.organism && (
+                <span className="rounded-full bg-[var(--accent-soft)] px-3 py-1 text-xs font-medium text-[var(--accent-primary)]">
+                  {proteinData.protein.gene.organism}
+                </span>
               )}
             </div>
           </div>
-        </section>
-      </main>
+        </header>
+
+        <main className="mx-auto w-full max-w-5xl px-6 py-10 space-y-10">
+          <section className="rounded-3xl border border-[var(--border-subtle)] bg-white/80 px-8 py-8 shadow-[var(--shadow-soft)]">
+            <h2 className="text-xs font-semibold uppercase tracking-[0.45em] text-[var(--foreground-subtle)]">
+              Executive Summary
+            </h2>
+            <div className="mt-4 space-y-4 text-base leading-relaxed text-[var(--foreground-muted)]">
+              {overviewParagraphs.length > 0 ? (
+                overviewParagraphs.slice(0, 2).map((paragraph, index) => (
+                  <p key={index}>{paragraph}</p>
+                ))
+              ) : (
+                <p>No overview summary available for this article.</p>
+              )}
+            </div>
+            {proteinData.overview.key_functions.length > 0 && (
+              <div className="mt-6">
+                <p className="text-xs font-semibold uppercase tracking-[0.35em] text-[var(--foreground-subtle)]">
+                  Key Functions
+                </p>
+                <ul className="mt-3 flex flex-wrap gap-2">
+                  {proteinData.overview.key_functions.map((fn, index) => (
+                    <li
+                      key={index}
+                      className="rounded-full bg-[var(--accent-soft)] px-3 py-1 text-xs font-medium text-[var(--accent-primary)]"
+                    >
+                      {fn}
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            )}
+          </section>
+
+          <section className="grid gap-6 lg:grid-cols-[320px,1fr]">
+            <div className="rounded-3xl border border-[var(--border-subtle)] bg-white/80 p-6 shadow-[var(--shadow-soft)]">
+              <Sidebar protein={proteinData.protein} relatedGenes={relatedGenes} />
+            </div>
+
+            <div className="rounded-3xl border border-[var(--border-subtle)] bg-white/85 p-6 shadow-[var(--shadow-soft)]">
+              <SectionTabs activeSection={activeSection} onSectionChange={setActiveSection} />
+              <div className="mt-6 rounded-2xl border border-[var(--border-subtle)] bg-white px-6 py-6 shadow-[var(--shadow-soft)]">
+                {activeSection === 'overview' && <Overview data={proteinData.overview} />}
+                {activeSection === 'structure' && <Structure data={proteinData.structure} />}
+                {activeSection === 'function' && <Function data={proteinData.functions} />}
+                {activeSection === 'clinical' && (
+                  <ClinicalSignificance data={proteinData.clinical_significance} />
+                )}
+                {activeSection === 'interactions' && (
+                  <Interactions data={proteinData.interactions} />
+                )}
+                {activeSection === 'references' && (
+                  <References publications={proteinData.references} />
+                )}
+              </div>
+            </div>
+          </section>
+        </main>
+      </div>
+    );
+  }
+
+  return (
+    <div className="min-h-screen bg-[var(--background)] text-[var(--foreground)] flex items-center justify-center">
+      <div className="rounded-2xl border border-[var(--border-color)] bg-[var(--background-elevated)] px-7 py-6 shadow-[var(--shadow-soft)] text-center space-y-3">
+        <p className="text-base font-semibold text-[var(--foreground)]">
+          Unable to load protein article.
+        </p>
+        {loadError && (
+          <p className="text-sm leading-relaxed text-[var(--foreground-muted)] whitespace-pre-line">
+            {loadError}
+          </p>
+        )}
+      </div>
     </div>
   );
 }
