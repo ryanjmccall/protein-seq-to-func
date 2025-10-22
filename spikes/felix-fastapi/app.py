@@ -1153,8 +1153,10 @@ def article_generate(query: Optional[str] = None, top_k: int = 300, protein_name
     #QUERY = query or "APOE variant longevity lifespan"
     QUERY = query or "APOE polymorphisms affecting human lifespan or aging, not disease-specific"
     query_top_k = int(top_k)
+    print(f"[ARTICLE] START article_generate protein={protein_name!r} top_k={query_top_k} query={QUERY!r}")
 
     try:
+        print(f"[ARTICLE][query] Starting FAISS query (top_k={query_top_k})...")
         q_emb_resp = client.embeddings.create(model=NEBIUS_EMBED_MODEL, input=[QUERY])
         qvec = np.array(q_emb_resp.data[0].embedding, dtype="float32").reshape(1, -1)
         faiss.normalize_L2(qvec)
@@ -1188,6 +1190,7 @@ def article_generate(query: Optional[str] = None, top_k: int = 300, protein_name
                     "text_preview": preview_text,
                 }
                 query_hits.append(hit)
+        print(f"[ARTICLE][query] hits={len(query_hits)} (requested top_k={query_top_k})")
     except Exception as e:
         print(f"[ARTICLE][query error] {e}")
         raise HTTPException(status_code=500, detail="FAISS query failed (article)")
@@ -1248,6 +1251,7 @@ def article_generate(query: Optional[str] = None, top_k: int = 300, protein_name
     seen_pmcids = set()
     total_hits = len(query_hits)
     processed_papers = 0
+    print(f"[ARTICLE][extract] Starting extraction over {total_hits} hits (dedup by PMCID).")
     for i, hit in enumerate(query_hits, start=1):
         pmcid = (hit.get("pmcid") or "").strip()
         if pmcid and pmcid in seen_pmcids:
@@ -1312,6 +1316,8 @@ def article_generate(query: Optional[str] = None, top_k: int = 300, protein_name
             }
             extractions.append(extracted_obj)
             processed_papers += 1
+            if processed_papers % 10 == 0:
+                print(f"[ARTICLE][extract] {processed_papers} papers extracted so far...")
         except Exception as e:
             print(f"[ARTICLE][extract error] {e}")
             extractions.append({
@@ -1758,7 +1764,7 @@ def harvest_apoe():
     """
 
     # ------------------------- Hard-coded settings -------------------------
-    PROTEIN = "APOE"          # search term (Europe PMC search is case-insensitive)
+    PROTEIN = "CCR1"          # search term (Europe PMC search is case-insensitive)
     PAGE_SIZE = 1000          # Europe PMC maximum per page
     TIMEOUT_SECS = 60         # HTTP client timeout
     OA_ONLY = True            # we only collect Open Access; OA -> PMCID should be present
