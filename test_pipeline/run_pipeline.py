@@ -22,7 +22,7 @@ def main():
     # Step 4 & 5: Extract and synthesize an html article for each protein. 
     # this involves two LLM calls to Nebius
     # for prot in TARGET_PROTEINS:
-    for prot in ["NRF2"]:
+    for prot in ["GANAB"]:
         extract_and_synthesize(vector_index, prot)
 
     print("\n--- Offline Pipeline Finished ---")
