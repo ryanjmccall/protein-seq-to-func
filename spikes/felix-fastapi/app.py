@@ -12,6 +12,8 @@ import chromadb
 import numpy as np
 import faiss
 
+from epmc_harvester import EuropePMCHarvester
+
 
 class Settings(BaseSettings):
     nebius_api_key: str
@@ -132,6 +134,21 @@ def health():
 
 EPMC_SEARCH_URL = "https://www.ebi.ac.uk/europepmc/webservices/rest/search"
 EPMC_FULLTEXT_BASE = "https://www.ebi.ac.uk/europepmc/webservices/rest"
+
+
+def get_epmc_harvester(*, save_xml: bool = True, timeout_secs: int = 60) -> EuropePMCHarvester:
+    """
+    Factory for reusable Europe PMC harvesters so endpoints can override
+    serialization flags without duplicating constructor arguments.
+    """
+    return EuropePMCHarvester(
+        search_url=EPMC_SEARCH_URL,
+        fulltext_base_url=EPMC_FULLTEXT_BASE,
+        output_dir=PAPERS_DIR,
+        timeout_secs=timeout_secs,
+        save_xml=save_xml,
+    )
+
 
 @app.get("/europepmc-search")
 def europepmc_search():
@@ -1421,220 +1438,41 @@ def index_run_all(batch_size: int = 1000, protein_name: str = "APOE", query: Opt
     return {"status": "ok", "indexed": processed, "total": total}
 
 @app.get("/harvest/apoe")
-def harvest_apoe():
+def harvest_apoe(max_harvest: int = 1000):
     """
-    Harvests *Open Access only* Europe PMC papers that mention APOE (incl. synonyms),
-    downloads JATS XML for fulltext, converts to plain text, and saves one JSON per paper
-    into the local 'papers/' directory so your /index/batch can ingest them.
-
-    All parameters are hard-coded (no URL params).
+    Harvest *Open Access only* Europe PMC papers that mention APOE (incl. synonyms),
+    convert to plain text, and save JSON payloads in `papers/`. Retained for the
+    spike workflow but now backed by the reusable harvester.
     """
-
-    # ------------------------- Hard-coded settings -------------------------
-    PROTEIN = "APOE"          # search term (Europe PMC search is case-insensitive)
-    PAGE_SIZE = 1000          # Europe PMC maximum per page
-    TIMEOUT_SECS = 60         # HTTP client timeout
-    OA_ONLY = True            # we only collect Open Access; OA -> PMCID should be present
-    SAVE_XML = True           # include raw JATS XML in JSON (can be set to False to save space)
-    MAX_HARVEST = 1000        # cap for test runs; raise/remove later
-    # ----------------------------------------------------------------------
-
-    # Ensure output directory exists (uses the global PAPERS_DIR defined at top of file)
-    os.makedirs(PAPERS_DIR, exist_ok=True)
-
-    # Build Europe PMC query.
-    # TEXT: searches title, abstract, AND full text (if available).
-    # synonym=Y: expand common gene/protein synonyms on EPMC side.
-    # OPEN_ACCESS:Y: restricts to OA articles so we can fetch full JATS XML.
-    base_query = f'(TEXT:"{PROTEIN}") AND OPEN_ACCESS:Y AND (TAXON_ID:9606 OR ORGANISM:"Homo sapiens")'
+    harvester = get_epmc_harvester()
+    return harvester.harvest_gene(
+        "APOE",
+        max_harvest=max_harvest,
+    )
 
 
-    # -------------------- Small helpers (pure stdlib) ----------------------
-    def _normalize_ws(s: str) -> str:
-        """Collapse multiple whitespace to single spaces and trim."""
-        return re.sub(r"\s+", " ", (s or "")).strip()
-
-    def _parent_of(root: ET.Element, node: ET.Element):
-        """Naive parent lookup for ElementTree (used to prune branches)."""
-        for p in root.iter():
-            for c in list(p):
-                if c is node:
-                    return p
-        return None
-
-    def jats_body_to_text(xml_text: str) -> str:
-        """
-        Convert JATS XML to a readable plain text:
-        - Removes reference lists, figures, tables, and supplementary material (noise for embeddings).
-        - Extracts <body> text if present, else falls back to whole tree text.
-        - Normalizes whitespace.
-        This is intentionally simple/robust rather than perfect formatting.
-        """
-        try:
-            root = ET.fromstring(xml_text)
-        except Exception:
-            # If parsing fails, return normalized raw XML string (last-resort).
-            return _normalize_ws(xml_text)
-
-        # Drop typical non-content sections to declutter embeddings.
-        def _remove_all(tag_local: str):
-            for el in list(root.iter()):
-                if isinstance(el.tag, str) and el.tag.endswith(tag_local) and el is not root:
-                    parent = _parent_of(root, el)
-                    if parent is not None:
-                        parent.remove(el)
-
-        for tag in ("ref-list", "table-wrap", "fig", "supplementary-material"):
-            _remove_all(tag)
-
-        # Prefer article body if present.
-        target = None
-        for el in root.iter():
-            if isinstance(el.tag, str) and el.tag.endswith("body"):
-                target = el
-                break
-        if target is None:
-            target = root
-
-        texts = []
-        for t in target.itertext():
-            texts.append(t)
-        return _normalize_ws(" ".join(texts))
-    # ----------------------------------------------------------------------
-
-    # ----------------------------- Harvest loop ----------------------------
-    # CursorMark (aka deep paging): Europe PMC returns a "nextCursorMark" token that you
-    # pass back to retrieve the next page *without skipping* results even if the index changes.
-    # We iterate until there are no more results or (optionally) a limit would be reached.
-    cursor_mark = "*"
-    harvested = 0
-    seen_ids = set()
-
-    with httpx.Client(timeout=TIMEOUT_SECS) as client:
-        while True:
-            # Prepare search request parameters (hard-coded strategy).
-            params = {
-                "query": base_query,
-                "format": "json",        # ask for JSON so we can parse quickly
-                "resultType": "core",    # standard metadata fields (title, abstract, IDs, OA flag, etc.)
-                "pageSize": str(PAGE_SIZE),
-                "cursorMark": cursor_mark,  # deep paging handle (see comment above)
-                "synonym": "Y",             # activate Europe PMC synonym expansion
-                # Align sort with working example in europepmc_search() to avoid API quirks with cursorMark
-                # Europe PMC docs note stable sorts are recommended for cursor-based paging.
-                "sort": "CITED desc",
-            }
-
-            # Visibility for server logs: which page are we fetching?
-            print(f"[HARVEST][SEARCH] GET {EPMC_SEARCH_URL} q={params['query']} cursor={cursor_mark}")
-
-            # Fire the search request and raise if HTTP status != 200.
-            r = client.get(EPMC_SEARCH_URL, params=params)
-            r.raise_for_status()
-
-            # Parse the JSON payload and extract the "result" list and the next cursor.
-            data = r.json()
-            # Log total hit count reported by Europe PMC (useful to see scope upfront)
-            try:
-                print(f"[HARVEST][DEBUG] hitCount={data.get('hitCount', 0)}")
-            except Exception:
-                pass
-            results = (data.get("resultList") or {}).get("result") or []
-            print(f"[HARVEST][SEARCH] hits={len(results)}")
-            next_cursor = data.get("nextCursorMark")
-
-            # If no results, log a compact debug snippet and finish.
-            if not results:
-                try:
-                    print("[HARVEST][debug] Empty page. Response keys:", list(data.keys()))
-                    # Print a compact preview of payload to inspect structure differences
-                    preview = str(data)
-                    if len(preview) > 1200:
-                        preview = preview[:1200] + "…"
-                    print("[HARVEST][debug] Payload preview:", preview)
-                except Exception:
-                    pass
-                break
-
-            for rec in results:
-                # Deduplicate across pages using a stable identifier preference.
-                rid = rec.get("pmcid") or rec.get("id") or rec.get("pmid") or rec.get("doi")
-                if not rid or rid in seen_ids:
-                    continue
-                seen_ids.add(rid)
-
-                # OA-only is enforced by the query; OA entries should have a PMCID.
-                pmcid = (rec.get("pmcid") or "").strip()
-                if not pmcid:
-                    # Extremely rare corner case; skip if no PMCID (we rely on PMCID for fullTextXML).
-                    continue
-
-                # Build the JSON skeleton expected by /index/batch.
-                doi = (rec.get("doi") or "").strip()
-                title = (rec.get("title") or "").strip()
-                year = int(rec.get("pubYear") or 0)
-                journal = (rec.get("journalTitle") or "").strip()
-
-                # For OA items with PMCID, a canonical Europe PMC article URL is stable.
-                source_url = f"https://europepmc.org/article/pmcid/{pmcid}"
-
-                obj = {
-                    "pmcid": pmcid,
-                    "doi": doi,
-                    "title": title,
-                    "year": year,
-                    "journal": journal,
-                    "protein_hits": [PROTEIN],
-                    "xml": "",
-                    "plain_text": "",
-                    "source_url": source_url,
-                }
-
-                # ---------------------- Fetch full JATS XML ----------------------
-                # Europe PMC full-text endpoint pattern: /{PMCID}/fullTextXML
-                full_url = f"{EPMC_FULLTEXT_BASE}/{pmcid}/fullTextXML"
-                print(f"[HARVEST][XML] GET {full_url}")
-
-                xml_text = ""
-                try:
-                    fr = client.get(full_url)
-                    if fr.status_code == 200:
-                        xml_text = fr.text or ""
-                    else:
-                        print(f"[HARVEST][warn] fullTextXML {pmcid} -> HTTP {fr.status_code}")
-                except Exception as e:
-                    print(f"[HARVEST][warn] XML fetch failed {pmcid}: {e}")
-
-                # Convert JATS to plain text; if XML is missing, fall back to title+abstract.
-                if xml_text:
-                    plain = jats_body_to_text(xml_text)
-                else:
-                    abstr = (rec.get("abstractText") or "").strip()
-                    plain = _normalize_ws(f"{title}. {abstr}")
-
-                obj["xml"] = xml_text if SAVE_XML else ""
-                obj["plain_text"] = plain
-
-                # ----------------------- Write out JSON file ----------------------
-                # File name policy: use PMCID (stable) so /index/batch will also use it as doc_id.
-                out_path = os.path.join(PAPERS_DIR, f"{pmcid}.json")
-                try:
-                    with open(out_path, "w", encoding="utf-8") as f:
-                        json.dump(obj, f, ensure_ascii=False, indent=2)
-                    harvested += 1
-                except Exception as e:
-                    print(f"[HARVEST][error] write {out_path}: {e}")
-
-                # Stop immediately when cap is reached
-                if harvested >= MAX_HARVEST:
-                    print(f"[HARVEST] Reached MAX_HARVEST={MAX_HARVEST}. Stopping.")
-                    return {"status": "ok", "harvested": harvested, "note": "max cap reached"}
-
-            # Stop when the cursor doesn't advance anymore (no further pages).
-            if not next_cursor or next_cursor == cursor_mark:
-                break
-            cursor_mark = next_cursor
-    # ----------------------------------------------------------------------
-
-    print(f"[HARVEST] Done. harvested={harvested}")
-    return {"status": "ok", "harvested": harvested}
+@app.get("/harvest/gene/{gene}")
+def harvest_gene(
+    gene: str,
+    *,
+    max_harvest: int = 1000,
+    page_size: int = 1000,
+    include_synonyms: bool = True,
+    restrict_to_human: bool = True,
+    oa_only: bool = True,
+    save_xml: bool = True,
+    timeout_secs: int = 60,
+):
+    """
+    Harvest *Open Access only* Europe PMC papers for an arbitrary gene. Accepts
+    optional query parameters so tests can adjust limits without code changes.
+    """
+    harvester = get_epmc_harvester(save_xml=save_xml, timeout_secs=timeout_secs)
+    return harvester.harvest_gene(
+        gene,
+        max_harvest=max_harvest,
+        page_size=page_size,
+        include_synonyms=include_synonyms,
+        restrict_to_human=restrict_to_human,
+        oa_only=oa_only,
+    )

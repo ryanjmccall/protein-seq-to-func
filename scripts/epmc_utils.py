@@ -509,6 +509,56 @@ def _fetch_epmc_metadata(item: str, delay: float = 0.1) -> dict:
     time.sleep(max(0.0, delay))
     return out
 
+def _compose_plain_text(
+    abstract_text: Optional[str],
+    full_text: Optional[str],
+) -> Optional[str]:
+    abstract_clean = (abstract_text or "").strip()
+    full_clean = (full_text or "").strip()
+    if abstract_clean and full_clean:
+        if abstract_clean in full_clean:
+            return full_clean
+        if full_clean in abstract_clean:
+            return abstract_clean
+        return f"{abstract_clean}\n\n{full_clean}"
+    if full_clean:
+        return full_clean
+    if abstract_clean:
+        return abstract_clean
+    return None
+
+
+def _resolve_abstract_text(
+    meta: Mapping[str, Any],
+    *,
+    abstract_hint: Optional[str],
+    delay: float,
+) -> Optional[str]:
+    def _clean(value: Any) -> Optional[str]:
+        if isinstance(value, str):
+            stripped = value.strip()
+            if stripped:
+                return stripped
+        return None
+
+    for candidate in (meta.get("abstract_text"), abstract_hint):
+        cleaned = _clean(candidate)
+        if cleaned:
+            return cleaned
+
+    source, identifier = _resolve_source_and_id(meta, delay=delay)
+    if not source or not identifier:
+        return None
+
+    detail = fetch_epmc_article_details(meta, include_fulltext=False, delay=delay)
+    if isinstance(detail, Mapping):
+        cleaned = _clean(detail.get("abstractText"))
+        if cleaned:
+            return cleaned
+
+    search_abs = _fetch_epmc_search_abstract(str(source), str(identifier), delay=delay)
+    return _clean(search_abs)
+
 def fetch_epmc(
     item: str,
     delay: float = 0.1,
@@ -534,36 +584,36 @@ def fetch_epmc(
     """
     meta = _fetch_epmc_metadata(item, delay=delay)
 
-    def _ensure_abstract(target: dict[str, Any]) -> None:
-        if target.get("abstract_text"):
-            return
-        source, identifier = _resolve_source_and_id(target, delay=delay)
-        if source and identifier:
-            abstract = _fetch_epmc_search_abstract(str(source), str(identifier), delay=delay)
-            if abstract:
-                target["abstract_text"] = abstract
-                return
-        detail = fetch_epmc_article_details(target, include_fulltext=False, delay=delay)
-        if isinstance(detail, Mapping):
-            detail_abstract = detail.get("abstractText")
-            if isinstance(detail_abstract, str) and detail_abstract.strip():
-                target["abstract_text"] = detail_abstract.strip()
+    full_text: Optional[str] = None
+    abstract_hint: Optional[str] = None
 
-    if not include_full_text:
-        _ensure_abstract(meta)
-        return meta
-
-    payload = fetch_epmc_full_text(meta, delay=delay, include_xml=include_xml)
-    meta["full_text"] = payload.get("text")
-    meta["full_text_abstract"] = payload.get("abstract")
-    if include_xml:
-        meta["full_text_xml"] = payload.get("xml")
-    elif "full_text_xml" in meta:
+    if include_full_text:
+        payload = fetch_epmc_full_text(meta, delay=delay, include_xml=include_xml)
+        full_text = payload.get("text")
+        abstract_hint = payload.get("abstract")
+        meta["full_text"] = full_text
+        meta["full_text_abstract"] = abstract_hint
+        if include_xml:
+            meta["full_text_xml"] = payload.get("xml")
+        else:
+            meta.pop("full_text_xml", None)
+    else:
+        meta.pop("full_text", None)
+        meta.pop("full_text_abstract", None)
         meta.pop("full_text_xml", None)
+        payload = {}
 
-    if payload.get("abstract") and not meta.get("abstract_text"):
-        meta["abstract_text"] = payload["abstract"]
-    _ensure_abstract(meta)
+    abstract_text = _resolve_abstract_text(meta, abstract_hint=abstract_hint, delay=delay)
+    if abstract_text is not None:
+        meta["abstract_text"] = abstract_text
+    else:
+        meta.pop("abstract_text", None)
+
+    plain_text = _compose_plain_text(abstract_text, full_text)
+    if plain_text is not None:
+        meta["plain_text"] = plain_text
+    else:
+        meta.pop("plain_text", None)
 
     return meta
 

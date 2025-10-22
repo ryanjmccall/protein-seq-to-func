@@ -212,3 +212,4 @@ __marimo__/
 gcp-credentials.json
 .DS_Store
 data/corpus_index.sqlite
+data/corpus/old/
