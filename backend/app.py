@@ -38,13 +38,42 @@ FAISS_DIR = "./faiss_store"
 # OpenAI-compatible base URL from Nebius Quickstart (documented).
 # We keep this constant in code (not secret).
 NEBIUS_BASE_URL = "https://api.studio.nebius.com/v1/"  # docs: /v1/chat/completions
-NEBIUS_MODEL = "openai/gpt-oss-120b"  # inexpensive, open-source model suitable for tests
+#NEBIUS_MODEL = "openai/gpt-oss-120b"  # inexpensive, open-source model suitable for tests
+NEBIUS_MODEL = "Qwen/Qwen3-30B-A3B-Instruct-2507"
 NEBIUS_EMBED_MODEL = "Qwen/Qwen3-Embedding-8B"
 #NEBIUS_MODEL = "meta-llama/Meta-Llama-3.1-8B-Instruct-fast"
 
 os.environ["OPENAI_API_KEY"] = settings.nebius_api_key
 os.environ["OPENAI_BASE_URL"] = NEBIUS_BASE_URL
 
+
+def load_pmcid_to_text(papers_dir: str = PAPERS_DIR) -> Dict[str, str]:
+    """
+    Build a mapping {pmcid -> plain_text} from all JSON files under 'papers/'.
+    Uses the 'pmcid' and 'plain_text' fields from harvest JSONs.
+    Skips entries without a PMCID or without plain text, and swallows I/O/JSON errors.
+    """
+    mapping: Dict[str, str] = {}
+    try:
+        if not os.path.isdir(papers_dir):
+            return mapping
+        for fn in os.listdir(papers_dir):
+            if not fn.endswith(".json"):
+                continue
+            path = os.path.join(papers_dir, fn)
+            try:
+                with open(path, "r", encoding="utf-8") as f:
+                    paper = json.load(f)
+                pmcid = (paper.get("pmcid") or "").strip()
+                text = (paper.get("plain_text") or "").strip()
+                if pmcid and text and pmcid not in mapping:
+                    mapping[pmcid] = text
+            except Exception:
+                # Skip unreadable or malformed entries to keep the scan robust
+                pass
+    except Exception:
+        pass
+    return mapping
 
 @app.get("/nebius-embed-hello")
 def nebius_embed_hello():
@@ -921,9 +950,275 @@ def index_batch(limit: int = 200, offset: int = 0):
     return {"status": "ok"}
 
 
-
 @app.post("/index/faiss_batch")
-def index_faiss_batch(limit: int = 200, offset: int = 0):
+def index_faiss_batch(
+    limit: int = 200,
+    offset: int = 0,
+    use_scoring: bool = True,
+    top_n: int = 1000,
+    emb_batch_size: int = 96,
+):
+# call e.g.: POST http://localhost:8000/index/faiss_batch?limit=1000&offset=0
+
+    """
+    Indexing-only endpoint:
+    - Loads JSON files from 'papers/' sliced by offset/limit
+    - Builds chunks, embeds via Nebius, appends to FAISS index and meta.jsonl
+    - Does NOT run query/extraction/article generation
+    Returns only {"status": "ok"} (plus small counters).
+    """
+
+    # --- Helper functions for scoring (local scope, no global effects) ---
+    aging_re = re.compile(r"\b(aging|ageing|inflammaging|senescence|lifespan|longevity|healthspan)\b", re.I)
+    mut_re = re.compile(r"\b(mutation(?:s)?|variant(?:s)?|polymorphism(?:s)?|snp(?:s)?|rs\d{3,}|allele(?:s)?|genotype(?:s)?)\b", re.I)
+
+    def _textcount(text: str, rx: re.Pattern) -> int:
+        if not text:
+            return 0
+        return len(rx.findall(text))
+
+    def _extract_abstract(xml_str: str) -> str:
+        """Extracts <abstract> text from JATS XML robustly; returns empty string on failure."""
+        if not xml_str:
+            return ""
+        try:
+            root = ET.fromstring(xml_str)
+            abs_nodes = root.findall(".//abstract")
+            parts = []
+            for node in abs_nodes:
+                parts.append("".join(node.itertext()))
+            return "\n".join(p.strip() for p in parts if p and p.strip())
+        except Exception:
+            return ""
+
+    def _score_paper(paper: Dict[str, Any]) -> float:
+        title = (paper.get("title") or "")
+        body = (paper.get("plain_text") or "")
+        year = paper.get("year") or 0
+        try:
+            year = int(year)
+        except Exception:
+            year = 0
+        abstract = _extract_abstract(paper.get("xml") or "")
+
+        # Count matches by section
+        t_mut = _textcount(title, mut_re)
+        t_age = _textcount(title, aging_re)
+        a_mut = _textcount(abstract, mut_re)
+        a_age = _textcount(abstract, aging_re)
+        b_mut = _textcount(body, mut_re)
+        b_age = _textcount(body, aging_re)
+
+        # Weighted sum with mild recency bonus
+        score = (
+            4.0 * t_mut
+            + 3.0 * t_age
+            + 2.5 * a_mut
+            + 2.0 * a_age
+            + 1.2 * b_mut
+            + 0.8 * b_age
+        )
+        if year > 0:
+            score += max(0, year - 2010) * 0.05
+
+        return float(score)
+
+    # --- Gather JSON files (no filtering) ---
+    if not os.path.isdir(PAPERS_DIR):
+        print(f"[INDEX] Folder '{PAPERS_DIR}' does not exist. Create it and drop JSON files inside.")
+        return {"status": "ok"}
+
+    all_files = [os.path.join(PAPERS_DIR, fn) for fn in os.listdir(PAPERS_DIR) if fn.endswith(".json")]
+    all_files.sort()
+
+    # --- Optional scoring and Top-N selection (streaming) ---
+    selected_paths = all_files
+    if use_scoring:
+        scored: List[tuple[float, str]] = []
+        bad = 0
+        for p in all_files:
+            try:
+                with open(p, "r", encoding="utf-8") as f:
+                    paper = json.load(f)
+                sc = _score_paper(paper)
+                scored.append((sc, p))
+            except Exception:
+                bad += 1
+        scored.sort(key=lambda x: x[0], reverse=True)
+        selected_paths = [p for _, p in scored[: max(1, int(top_n))]]
+        print(f"[INDEX-ONLY][RANK] scanned={len(all_files)}, bad_json={bad}, selected_top_n={len(selected_paths)}")
+        if selected_paths:
+            print("[INDEX-ONLY][RANK] top5:", [os.path.basename(x) for x in selected_paths[:5]])
+
+    # --- Batch slice after selection ---
+    files = selected_paths[offset: offset + limit]
+
+    print(f"[INDEX-ONLY] files_seen_total={len(all_files)} | after_select={len(selected_paths)} | batch_offset={offset} | batch_limit={limit} | batch_files={len(files)}")
+    if not files:
+        print("[INDEX-ONLY] Nothing to do for this batch.")
+        return {"status": "ok", "files": 0}
+
+    # --- Build Documents ---
+    docs: List[Document] = []
+    skipped_empty = 0
+    for path in files:
+        try:
+            with open(path, "r", encoding="utf-8") as f:
+                paper: Dict[str, Any] = json.load(f)
+            text = (paper.get("plain_text") or "").strip()
+            if not text:
+                skipped_empty += 1
+                continue
+            metadata = {
+                "pmcid": paper.get("pmcid"),
+                "doi": paper.get("doi"),
+                "title": paper.get("title"),
+                "year": paper.get("year"),
+                "journal": paper.get("journal"),
+                "protein_hits": paper.get("protein_hits"),
+                "source_url": paper.get("source_url"),
+            }
+            pmcid = paper.get("pmcid")
+            if pmcid and isinstance(pmcid, str) and pmcid.strip():
+                doc_id = pmcid.strip()
+            else:
+                base = os.path.basename(path)
+                doc_id = os.path.splitext(base)[0]
+            docs.append(Document(text=text, metadata=metadata, doc_id=doc_id))
+        except Exception as e:
+            print(f"[INDEX-ONLY][skip broken] {os.path.basename(path)}: {e}")
+
+    print(f"[INDEX-ONLY] docs_used={len(docs)} | docs_skipped_empty={skipped_empty}")
+    if not docs:
+        print("[INDEX-ONLY] No usable documents in this batch (empty/plain_text or load fail).")
+        return {"status": "ok", "docs": 0}
+
+    # --- Chunking ---
+    splitter = SentenceSplitter(chunk_size=800, chunk_overlap=120)
+    nodes = splitter.get_nodes_from_documents(docs)
+    print(f"[INDEX-ONLY] chunks_created={len(nodes)}")
+    if not nodes:
+        print("[INDEX-ONLY] No chunks created.")
+        return {"status": "ok", "chunks": 0}
+
+    # --- Embeddings via Nebius ---
+    print("[INDEX-ONLY] Creating OpenAI client for Nebius...")
+    client = OpenAI(api_key=settings.nebius_api_key, base_url=NEBIUS_BASE_URL)
+    node_ids = [n.id_ for n in nodes]
+    node_texts = [n.get_content(metadata_mode="none") for n in nodes]
+    print(f"[INDEX-ONLY] Prepared {len(node_ids)} node IDs and {len(node_texts)} texts")
+
+    def clean_metadata_for_chroma(meta: Dict[str, Any]) -> Dict[str, Any]:
+        cleaned = {}
+        for key, value in (meta or {}).items():
+            if value is None:
+                if key == "year":
+                    cleaned[key] = 0
+                else:
+                    cleaned[key] = ""
+            elif isinstance(value, (str, int, float, bool)):
+                cleaned[key] = value
+            elif isinstance(value, list):
+                cleaned[key] = json.dumps(value)
+            elif isinstance(value, dict):
+                cleaned[key] = json.dumps(value)
+            else:
+                cleaned[key] = str(value)
+        return cleaned
+
+    print("[INDEX-ONLY] Cleaning metadata for Chroma...")
+    node_metas = [clean_metadata_for_chroma(n.metadata) for n in nodes]
+    print(f"[INDEX-ONLY] Cleaned {len(node_metas)} metadata entries")
+
+    try:
+        print(f"[INDEX-ONLY] Embedding with model='{NEBIUS_EMBED_MODEL}' at base_url='{NEBIUS_BASE_URL}' ...")
+        print(f"[INDEX-ONLY] Sending {len(node_texts)} texts to Nebius for embedding...")
+        embeddings = []
+        total_batches = (len(node_texts) + emb_batch_size - 1) // emb_batch_size
+        for start in range(0, len(node_texts), emb_batch_size):
+            batch = node_texts[start:start + emb_batch_size]
+            batch_num = start // emb_batch_size + 1
+            if batch_num == 1 or batch_num % 10 == 0 or batch_num == total_batches:
+                print(f"[INDEX-ONLY][EMB] batch {batch_num}/{total_batches} (+{len(batch)} texts)")
+            resp = client.embeddings.create(model=NEBIUS_EMBED_MODEL, input=batch)
+            embeddings.extend([item.embedding for item in resp.data])
+        print(f"[INDEX-ONLY] Total embeddings: {len(embeddings)}")
+    except Exception as e:
+        print(f"[INDEX-ONLY][embed error] {e}")
+        raise HTTPException(status_code=500, detail="Nebius embedding request failed (index-only)")
+
+    if len(embeddings) != len(node_ids):
+        print(f"[INDEX-ONLY][embed mismatch] ids={len(node_ids)} vs embeds={len(embeddings)}")
+        raise HTTPException(status_code=500, detail="Embedding count mismatch (index-only)")
+
+    if embeddings:
+        emb_dim = len(embeddings[0])
+        print(f"[INDEX-ONLY] Embedding dimensions: {emb_dim} (first vector)")
+
+    # --- FAISS append-only ---
+    try:
+        os.makedirs(FAISS_DIR, exist_ok=True)
+    except Exception as e:
+        print(f"[INDEX-ONLY][FAISS dir error] {e}")
+        raise HTTPException(status_code=500, detail="Failed to create FAISS directory (index-only)")
+
+    X = np.array(embeddings, dtype="float32")
+    if X.ndim != 2 or X.shape[0] == 0:
+        raise HTTPException(status_code=500, detail="No embeddings to index (index-only)")
+    faiss.normalize_L2(X)
+
+    dim = int(X.shape[1])
+    faiss_path = os.path.join(FAISS_DIR, "index.faiss")
+    dim_path = os.path.join(FAISS_DIR, "dim.txt")
+
+    if os.path.isfile(faiss_path):
+        index = faiss.read_index(faiss_path)
+        if int(index.d) != dim:
+            raise HTTPException(status_code=400, detail=f"FAISS dim mismatch: index has {int(index.d)}, new vectors have {dim}")
+        print(f"[INDEX-ONLY][FAISS] Loaded existing index: {faiss_path} (ntotal={index.ntotal}, dim={int(index.d)})")
+    else:
+        index = faiss.IndexFlatIP(dim)
+        print(f"[INDEX-ONLY][FAISS] Created new IndexFlatIP dim={dim}")
+
+    try:
+        if os.path.isfile(dim_path):
+            try:
+                with open(dim_path, "r", encoding="utf-8") as g:
+                    prev_dim = int((g.read() or "").strip() or "0")
+                if prev_dim != dim:
+                    raise HTTPException(status_code=400, detail=f"FAISS dim mismatch: stored dim.txt={prev_dim}, new vectors have {dim}")
+            except ValueError:
+                print("[INDEX-ONLY][FAISS dim warn] dim.txt is not an integer; rewriting")
+                with open(dim_path, "w", encoding="utf-8") as g:
+                    g.write(str(dim))
+        else:
+            with open(dim_path, "w", encoding="utf-8") as g:
+                g.write(str(dim))
+    except HTTPException:
+        raise
+    except Exception as e:
+        print(f"[INDEX-ONLY][FAISS dim write warn] {e}")
+
+    index.add(X)
+    faiss.write_index(index, faiss_path)
+    print(f"[INDEX-ONLY][FAISS] Saved index: {faiss_path} (ntotal={index.ntotal})")
+
+    meta_path = os.path.join(FAISS_DIR, "meta.jsonl")
+    try:
+        with open(meta_path, "a", encoding="utf-8") as f:
+            for _id, _txt, _meta in zip(node_ids, node_texts, node_metas):
+                f.write(json.dumps({"id": _id, "text": _txt, "meta": _meta}, ensure_ascii=False) + "\n")
+        print(f"[INDEX-ONLY][FAISS] Appended metadata JSONL: {meta_path} (+{len(node_ids)} lines)")
+    except Exception as e:
+        print(f"[INDEX-ONLY][FAISS meta write error] {e}")
+        raise HTTPException(status_code=500, detail="Failed to write FAISS metadata JSONL (index-only)")
+
+    print("[INDEX-ONLY] Batch done (FAISS append).")
+    return {"status": "ok", "files": len(files), "docs": len(docs), "chunks": len(node_ids)}
+
+
+@app.post("/index/faiss_batch_without_scoring")
+def index_faiss_batch_without_scoring(limit: int = 200, offset: int = 0):
 # call e.g.: POST http://localhost:8000/index/faiss_batch?limit=1000&offset=0
 
     """
@@ -1109,7 +1404,311 @@ def index_faiss_batch(limit: int = 200, offset: int = 0):
 
 
 @app.post("/article/generate")
-def article_generate(query: Optional[str] = None, top_k: int = 100, protein_name: str = "APOE"):
+def article_generate(query: Optional[str] = None, top_k: int = 300, protein_name: str = "APOE"):
+    """
+    Article-only endpoint:
+    - Loads existing FAISS index + meta.jsonl
+    - Runs semantic query, per-chunk extractions (LLM), and article generation (LLM)
+    - Saves HTML into FAISS_DIR/articles and returns {"status": "ok"}
+    """
+
+    # Prepare Nebius client
+    client = OpenAI(api_key=settings.nebius_api_key, base_url=NEBIUS_BASE_URL)
+
+    # Prepare query
+    #QUERY = query or "APOE variant longevity lifespan"
+    QUERY = query or "APOE polymorphisms affecting human lifespan or aging, not disease-specific"
+    query_top_k = int(top_k)
+    print(f"[ARTICLE] START article_generate protein={protein_name!r} top_k={query_top_k} query={QUERY!r}")
+
+    try:
+        print(f"[ARTICLE][query] Starting FAISS query (top_k={query_top_k})...")
+        q_emb_resp = client.embeddings.create(model=NEBIUS_EMBED_MODEL, input=[QUERY])
+        qvec = np.array(q_emb_resp.data[0].embedding, dtype="float32").reshape(1, -1)
+        faiss.normalize_L2(qvec)
+
+        faiss_path = os.path.join(FAISS_DIR, "index.faiss")
+        q_index = faiss.read_index(faiss_path)
+
+        D, I = q_index.search(qvec, query_top_k)
+
+        meta_path = os.path.join(FAISS_DIR, "meta.jsonl")
+        with open(meta_path, "r", encoding="utf-8") as f:
+            meta_lines = [json.loads(l) for l in f]
+
+        query_hits = []
+        for rank, (score, idx) in enumerate(zip(D[0].tolist(), I[0].tolist()), start=1):
+            if 0 <= idx < len(meta_lines):
+                rec = meta_lines[idx]
+                preview_text = rec.get("text", "")
+                if len(preview_text) > 300:
+                    preview_text = preview_text[:300] + "…"
+                hit = {
+                    "rank": rank,
+                    "score": float(score),
+                    "id": rec.get("id"),
+                    "pmcid": (rec.get("meta") or {}).get("pmcid", ""),
+                    "doi": (rec.get("meta") or {}).get("doi", ""),
+                    "title": (rec.get("meta") or {}).get("title", ""),
+                    "year": (rec.get("meta") or {}).get("year", 0),
+                    "journal": (rec.get("meta") or {}).get("journal", ""),
+                    "source_url": (rec.get("meta") or {}).get("source_url", ""),
+                    "text_preview": preview_text,
+                }
+                query_hits.append(hit)
+        print(f"[ARTICLE][query] hits={len(query_hits)} (requested top_k={query_top_k})")
+    except Exception as e:
+        print(f"[ARTICLE][query error] {e}")
+        raise HTTPException(status_code=500, detail="FAISS query failed (article)")
+
+    # Extraction LLM setup (schema and prompts)
+    extraction_schema = {
+        "name": "s2f_extraction",
+        "schema": {
+            "type": "object",
+            "properties": {
+                "protein": {"type": "string", "description": "Canonical protein/gene name if explicitly mentioned; otherwise empty."},
+                "organism": {"type": "string", "description": "Species/organism context if stated; otherwise empty."},
+                "sequence_interval": {"type": "string", "description": "Residue or nucleotide interval (e.g., 'aa 120-145', or motif/domain) if inferable; otherwise empty."},
+                "modification": {"type": "string", "description": "Exact sequence change (e.g., 'E4 (Arg112/Arg158)', 'Cys->Ser at pos 151)', 'domain deletion') if present; otherwise empty."},
+                "functional_effect": {"type": "string", "description": "Functional change on the protein/gene (e.g., binding, stability, transcriptional activity)."},
+                "longevity_effect": {"type": "string", "description": "Effect on lifespan/healthspan if present (e.g., increased lifespan in C.elegans)."},
+                "evidence_type": {"type": "string", "description": "Type of evidence (e.g., genetic manipulation, mutant strain, CRISPR edit, overexpression, knockdown)."},
+                "figure_or_panel": {"type": "string", "description": "Figure/panel if explicitly cited (e.g., 'Fig. 2B'); otherwise empty."},
+                "citation_hint": {"type": "string", "description": "Any DOI/PMCID/PMID text in the chunk; empty if none. Do not invent IDs."},
+                "confidence": {"type": "number", "description": "0.0–1.0 subjective confidence derived from the chunk only."}
+            },
+            "required": ["protein", "modification", "functional_effect", "longevity_effect", "confidence"],
+            "additionalProperties": False
+        },
+        "strict": True
+    }
+
+    SYSTEM_PROMPT = (
+        "You are a careful scientific text-miner for protein/gene sequence-to-function relationships in the context of longevity. "
+        "Extract only what is explicitly supported by the provided chunk. Do not hallucinate unknown IDs or effects. "
+        "If a field is not present in the text, return an empty string for that field (or 0.0 for confidence)."
+    )
+
+    USER_INSTRUCTION_PREFIX = (
+        "From the following paper chunk, extract ONLY facts about sequence modifications (mutations, domain edits, variants) "
+        "and their functional outcomes, especially any lifespan/healthspan associations. "
+        "Work strictly chunk-local: do not infer from general knowledge. "
+        "Return a single JSON object that conforms to the provided schema."
+        "\n\n--- BEGIN CHUNK ---\n"
+    )
+    USER_INSTRUCTION_SUFFIX = "\n--- END CHUNK ---"
+
+    neb_url = f"{NEBIUS_BASE_URL}chat/completions"
+    neb_headers = {
+        "Authorization": f"Bearer {settings.nebius_api_key}",
+        "Content-Type": "application/json",
+    }
+
+    # Ensure meta_lines is loaded (from above during query mapping)
+    meta_path = os.path.join(FAISS_DIR, "meta.jsonl")
+    with open(meta_path, "r", encoding="utf-8") as f:
+        meta_lines = [json.loads(l) for l in f]
+
+    extractions = []
+    # NEW: Full-document extraction with PMCID-level deduplication
+    # We iterate over hits (chunks) but perform at most one extraction per PMCID.
+    pmcid_to_text = load_pmcid_to_text(PAPERS_DIR)
+    seen_pmcids = set()
+    total_hits = len(query_hits)
+    processed_papers = 0
+    print(f"[ARTICLE][extract] Starting extraction over {total_hits} hits (dedup by PMCID).")
+    for i, hit in enumerate(query_hits, start=1):
+        pmcid = (hit.get("pmcid") or "").strip()
+        if pmcid and pmcid in seen_pmcids:
+            continue  # already processed this paper
+
+        # Prefer full paper text from harvested JSONs
+        full_text = pmcid_to_text.get(pmcid, "")
+
+        # Fallbacks: if no PMCID or no plain text, fall back to the chunk text
+        if not full_text:
+            node_id = hit.get("id")
+            for rec in meta_lines:
+                if rec.get("id") == node_id:
+                    full_text = rec.get("text", "")
+                    break
+            if not full_text:
+                full_text = hit.get("text_preview", "")
+
+        if pmcid:
+            seen_pmcids.add(pmcid)
+
+        # Compose the user content with the full paper text (or fallback)
+        user_content = USER_INSTRUCTION_PREFIX + full_text + USER_INSTRUCTION_SUFFIX
+        payload = {
+            "model": NEBIUS_MODEL,
+            "messages": [
+                {"role": "system", "content": SYSTEM_PROMPT},
+                {"role": "user", "content": user_content}
+            ],
+            "temperature": 0.1,
+            "max_tokens": 1024,
+            "response_format": {
+                "type": "json_schema",
+                "json_schema": extraction_schema
+            }
+        }
+
+        try:
+            with httpx.Client(timeout=90) as neb_client:
+                resp = neb_client.post(neb_url, json=payload, headers=neb_headers)
+            # Try to parse model's JSON response
+            data = resp.json()
+            content = ""
+            if isinstance(data, dict) and "choices" in data and data["choices"]:
+                content = data["choices"][0]["message"]["content"] or ""
+            extracted_obj = {}
+            if content:
+                try:
+                    extracted_obj = json.loads(content)
+                except json.JSONDecodeError:
+                    extracted_obj = {"_raw": content}
+            extracted_obj["_provenance"] = {
+                "pmcid": hit.get("pmcid", ""),
+                "doi": hit.get("doi", ""),
+                "title": hit.get("title", ""),
+                "year": hit.get("year", 0),
+                "journal": hit.get("journal", ""),
+                "source_url": hit.get("source_url", ""),
+                "rank": hit.get("rank", i),
+                "score": hit.get("score", None),
+                "node_id": hit.get("id"),
+            }
+            extractions.append(extracted_obj)
+            processed_papers += 1
+            if processed_papers % 10 == 0:
+                print(f"[ARTICLE][extract] {processed_papers} papers extracted so far...")
+        except Exception as e:
+            print(f"[ARTICLE][extract error] {e}")
+            extractions.append({
+                "_error": str(e),
+                "_provenance": {
+                    "pmcid": hit.get("pmcid", ""),
+                    "title": hit.get("title", ""),
+                    "rank": hit.get("rank", i),
+                    "node_id": hit.get("id"),
+                }
+            })
+
+    print(f"[ARTICLE] Completed {processed_papers} paper-level extractions (from {total_hits} hits, dedup by PMCID={len(seen_pmcids)}).")
+
+    # Prepare article generation
+    compact_extractions = []
+    for ex in extractions:
+        if not isinstance(ex, dict):
+            continue
+        compact_extractions.append({
+            "protein": ex.get("protein", ""),
+            "organism": ex.get("organism", ""),
+            "sequence_interval": ex.get("sequence_interval", ""),
+            "modification": ex.get("modification", ""),
+            "functional_effect": ex.get("functional_effect", ""),
+            "longevity_effect": ex.get("longevity_effect", ""),
+            "evidence_type": ex.get("evidence_type", ""),
+            "figure_or_panel": ex.get("figure_or_panel", ""),
+            "citation_hint": ex.get("citation_hint", ""),
+            "confidence": ex.get("confidence", 0.0),
+            "_provenance": ex.get("_provenance", {}),
+        })
+
+    article_schema = {
+        "name": "wikicrow_article",
+        "schema": {
+            "type": "object",
+            "properties": {
+                "title": {"type": "string"},
+                "html": {"type": "string"}
+            },
+            "required": ["title", "html"],
+            "additionalProperties": False
+        },
+        "strict": True
+    }
+
+    ARTICLE_SYSTEM = (
+        "You are a senior scientific editor. Write concise HTML articles "
+        "summarizing protein sequence-to-function relationships related to longevity. "
+        "Use the provided extraction data only; do not invent facts or citations. "
+        "Return the article as clean, minimal HTML suitable for web display."
+    )
+
+    article_user_instruction = (
+        "Compose a WikiCrow-style HTML article for the protein '"
+        + protein_name
+        + "'. Use these extraction objects as factual input. "
+        "Include sections for Overview, Sequence→Function Table, and Notes. "
+        "Use semantic HTML tags only (<h1>, <h2>, <table>, <tr>, <td>, <ul>, <li>, <p>). "
+        "The table must have columns: Interval, Modification, Functional Effect, "
+        "Longevity Effect, Evidence, Citation. Do not include external CSS or scripts. "
+        "\n\nExtraction data:\n"
+        + json.dumps({"protein": protein_name, "extractions": compact_extractions}, ensure_ascii=False)
+    )
+
+    article_payload = {
+        "model": NEBIUS_MODEL,
+        "messages": [
+            {"role": "system", "content": ARTICLE_SYSTEM},
+            {"role": "user", "content": article_user_instruction}
+        ],
+        "temperature": 0.2,
+        "max_tokens": 8192,
+        "response_format": {
+            "type": "json_schema",
+            "json_schema": article_schema
+        }
+    }
+
+    print(f"[ARTICLE] Generating HTML article for protein={protein_name!r} using {NEBIUS_MODEL}")
+    try:
+        with httpx.Client(timeout=120) as neb_client:
+            aresp = neb_client.post(
+                f"{NEBIUS_BASE_URL}chat/completions",
+                json=article_payload,
+                headers={
+                    "Authorization": f"Bearer {settings.nebius_api_key}",
+                    "Content-Type": "application/json",
+                },
+            )
+        print(f"[ARTICLE] HTTP {aresp.status_code}")
+
+        article_title = f"{protein_name} — Sequence-to-Function & Longevity"
+        article_html = "<h1>Draft</h1><p>No content returned.</p>"
+
+        adata = aresp.json()
+        if isinstance(adata, dict) and adata.get("choices"):
+            acontent = adata["choices"][0]["message"]["content"] or ""
+            try:
+                aobj = json.loads(acontent)
+                article_title = aobj.get("title") or article_title
+                article_html = aobj.get("html") or article_html
+            except json.JSONDecodeError:
+                article_html = f"<h1>{article_title}</h1><pre>{acontent}</pre>"
+
+        out_dir = os.path.join(FAISS_DIR, "articles")
+        os.makedirs(out_dir, exist_ok=True)
+        safe_name = re.sub(r"[^A-Za-z0-9._-]+", "_", protein_name)
+        out_path = os.path.join(out_dir, f"{safe_name}.html")
+
+        with open(out_path, "w", encoding="utf-8") as f:
+            f.write(article_html)
+        print(f"[ARTICLE] Saved article HTML: {out_path}")
+
+        preview = article_html[:800] + ("…" if len(article_html) > 800 else "")
+        print("[ARTICLE][preview]\n", preview)
+
+    except Exception as e:
+        print(f"[ARTICLE][error] {e}")
+
+    return {"status": "ok"}
+
+@app.post("/article/generate-from-chunks")
+def article_generate_from_chunks(query: Optional[str] = None, top_k: int = 100, protein_name: str = "APOE"):
     """
     Article-only endpoint:
     - Loads existing FAISS index + meta.jsonl
@@ -1420,23 +2019,49 @@ def index_run_all(batch_size: int = 1000, protein_name: str = "APOE", query: Opt
     print("[RUN-ALL] Done.")
     return {"status": "ok", "indexed": processed, "total": total}
 
-@app.get("/harvest/apoe")
-def harvest_apoe():
+@app.get("/harvest/{protein_name}")
+def harvest_protein(protein_name: str, limit: int = 1):
     """
-    Harvests *Open Access only* Europe PMC papers that mention APOE (incl. synonyms),
-    downloads JATS XML for fulltext, converts to plain text, and saves one JSON per paper
-    into the local 'papers/' directory so your /index/batch can ingest them.
+    Harvests Open Access Europe PMC papers for a given protein.
 
-    All parameters are hard-coded (no URL params).
+    This endpoint searches for *human* (TAXON_ID:9606) Open Access papers
+    mentioning the specified protein in the full text. It iterates through
+    search results using cursor-based pagination.
+
+    For each valid result, it:
+    1.  Fetches the full JATS XML from Europe PMC.
+    2.  Converts the XML to cleaned plain text, removing common noise
+        (e.g., reference lists, tables, figures).
+    3.  If XML is unavailable, it falls back to using the title and abstract.
+    4.  Saves the paper's metadata and text as one JSON file per paper
+        (named `{pmcid}.json`) in the configured `PAPERS_DIR`.
+
+    The harvest run stops when all results are processed or the
+    hard-coded `MAX_HARVEST` limit is reached.
+
+    Args:
+        protein_name (str): The protein to search for (e.g., "APOE", "TP53"),
+                            passed as a URL path parameter. The search is
+                            case-insensitive and uses Europe PMC's synonym
+                            expansion.
+        limit (int, optional): The maximum number of papers to harvest.
+                               Passed as a URL query parameter (e.g., `?limit=50`).
+                               Defaults to 1.
+
+    Returns:
+        dict: A JSON response confirming the operation status, the total
+              number of papers harvested (`harvested`), and an optional
+              `note` if the `limit` cap was reached.
     """
-
+    # Test proteins: NRF2, SOX2, APOE, OCT4
+    # cytokine family: CCR1, CCR2, CCR5, CCR7
+    PROTEIN = protein_name    # search term (Europe PMC search is case-insensitive)
     # ------------------------- Hard-coded settings -------------------------
-    PROTEIN = "APOE"          # search term (Europe PMC search is case-insensitive)
     PAGE_SIZE = 1000          # Europe PMC maximum per page
     TIMEOUT_SECS = 60         # HTTP client timeout
     OA_ONLY = True            # we only collect Open Access; OA -> PMCID should be present
     SAVE_XML = True           # include raw JATS XML in JSON (can be set to False to save space)
-    MAX_HARVEST = 1000        # cap for test runs; raise/remove later
+    MAX_HARVEST = limit       # cap for test runs; raise/remove later
     # ----------------------------------------------------------------------
 
     # Ensure output directory exists (uses the global PAPERS_DIR defined at top of file)
@@ -1446,7 +2071,8 @@ def harvest_apoe():
     # TEXT: searches title, abstract, AND full text (if available).
     # synonym=Y: expand common gene/protein synonyms on EPMC side.
     # OPEN_ACCESS:Y: restricts to OA articles so we can fetch full JATS XML.
-    base_query = f'(TEXT:"{PROTEIN}") AND OPEN_ACCESS:Y AND (TAXON_ID:9606 OR ORGANISM:"Homo sapiens")'
+    base_query = f'(TEXT:"{PROTEIN}") AND OPEN_ACCESS:Y AND (TAXON_ID:9606 OR ORGANISM:"Homo sapiens" OR "Homo sapiens" OR human)'
+
 
 
     # -------------------- Small helpers (pure stdlib) ----------------------
@@ -1638,3 +2264,148 @@ def harvest_apoe():
 
     print(f"[HARVEST] Done. harvested={harvested}")
     return {"status": "ok", "harvested": harvested}
+
+
+
+@app.get("/papers/cleanup_refonly")
+def papers_cleanup_refonly(protein: str = "APOE"):
+    """
+    Scans all JSON paper files under PAPERS_DIR and deletes those where the given
+    protein term appears *only* inside the references (JATS <ref-list>), and
+    nowhere else (title/abstract/body). Prints progress to the server console
+    and returns only {"status": "ok"}.
+
+    Assumptions:
+    - All files in PAPERS_DIR are JSON with fields created by /harvest/apoe:
+      {pmcid, doi, title, year, journal, protein_hits, xml, plain_text, source_url}.
+    - 'xml' contains the JATS full text as saved during harvest.
+    - Error handling is intentionally minimal for clarity.
+    """
+
+    # --- Config / search setup (simple and explicit) ---
+    term = protein.strip()
+    if not term:
+        print("[CLEANUP] Empty protein term, nothing to do.")
+        return {"status": "ok"}
+
+    # \bAPOE\b, case-insensitive — adjust here if you ever want synonyms
+    term_re = re.compile(rf"\b{re.escape(term)}\b", flags=re.IGNORECASE)
+
+    # --- Collect files ---
+    if not os.path.isdir(PAPERS_DIR):
+        print(f"[CLEANUP] Folder '{PAPERS_DIR}' not found.")
+        return {"status": "ok"}
+
+    files = [os.path.join(PAPERS_DIR, fn) for fn in os.listdir(PAPERS_DIR) if fn.endswith(".json")]
+    files.sort()
+    total = len(files)
+    print(f"[CLEANUP] Scanning {total} JSON files for '{term}' occurrences limited to references...")
+
+    kept = 0
+    deleted = 0
+    empty_xml = 0
+
+    for path in files:
+        base = os.path.basename(path)
+        try:
+            # Load JSON record
+            with open(path, "r", encoding="utf-8") as f:
+                obj = json.load(f)
+
+            xml_text = (obj.get("xml") or "").strip()
+            title = (obj.get("title") or "").strip()
+
+            if not xml_text:
+                # If there is no XML at all, be conservative and keep it
+                empty_xml += 1
+                kept += 1
+                continue
+
+            # --- Parse JATS XML (minimal but robust) ---
+            # We will (a) collect text inside <ref-list> and (b) collect text outside <ref-list>.
+            try:
+                root = ET.fromstring(xml_text)
+            except Exception:
+                # If parsing fails, keep the file (we cannot localize references safely).
+                kept += 1
+                continue
+
+            # Helper: gather all text under an element
+            def _all_text(el: ET.Element) -> str:
+                parts = []
+                for t in el.itertext():
+                    parts.append(t)
+                # normalize whitespace to avoid false negatives due to line breaks
+                return re.sub(r"\s+", " ", " ".join(parts)).strip()
+
+            # 1) Text inside all <ref-list> (may appear multiple times)
+            ref_texts = []
+            ref_nodes = []
+            for el in root.iter():
+                # tag can be namespaced: endswith("ref-list")
+                if isinstance(el.tag, str) and el.tag.endswith("ref-list"):
+                    ref_nodes.append(el)
+                    ref_texts.append(_all_text(el))
+            text_in_refs = " ".join(ref_texts)
+
+            # 2) Text outside <ref-list>: clone-shallow removal by detaching ref-list nodes
+            #    We remove each found ref-list node from its parent, then extract text.
+            #    After extraction, we DO NOT write back — this is a throwaway tree for search.
+            def _parent_of(root_el: ET.Element, node: ET.Element):
+                for p in root_el.iter():
+                    for c in list(p):
+                        if c is node:
+                            return p
+                return None
+
+            # Remove all ref-list nodes from a temporary working tree
+            # (ElementTree does not support cheap deep copy; parse again for a clean root)
+            try:
+                work_root = ET.fromstring(xml_text)
+            except Exception:
+                # Fallback: if reparsing fails, reuse original root
+                work_root = root
+
+            to_remove = []
+            for el in work_root.iter():
+                if isinstance(el.tag, str) and el.tag.endswith("ref-list"):
+                    to_remove.append(el)
+            for node in to_remove:
+                parent = _parent_of(work_root, node)
+                if parent is not None:
+                    parent.remove(node)
+
+            text_outside_refs = _all_text(work_root)
+
+            # Additionally check plain title string if present (cheap, high-signal)
+            if title and title not in text_outside_refs:
+                text_outside_refs = f"{title}. {text_outside_refs}".strip()
+
+            # --- Decide: delete if ONLY in references ---
+            has_outside = bool(term_re.search(text_outside_refs))
+            has_inside = bool(term_re.search(text_in_refs))
+
+            if has_inside and not has_outside:
+                try:
+                    os.remove(path)
+                    deleted += 1
+                    print(f"[CLEANUP][delete] {base} — '{term}' only in references.")
+                except Exception as e:
+                    # If deletion fails, keep and log
+                    kept += 1
+                    print(f"[CLEANUP][warn] failed to delete {base}: {e}")
+            else:
+                kept += 1
+                # Optional verbose signal for borderline cases
+                if has_outside:
+                    print(f"[CLEANUP][keep] {base} — '{term}' found outside references.")
+                elif not has_inside and not has_outside:
+                    print(f"[CLEANUP][keep] {base} — '{term}' not found anywhere (after harvest filter).")
+
+        except Exception as e:
+            kept += 1
+            print(f"[CLEANUP][skip] {base}: {e}")
+
+    print(f"[CLEANUP] Done. total={total} deleted={deleted} kept={kept} empty_xml={empty_xml}")
+    return {"status": "ok"}
+

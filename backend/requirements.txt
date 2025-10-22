@@ -1,4 +1,14 @@
-# backend/requirements.txt
 fastapi
-uvicorn[standard]
-psycopg2-binary # For connecting to PostgreSQL
+uvicorn
+pydantic
+httpx
+pydantic-settings
+
+llama-index
+llama-index-embeddings-openai
+llama-index-embeddings-nebius
+llama-index-vector-stores-chroma
+chromadb
+
+faiss-cpu
+numpy
