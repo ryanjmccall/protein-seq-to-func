@@ -1,0 +1,12 @@
+{
+    "PMC": "3326531",
+    "DOI": "10.1038/nsmb1172",
+    "PMID": "17099698",
+    "PMCID": "PMC3326531",
+    "title": "SUMO protease SENP1 induces isomerization of the scissile peptide bond.",
+    "year": 2006,
+    "source_url": "https://europepmc.org/article/PMC/PMC3326531",
+    "source": "MED",
+    "abstract_text": "Small ubiquitin-like modifier (SUMO)-specific protease SENP1 processes SUMO-1, SUMO-2 and SUMO-3 to mature forms and deconjugates them from modified proteins. To establish the proteolytic mechanism, we determined structures of catalytically inactive SENP1 bound to SUMO-1-modified RanGAP1 and to unprocessed SUMO-1. In each case, the scissile peptide bond is kinked at a right angle to the C-terminal tail of SUMO-1 and has the cis configuration of the amide nitrogens. SENP1 preferentially processes SUMO-1 over SUMO-2, but binding thermodynamics of full-length SUMO-1 and SUMO-2 to SENP1 and K(m) values for processing are very similar. However, k(cat) values differ by 50-fold. Thus, discrimination between unprocessed SUMO-1 and SUMO-2 by SENP1 is based on a catalytic step rather than substrate binding and is likely to reflect differences in the ability of SENP1 to correctly orientate the scissile bonds in SUMO-1 and SUMO-2.",
+    "full_text_abstract": "Small ubiquitin-like modifier (SUMO)-specific protease SENP1 processes SUMO-1, SUMO-2 and SUMO-3 to mature forms and deconjugates them from modified proteins. To establish the proteolytic mechanism, we determined structures of catalytically inactive SENP1 bound to SUMO-1-modified RanGAP1 and to unprocessed SUMO-1. In each case, the scissile peptide bond is kinked at a right angle to the C-terminal tail of SUMO-1 and has the cis configuration of the amide nitrogens. SENP1 preferentially processes SUMO-1 over SUMO-2, but binding thermodynamics of full-length SUMO-1 and SUMO-2 to SENP1 and K(m) values for processing are very similar. However, k(cat) values differ by 50-fold. Thus, discrimination between unprocessed SUMO-1 and SUMO-2 by SENP1 is based on a catalytic step rather than substrate binding and is likely to reflect differences in the ability of SENP1 to correctly orientate the scissile bonds in SUMO-1 and SUMO-2."
+}
