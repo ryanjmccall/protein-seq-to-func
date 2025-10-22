@@ -1,6 +1,7 @@
 import markdown
 import os
 from types import SimpleNamespace
+from pathlib import Path
 
 import os
 import json
@@ -9,55 +10,6 @@ from llama_index.core.llms import ChatMessage
 
 from dotenv import load_dotenv
 
-def extract_and_synthesize(index, protein_name: str) -> str:
-    """
-    SKELETON: Simulates the two-step Nebius LLM call.
-    1. Retrieves context from the vector index.
-    2. Returns a hardcoded JSON for the extraction step.
-    3. Uses a simple f-string for the synthesis step.
-    """
-    print("Step 4 & 5: Extracting and synthesizing knowledge (skeleton)...")
-    
-    # Step 1: Retrieve context (this part is real)
-    try:
-        query_engine = index.as_query_engine()
-        retrieved = query_engine.query(f"What is the function of {protein_name}?")
-        print(f" -> Retrieved context: '{retrieved.source_nodes[0].text[:50]}...'")
-    except AttributeError:
-        print(" -> (Skipped retrieval for mock index)")
-
-    # Step 2: Fake the first LLM call (extraction)
-    structured_data = {
-        "modification_name": "Asn308Lys",
-        "functional_outcome": "Increases deacetylase activity."
-    }
-    print(f" -> Simulated structured data extraction: {structured_data}")
-    
-    # Step 3: Fake the second LLM call (synthesis)
-    final_article = f"# {protein_name}\n\nA key modification for {protein_name} is " \
-                    f"{structured_data['modification_name']}, which is known to " \
-                    f"{structured_data['functional_outcome'].lower()}"
-    print(" -> Synthesized fake article.")
-    print(final_article)
-
-    # FIXME: invoke make_stub_llm_calls
-    
-    # (In a real implementation, you would store this article in the SQLite DB)
-    save_article_as_md(
-        protein_name=protein_name, 
-        final_article=final_article
-    )
-
-def save_article_as_md(protein_name: str, final_article: str):
-    """
-    Saves the article Markdown string to a .md file.
-    """
-    print(f"Saving article to Markdown file...")
-    output_path = f'data/processed/{protein_name}_article.md'
-    with open(output_path, "w", encoding="utf-8") as f:
-        f.write(final_article)
-        
-    print(f" -> Generated {output_path}")
 
 MODEL = "openai/gpt-oss-120b"
 
@@ -153,35 +105,100 @@ SCIENTIST_TEMPLATE = """You are a highly specialized scientific data extraction 
     """
 
 
-def make_stub_llm_calls():
-    load_dotenv()  # best practice: store the API key in .env file at repo root
-    llm = NebiusLLM(model=MODEL, api_key=os.getenv("NEBIUS_API_KEY"))
+def extract_and_synthesize(index, protein_name: str) -> str:
+    """
+    SKELETON: Simulates the two-step Nebius LLM call.
+    1. Retrieves context from the vector index.
+    2. Returns a hardcoded JSON for the extraction step.
+    3. Uses a simple f-string for the synthesis step.
+    """
+    print("Step 4 & 5: Extracting and synthesizing knowledge (skeleton)...")
+
+    # Step 1: Retrieve context (this part is real)
+    try:
+        query_engine = index.as_query_engine()
+        retrieved = query_engine.query(f"What is the function of {protein_name}?")
+        print(f" -> Retrieved context: '{retrieved.source_nodes[0].text[:50]}...'")
+    except AttributeError:
+        print(" -> (Skipped retrieval for mock index)")
+
+    # Step 2: Fake the first LLM call (extraction)
+    # structured_data = {
+    #     "modification_name": "Asn308Lys",
+    #     "functional_outcome": "Increases deacetylase activity.",
+    # }
+    # print(f" -> Simulated structured data extraction: {structured_data}")
+
 
     # The "Scientist"
     # TODO: using the context_chunks, and template, query the LLM to produce structured_data.
 
-    # The "Writer"
-    # System prompt defining the role and constraints
-    system_content = "You are a scientific writer creating a detailed wiki article in Markdown format about a specific protein, based ONLY on the structured JSON information provided. Follow the specified Markdown structure precisely. Generate complete sections based on the template."
+    final_article = write_article(STUB_STUCTURED_DATA)
 
-    structured_data_json_string = json.dumps(STUB_STUCTURED_DATA, indent=2)
+    # (In a real implementation, you would store this article in the SQLite DB)
+    save_article_as_md(protein_name=protein_name, final_article=final_article)
+
+
+def save_article_as_md(protein_name: str, final_article: str):
+    """
+    Saves the article Markdown string to a .md file.
+    """
+    print(f"Saving article to Markdown file...")
+    output_path = f"data/processed/{protein_name}_article.md"
+    with open(output_path, "w", encoding="utf-8") as f:
+        f.write(str(final_article))
+
+    print(f" -> Generated {output_path}")
+
+TEMPLATE_PATH = "test_pipeline/templates/article.md"
+
+def load_markdown_template() -> str:
+    # Define the path to your template file using pathlib for cross-platform compatibility
+    template_path = Path(TEMPLATE_PATH)
+    try:
+        with open(template_path, "r", encoding="utf-8") as f:
+            markdown_template_string = f.read()
+        # print(markdown_template_string[:100]) # Print the first 100 characters to check
+        return markdown_template_string
+    except FileNotFoundError:
+        print(f"Error: Template file not found at {template_path}")
+    except Exception as e:
+        print(f"An error occurred: {e}")
+
+
+def write_article(structured_data: dict) ->str:
+    load_dotenv()  # best practice: store the API key in .env file at repo root
+    llm = NebiusLLM(model=MODEL, api_key=os.getenv("NEBIUS_API_KEY"))
+
+    WRITER_SYSTEM_CONTENT = """You are a scientific writer creating a detailed 
+    wiki article in Markdown format about a specific protein, based ONLY on 
+    the structured JSON information provided. Follow the specified Markdown 
+    structure precisely. Generate complete sections based on the template."""
+
+    structured_data_json_string = json.dumps(structured_data, indent=2)
+    markdown_template_string = load_markdown_template()
     user_content = f"""JSON Information:
-    ---
+    ```json
     {structured_data_json_string}
-    ---
+    ```
 
     Markdown Output Structure:
 
-    # protein symbol | protein full name
+    ```markdown {markdown_template_string}
+    ```
     """
 
     messages = [
-        ChatMessage(role="system", content=system_content),
+        ChatMessage(role="system", content=WRITER_SYSTEM_CONTENT),
         ChatMessage(role="user", content=user_content),
     ]
-    # API example: https://github.com/Arindam200/awesome-ai-apps/blob/main/rag_apps/llamaIndex_starter/main.py
-    writer_chat_response = llm.chat(messages)
-    print(writer_chat_response)
+
+    print(">>> Sending Writer chat to LLM...")
+    response = llm.chat(messages)  # OpenAI api
+    content = response.message.content
+    print("\n>>> Got LLM Article Response content\n", str(content))
+    return content
+
 
 if __name__ == "__main__":
-    make_stub_llm_calls()
+    write_article(STUB_STUCTURED_DATA)

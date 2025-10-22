@@ -3,7 +3,7 @@ from llama_index.core import VectorStoreIndex
 from llama_index.vector_stores.chroma import ChromaVectorStore
 from llama_index.core import StorageContext
 import chromadb
-from pipeline.config import CORPUS_DIR, CHROMA_DB_PATH
+from config import CORPUS_DIR, CHROMA_DB_PATH
 
 def create_vector_index() -> VectorStoreIndex:
     """

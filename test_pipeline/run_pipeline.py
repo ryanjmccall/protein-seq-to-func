@@ -1,9 +1,9 @@
 # build_index.py
-from pipeline.config import TARGET_PROTEINS
-from pipeline.s1_corpus_builder import build_corpus
-from pipeline.s2_corpus_manager import manage_corpus_index
-from pipeline.s3_vector_indexer import create_vector_index
-from pipeline.s4_knowledge_extractor import extract_and_synthesize
+from config import TARGET_PROTEINS
+from s1_corpus_builder import build_corpus
+from s2_corpus_manager import manage_corpus_index
+from s3_vector_indexer import create_vector_index
+from s4_knowledge_extractor import extract_and_synthesize
 
 
 def main():
@@ -21,7 +21,8 @@ def main():
     
     # Step 4 & 5: Extract and synthesize an html article for each protein. 
     # this involves two LLM calls to Nebius
-    for prot in TARGET_PROTEINS:
+    # for prot in TARGET_PROTEINS:
+    for prot in ["NRF2"]:
         extract_and_synthesize(vector_index, prot)
 
     print("\n--- Offline Pipeline Finished ---")
