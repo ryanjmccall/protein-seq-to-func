@@ -1,0 +1,12 @@
+{
+  "PMC": "7897296",
+  "DOI": "10.1016/j.molcel.2020.12.010",
+  "PMID": "33412112",
+  "PMCID": "PMC7897296",
+  "title": "CARM1 regulates replication fork speed and stress response by stimulating PARP1.",
+  "year": 2021,
+  "source_url": "https://europepmc.org/article/PMC/PMC7897296",
+  "source": "MED",
+  "abstract_text": "DNA replication forks use multiple mechanisms to deal with replication stress, but how the choice of mechanisms is made is still poorly understood. Here, we show that CARM1 associates with replication forks and reduces fork speed independently of its methyltransferase activity. The speeding of replication forks in CARM1-deficient cells requires RECQ1, which resolves reversed forks, and RAD18, which promotes translesion synthesis. Loss of CARM1 reduces fork reversal and increases single-stranded DNA (ssDNA) gaps but allows cells to tolerate higher replication stress. Mechanistically, CARM1 interacts with PARP1 and promotes PARylation at replication forks. In vitro, CARM1 stimulates PARP1 activity by enhancing its DNA binding and acts jointly with HPF1 to activate PARP1. Thus, by stimulating PARP1, CARM1 slows replication forks and promotes the use of fork reversal in the stress response, revealing that CARM1 and PARP1 function as a regulatory module at forks to control fork speed and the choice of stress response mechanisms.",
+  "plain_text": "DNA replication forks use multiple mechanisms to deal with replication stress, but how the choice of mechanisms is made is still poorly understood. Here, we show that CARM1 associates with replication forks and reduces fork speed independently of its methyltransferase activity. The speeding of replication forks in CARM1-deficient cells requires RECQ1, which resolves reversed forks, and RAD18, which promotes translesion synthesis. Loss of CARM1 reduces fork reversal and increases single-stranded DNA (ssDNA) gaps but allows cells to tolerate higher replication stress. Mechanistically, CARM1 interacts with PARP1 and promotes PARylation at replication forks. In vitro, CARM1 stimulates PARP1 activity by enhancing its DNA binding and acts jointly with HPF1 to activate PARP1. Thus, by stimulating PARP1, CARM1 slows replication forks and promotes the use of fork reversal in the stress response, revealing that CARM1 and PARP1 function as a regulatory module at forks to control fork speed and the choice of stress response mechanisms."
+}

@@ -1,0 +1,12 @@
+{
+  "PMC": "2777751",
+  "DOI": "10.1016/j.immuni.2009.02.011",
+  "PMID": "19409814",
+  "PMCID": "PMC2777751",
+  "title": "NKAP is a transcriptional repressor of notch signaling and is required for T cell development.",
+  "year": 2009,
+  "source_url": "https://europepmc.org/article/PMC/PMC2777751",
+  "source": "MED",
+  "abstract_text": "T cell development depends on the coordinated interplay between receptor signaling and transcriptional regulation. Through a genetic complementation screen a transcriptional repressor, NKAP, was identified. NKAP associated with the histone deacetylase HDAC3 and was shown to be part of a DNA-binding complex, as demonstrated by chromatin immunoprecipitation. NKAP also associated with the Notch corepressor complex. The expression of NKAP during T cell development inversely correlated with the expression of Notch target genes, implying that NKAP may modulate Notch-mediated transcription. To examine the function of NKAP in T cell development, we ablated NKAP by Lck(cre). Loss of NKAP blocked development of alphabeta but not gammadelta T cells, and Nkap(fl/o)Lck(cre) DP T cells expressed 8- to 20-fold higher amounts of Hes1, Deltex1, and CD25 mRNA. Thus, NKAP functions as a transcriptional repressor, acting on Notch target genes, and is required for alphabeta T cell development.",
+  "plain_text": "T cell development depends on the coordinated interplay between receptor signaling and transcriptional regulation. Through a genetic complementation screen a transcriptional repressor, NKAP, was identified. NKAP associated with the histone deacetylase HDAC3 and was shown to be part of a DNA-binding complex, as demonstrated by chromatin immunoprecipitation. NKAP also associated with the Notch corepressor complex. The expression of NKAP during T cell development inversely correlated with the expression of Notch target genes, implying that NKAP may modulate Notch-mediated transcription. To examine the function of NKAP in T cell development, we ablated NKAP by Lck(cre). Loss of NKAP blocked development of alphabeta but not gammadelta T cells, and Nkap(fl/o)Lck(cre) DP T cells expressed 8- to 20-fold higher amounts of Hes1, Deltex1, and CD25 mRNA. Thus, NKAP functions as a transcriptional repressor, acting on Notch target genes, and is required for alphabeta T cell development."
+}

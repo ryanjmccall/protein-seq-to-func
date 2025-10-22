@@ -1,0 +1,12 @@
+{
+  "PMC": "11725302",
+  "DOI": "10.1016/j.cell.2023.11.022",
+  "PMID": "38128537",
+  "PMCID": "PMC11725302",
+  "title": "Metabolic regulation of homologous recombination repair by MRE11 lactylation.",
+  "year": 2024,
+  "source_url": "https://europepmc.org/article/PMC/PMC11725302",
+  "source": "MED",
+  "abstract_text": "Lactylation is a lactate-induced post-translational modification best known for its roles in epigenetic regulation. Herein, we demonstrate that MRE11, a crucial homologous recombination (HR) protein, is lactylated at K673 by the CBP acetyltransferase in response to DNA damage and dependent on ATM phosphorylation of the latter. MRE11 lactylation promotes its binding to DNA, facilitating DNA end resection and HR. Inhibition of CBP or LDH downregulated MRE11 lactylation, impaired HR, and enhanced chemosensitivity of tumor cells in patient-derived xenograft and organoid models. A cell-penetrating peptide that specifically blocks MRE11 lactylation inhibited HR and sensitized cancer cells to cisplatin and PARPi. These findings unveil lactylation as a key regulator of HR, providing fresh insights into the ways in which cellular metabolism is linked to DSB repair. They also imply that the Warburg effect can confer chemoresistance through enhancing HR and suggest a potential therapeutic strategy of targeting MRE11 lactylation to mitigate the effects.",
+  "plain_text": "Lactylation is a lactate-induced post-translational modification best known for its roles in epigenetic regulation. Herein, we demonstrate that MRE11, a crucial homologous recombination (HR) protein, is lactylated at K673 by the CBP acetyltransferase in response to DNA damage and dependent on ATM phosphorylation of the latter. MRE11 lactylation promotes its binding to DNA, facilitating DNA end resection and HR. Inhibition of CBP or LDH downregulated MRE11 lactylation, impaired HR, and enhanced chemosensitivity of tumor cells in patient-derived xenograft and organoid models. A cell-penetrating peptide that specifically blocks MRE11 lactylation inhibited HR and sensitized cancer cells to cisplatin and PARPi. These findings unveil lactylation as a key regulator of HR, providing fresh insights into the ways in which cellular metabolism is linked to DSB repair. They also imply that the Warburg effect can confer chemoresistance through enhancing HR and suggest a potential therapeutic strategy of targeting MRE11 lactylation to mitigate the effects."
+}

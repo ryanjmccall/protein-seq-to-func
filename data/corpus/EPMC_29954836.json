@@ -1,0 +1,12 @@
+{
+  "PMC": "6073207",
+  "DOI": "10.15252/embr.201745310",
+  "PMID": "29954836",
+  "PMCID": "PMC6073207",
+  "title": "Comprehensive ADP-ribosylome analysis identifies tyrosine as an ADP-ribose acceptor site.",
+  "year": 2018,
+  "source_url": "https://europepmc.org/article/PMC/PMC6073207",
+  "source": "MED",
+  "abstract_text": "Despite recent mass spectrometry (MS)-based breakthroughs, comprehensive ADP-ribose (ADPr)-acceptor amino acid identification and ADPr-site localization remain challenging. Here, we report the establishment of an unbiased, multistep ADP-ribosylome data analysis workflow that led to the identification of tyrosine as a novel ARTD1/PARP1-dependent <i>in vivo</i> ADPr-acceptor amino acid. MS analyses of <i>in vitro</i> ADP-ribosylated proteins confirmed tyrosine as an ADPr-acceptor amino acid in RPS3A (Y155) and HPF1 (Y238) and demonstrated that <i>trans</i>-modification of RPS3A is dependent on HPF1. We provide an ADPr-site Localization Spectra Database (ADPr-LSD), which contains 288 high-quality ADPr-modified peptide spectra, to serve as ADPr spectral references for correct ADPr-site localizations.",
+  "plain_text": "Despite recent mass spectrometry (MS)-based breakthroughs, comprehensive ADP-ribose (ADPr)-acceptor amino acid identification and ADPr-site localization remain challenging. Here, we report the establishment of an unbiased, multistep ADP-ribosylome data analysis workflow that led to the identification of tyrosine as a novel ARTD1/PARP1-dependent <i>in vivo</i> ADPr-acceptor amino acid. MS analyses of <i>in vitro</i> ADP-ribosylated proteins confirmed tyrosine as an ADPr-acceptor amino acid in RPS3A (Y155) and HPF1 (Y238) and demonstrated that <i>trans</i>-modification of RPS3A is dependent on HPF1. We provide an ADPr-site Localization Spectra Database (ADPr-LSD), which contains 288 high-quality ADPr-modified peptide spectra, to serve as ADPr spectral references for correct ADPr-site localizations."
+}

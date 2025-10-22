@@ -1,0 +1,11 @@
+{
+  "PMC": "2652876",
+  "PMID": "17094227",
+  "PMCID": "PMC2652876",
+  "title": "Finding GeneRIFs via gene ontology annotations.",
+  "year": 2006,
+  "source_url": "https://europepmc.org/article/PMC/PMC2652876",
+  "source": "MED",
+  "abstract_text": "A Gene Reference Into Function (GeneRIF) is a concise phrase describing a function of a gene in the Entrez Gene database. Applying techniques from the area of natural language processing known as automatic summarization, it is possible to link the Entrez Gene database, the Gene Ontology, and the biomedical literature. A system was implemented that automatically suggests a sentence from a PubMed/MEDLINE abstract as a candidate GeneRIF by exploiting a gene's GO annotations along with location features and cue words. Results suggest that the method can significantly increase the number of GeneRIF annotations in Entrez Gene, and that it produces qualitatively more useful GeneRIFs than other methods.",
+  "plain_text": "A Gene Reference Into Function (GeneRIF) is a concise phrase describing a function of a gene in the Entrez Gene database. Applying techniques from the area of natural language processing known as automatic summarization, it is possible to link the Entrez Gene database, the Gene Ontology, and the biomedical literature. A system was implemented that automatically suggests a sentence from a PubMed/MEDLINE abstract as a candidate GeneRIF by exploiting a gene's GO annotations along with location features and cue words. Results suggest that the method can significantly increase the number of GeneRIF annotations in Entrez Gene, and that it produces qualitatively more useful GeneRIFs than other methods."
+}
