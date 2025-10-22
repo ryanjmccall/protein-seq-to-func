@@ -194,28 +194,28 @@ function parseInlineKeyValue(value: string): Map<string, string> {
 }
 
 function parsePublicationEntries(entries: string[]): Publication[] {
-  return entries
-    .map((entry) => {
-      const fields = parseInlineKeyValue(entry);
-      const pmid = fields.get('pmid');
-      const title = fields.get('title');
+  return entries.reduce<Publication[]>((accumulator, entry) => {
+    const fields = parseInlineKeyValue(entry);
+    const pmid = fields.get('pmid');
+    const title = fields.get('title');
 
-      if (!pmid || !title) {
-        return null;
-      }
+    if (!pmid || !title) {
+      return accumulator;
+    }
 
-      const doi = fields.get('doi');
-      const yearValue = fields.get('year');
-      const year = yearValue ? Number.parseInt(yearValue, 10) || undefined : undefined;
+    const doi = fields.get('doi');
+    const yearValue = fields.get('year');
+    const year = yearValue ? Number.parseInt(yearValue, 10) || undefined : undefined;
 
-      return {
-        pmid: pmid.trim(),
-        title: title.trim(),
-        doi: doi?.trim(),
-        year,
-      };
-    })
-    .filter((publication): publication is Publication => publication !== null);
+    accumulator.push({
+      pmid: pmid.trim(),
+      title: title.trim(),
+      doi: doi?.trim(),
+      year,
+    });
+
+    return accumulator;
+  }, []);
 }
 
 function parseRelatedGenes(content: string): { symbol: string; name?: string; relationship?: string }[] {
