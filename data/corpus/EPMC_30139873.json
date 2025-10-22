@@ -1,0 +1,12 @@
+{
+    "PMC": "6365305",
+    "DOI": "10.1126/science.aap9346",
+    "PMID": "30139873",
+    "PMCID": "PMC6365305",
+    "title": "An intrinsic S/G<sub>2</sub> checkpoint enforced by ATR.",
+    "year": 2018,
+    "source_url": "https://europepmc.org/article/PMC/PMC6365305",
+    "source": "MED",
+    "abstract_text": "The cell cycle is strictly ordered to ensure faithful genome duplication and chromosome segregation. Control mechanisms establish this order by dictating when a cell transitions from one phase to the next. Much is known about the control of the G<sub>1</sub>/S, G<sub>2</sub>/M, and metaphase/anaphase transitions, but thus far, no control mechanism has been identified for the S/G<sub>2</sub> transition. Here we show that cells transactivate the mitotic gene network as they exit the S phase through a CDK1 (cyclin-dependent kinase 1)-directed FOXM1 phosphorylation switch. During normal DNA replication, the checkpoint kinase ATR (ataxia-telangiectasia and Rad3-related) is activated by ETAA1 to block this switch until the S phase ends. ATR inhibition prematurely activates FOXM1, deregulating the S/G<sub>2</sub> transition and leading to early mitosis, underreplicated DNA, and DNA damage. Thus, ATR couples DNA replication with mitosis and preserves genome integrity by enforcing an S/G<sub>2</sub> checkpoint.",
+    "full_text_abstract": "The cell cycle is strictly ordered to ensure faithful genome duplication and chromosome segregation. Control mechanisms establish this order by dictating when a cell transitions from one phase to the next. Much is known about the control of the G<sub>1</sub>/S, G<sub>2</sub>/M, and metaphase/anaphase transitions, but thus far, no control mechanism has been identified for the S/G<sub>2</sub> transition. Here we show that cells transactivate the mitotic gene network as they exit the S phase through a CDK1 (cyclin-dependent kinase 1)-directed FOXM1 phosphorylation switch. During normal DNA replication, the checkpoint kinase ATR (ataxia-telangiectasia and Rad3-related) is activated by ETAA1 to block this switch until the S phase ends. ATR inhibition prematurely activates FOXM1, deregulating the S/G<sub>2</sub> transition and leading to early mitosis, underreplicated DNA, and DNA damage. Thus, ATR couples DNA replication with mitosis and preserves genome integrity by enforcing an S/G<sub>2</sub> checkpoint."
+}

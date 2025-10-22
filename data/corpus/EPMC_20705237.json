@@ -1,0 +1,12 @@
+{
+    "PMC": "2928994",
+    "DOI": "10.1016/j.molcel.2010.07.021",
+    "PMID": "20705237",
+    "PMCID": "PMC2928994",
+    "title": "Regulation of DNA repair through deSUMOylation and SUMOylation of replication protein A complex.",
+    "year": 2010,
+    "source_url": "https://europepmc.org/article/PMC/PMC2928994",
+    "source": "MED",
+    "abstract_text": "The replication protein A complex (RPA) plays a crucial role in DNA replication and damage response. However, it is not known whether this complex is regulated by the SUMOylation pathway. Here, we show that the 70 kDa subunit of RPA (RPA70) associates with a Sentrin/SUMO-specific protease, SENP6, in the nucleus to maintain RPA70 in a hypoSUMOylated state during S phase. Campothecin (CPT), an inducer of replication stress, dissociates SENP6 from RPA70, allowing RPA70 to be modified by a small ubiquitin-like modifier 2/3 (SUMO-2/3). RPA70 SUMOylation facilitates recruitment of Rad51 to the DNA damage foci to initiate DNA repair through homologous recombination (HR). Cell lines that expressed a RPA70 mutant that cannot be SUMOylated are defective in HR and have a marked increase in sensitivity to CPT. These results demonstrate that SUMOylation status of RPA70 plays a critical role in the regulation of DNA repair through homologous recombination.",
+    "full_text_abstract": "The replication protein A complex (RPA) plays a crucial role in DNA replication and damage response. However, it is not known whether this complex is regulated by the SUMOylation pathway. Here, we show that the 70 kDa subunit of RPA (RPA70) associates with a Sentrin/SUMO-specific protease, SENP6, in the nucleus to maintain RPA70 in a hypoSUMOylated state during S phase. Campothecin (CPT), an inducer of replication stress, dissociates SENP6 from RPA70, allowing RPA70 to be modified by a small ubiquitin-like modifier 2/3 (SUMO-2/3). RPA70 SUMOylation facilitates recruitment of Rad51 to the DNA damage foci to initiate DNA repair through homologous recombination (HR). Cell lines that expressed a RPA70 mutant that cannot be SUMOylated are defective in HR and have a marked increase in sensitivity to CPT. These results demonstrate that SUMOylation status of RPA70 plays a critical role in the regulation of DNA repair through homologous recombination."
+}

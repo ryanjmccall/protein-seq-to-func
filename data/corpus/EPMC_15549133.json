@@ -1,0 +1,12 @@
+{
+    "PMC": "535092",
+    "DOI": "10.1038/sj.emboj.7600480",
+    "PMID": "15549133",
+    "PMCID": "PMC535092",
+    "title": "Phosphorylation of XPB helicase regulates TFIIH nucleotide excision repair activity.",
+    "year": 2004,
+    "source_url": "https://europepmc.org/article/PMC/PMC535092",
+    "source": "MED",
+    "abstract_text": "Nucleotide excision repair (NER) removes damage from DNA in a tightly regulated multiprotein process. The xeroderma pigmentosum group B (XPB) helicase subunit of TFIIH functions in NER and transcription. The serine 751 (S751) residue of XPB was found to be phosphorylated in vivo. This phosphorylation inhibits NER and the microinjection of a phosphomimicking XPB-S751E mutant is unable to correct the NER defect of XP-B cells. Conversely, XPB-S751 dephosphorylation or its substitution with alanine (S751A) restores NER both in vivo and in vitro. Surprisingly, phospho/dephosphorylation of S751 spares TFIIH-dependent transcription. Finally, the phosphorylation of XPB-S751 does not impair the TFIIH unwinding of the DNA around the lesion, but rather prevents the 5' incision triggered by the ERCC1-XPF endonuclease. These data support an additional role for XPB in promoting the incision of the damaged fragment and reveal a point of NER regulation on TFIIH without interference in its transcription activity.",
+    "full_text_abstract": "Nucleotide excision repair (NER) removes damage from DNA in a tightly regulated multiprotein process. The xeroderma pigmentosum group B (XPB) helicase subunit of TFIIH functions in NER and transcription. The serine 751 (S751) residue of XPB was found to be phosphorylated in vivo. This phosphorylation inhibits NER and the microinjection of a phosphomimicking XPB-S751E mutant is unable to correct the NER defect of XP-B cells. Conversely, XPB-S751 dephosphorylation or its substitution with alanine (S751A) restores NER both in vivo and in vitro. Surprisingly, phospho/dephosphorylation of S751 spares TFIIH-dependent transcription. Finally, the phosphorylation of XPB-S751 does not impair the TFIIH unwinding of the DNA around the lesion, but rather prevents the 5' incision triggered by the ERCC1-XPF endonuclease. These data support an additional role for XPB in promoting the incision of the damaged fragment and reveal a point of NER regulation on TFIIH without interference in its transcription activity."
+}

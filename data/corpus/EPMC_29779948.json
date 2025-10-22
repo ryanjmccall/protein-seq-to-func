@@ -1,0 +1,12 @@
+{
+    "PMC": "6003881",
+    "DOI": "10.1016/j.cell.2018.04.028",
+    "PMID": "29779948",
+    "PMCID": "PMC6003881",
+    "title": "The Eukaryotic Proteome Is Shaped by E3\u00a0Ubiquitin Ligases Targeting C-Terminal Degrons.",
+    "year": 2018,
+    "source_url": "https://europepmc.org/article/PMC/PMC6003881",
+    "source": "MED",
+    "abstract_text": "Degrons are minimal elements that mediate the interaction of proteins with degradation machineries to promote proteolysis. Despite their central role in proteostasis, the number of known degrons remains small, and a facile technology to characterize them is lacking. Using a strategy combining global protein stability (GPS) profiling with a synthetic human peptidome, we identify thousands of peptides containing degron activity. Employing CRISPR screening, we establish that the stability of many proteins is regulated through degrons located at their C terminus. We characterize eight Cullin-RING E3 ubiquitin ligase (CRL) complex adaptors that regulate C-terminal degrons, including six CRL2 and two CRL4 complexes, and computationally implicate multiple non-CRLs in end recognition. Proteome analysis revealed that the C termini of eukaryotic proteins are depleted for C-terminal degrons, suggesting an E3-ligase-dependent modulation of proteome composition. Thus, we propose that a series of \"C-end rules\" operate to govern protein stability and shape the eukaryotic proteome.",
+    "full_text_abstract": "Degrons are minimal elements that mediate the interaction of proteins with degradation machineries to promote proteolysis. Despite their central role in proteostasis, the number of known degrons remains small, and a facile technology to characterize them is lacking. Using a strategy combining global protein stability (GPS) profiling with a synthetic human peptidome, we identify thousands of peptides containing degron activity. Employing CRISPR screening, we establish that the stability of many proteins is regulated through degrons located at their C terminus. We characterize eight Cullin-RING E3 ubiquitin ligase (CRL) complex adaptors that regulate C-terminal degrons, including six CRL2 and two CRL4 complexes, and computationally implicate multiple non-CRLs in end recognition. Proteome analysis revealed that the C termini of eukaryotic proteins are depleted for C-terminal degrons, suggesting an E3-ligase-dependent modulation of proteome composition. Thus, we propose that a series of \"C-end rules\" operate to govern protein stability and shape the eukaryotic proteome."
+}

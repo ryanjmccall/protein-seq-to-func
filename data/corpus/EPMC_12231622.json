@@ -1,0 +1,12 @@
+{
+    "PMC": "187438",
+    "DOI": "10.1101/gad.1015202",
+    "PMID": "12231622",
+    "PMCID": "PMC187438",
+    "title": "Autophosphorylation of the DNA-dependent protein kinase catalytic subunit is required for rejoining of DNA double-strand breaks.",
+    "year": 2002,
+    "source_url": "https://europepmc.org/article/PMC/PMC187438",
+    "source": "MED",
+    "abstract_text": "Nonhomologous end-joining (NHEJ) is the predominant pathway that repairs DNA double-strand breaks (DSBs) in mammalian cells. The DNA-dependent protein kinase (DNA-PK), consisting of Ku and DNA-PK catalytic subunit (DNA-PKcs), is activated by DNA in vitro and is required for NHEJ. We report that DNA-PKcs is autophosphorylated at Thr2609 in vivo in a Ku-dependent manner in response to ionizing radiation. Phosphorylated DNA-PKcs colocalizes with both gamma-H2AX and 53BP1 after DNA damage. Mutation of Thr2609 to Ala leads to radiation sensitivity and impaired DSB rejoining. These findings establish that Ku-dependent phosphorylation of DNA-PKcs at Thr2609 is required for the repair of DSBs by NHEJ.",
+    "full_text_abstract": "Nonhomologous end-joining (NHEJ) is the predominant pathway that repairs DNA double-strand breaks (DSBs) in mammalian cells. The DNA-dependent protein kinase (DNA-PK), consisting of Ku and DNA-PK catalytic subunit (DNA-PKcs), is activated by DNA in vitro and is required for NHEJ. We report that DNA-PKcs is autophosphorylated at Thr2609 in vivo in a Ku-dependent manner in response to ionizing radiation. Phosphorylated DNA-PKcs colocalizes with both gamma-H2AX and 53BP1 after DNA damage. Mutation of Thr2609 to Ala leads to radiation sensitivity and impaired DSB rejoining. These findings establish that Ku-dependent phosphorylation of DNA-PKcs at Thr2609 is required for the repair of DSBs by NHEJ."
+}

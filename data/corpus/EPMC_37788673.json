@@ -1,0 +1,12 @@
+{
+    "PMC": "10599252",
+    "DOI": "10.1016/j.molcel.2023.09.003",
+    "PMID": "37788673",
+    "PMCID": "PMC10599252",
+    "title": "ATR promotes clearance of damaged DNA and damaged cells by rupturing micronuclei.",
+    "year": 2023,
+    "source_url": "https://europepmc.org/article/PMC/PMC10599252",
+    "source": "MED",
+    "abstract_text": "The human ataxia telangiectasia mutated and Rad3-related (ATR) kinase functions in the nucleus to protect genomic integrity. Micronuclei (MN) arise from genomic and chromosomal instability and cause aneuploidy and chromothripsis, but how MN are removed is poorly understood. Here, we show that ATR is active in MN and promotes their rupture in S phase by phosphorylating Lamin A/C at Ser395, which primes Ser392 for CDK1 phosphorylation and destabilizes the MN envelope. In cells harboring MN, ATR or CDK1 inhibition reduces MN rupture. Consequently, ATR inhibitor (ATRi) diminishes activation of the cytoplasmic DNA sensor cGAS and compromises cGAS-dependent autophagosome accumulation in MN and clearance of micronuclear DNA. Furthermore, ATRi reduces cGAS-mediated senescence and killing of MN-bearing cancer cells by natural killer cells. Thus, in addition to the canonical ATR signaling pathway, an ATR-CDK1-Lamin A/C axis promotes MN rupture to clear damaged DNA and cells, protecting the genome in cell populations through unexpected cell-autonomous and cell-non-autonomous mechanisms.",
+    "full_text_abstract": "The human ataxia telangiectasia mutated and Rad3-related (ATR) kinase functions in the nucleus to protect genomic integrity. Micronuclei (MN) arise from genomic and chromosomal instability and cause aneuploidy and chromothripsis, but how MN are removed is poorly understood. Here, we show that ATR is active in MN and promotes their rupture in S phase by phosphorylating Lamin A/C at Ser395, which primes Ser392 for CDK1 phosphorylation and destabilizes the MN envelope. In cells harboring MN, ATR or CDK1 inhibition reduces MN rupture. Consequently, ATR inhibitor (ATRi) diminishes activation of the cytoplasmic DNA sensor cGAS and compromises cGAS-dependent autophagosome accumulation in MN and clearance of micronuclear DNA. Furthermore, ATRi reduces cGAS-mediated senescence and killing of MN-bearing cancer cells by natural killer cells. Thus, in addition to the canonical ATR signaling pathway, an ATR-CDK1-Lamin A/C axis promotes MN rupture to clear damaged DNA and cells, protecting the genome in cell populations through unexpected cell-autonomous and cell-non-autonomous mechanisms."
+}

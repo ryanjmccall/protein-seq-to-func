@@ -1,0 +1,12 @@
+{
+    "PMC": "3798521",
+    "DOI": "10.1074/jbc.c113.505586",
+    "PMID": "24022480",
+    "PMCID": "PMC3798521",
+    "title": "Degradation of p12 subunit by CRL4Cdt2 E3 ligase inhibits fork progression after DNA damage.",
+    "year": 2013,
+    "source_url": "https://europepmc.org/article/PMC/PMC3798521",
+    "source": "MED",
+    "abstract_text": "After acute DNA damage, the cell arrests S-phase progression by inhibiting origin initiation and fork progression to repair damaged DNA. The intra-S-phase checkpoint kinase Chk1 phosphorylates Cdc25A to target the latter for degradation by CRL1(\u03b2-TrCP) and so inhibit origin firing. The mechanism for inhibiting fork progression, however, has not been identified. Here, we show that degradation of p12, the fourth subunit of DNA polymerase \u03b4, is critical for inhibiting fork progression. CRL4(Cdt2) is an E3 ligase that ubiquitinates and degrades p12 after UV treatment. Cells expressing a stable form of p12 exhibit UV-resistant DNA synthesis. DNA fiber assay and alkaline-sucrose gradient assay demonstrate that the impairment of fork progression after DNA damage requires p12 degradation. These results suggest that ubiquitination of p12 through CRL4(Cdt2) and subsequent degradation form one mechanism by which a cell responds to DNA damage to inhibit fork progression.",
+    "full_text_abstract": "After acute DNA damage, the cell arrests S-phase progression by inhibiting origin initiation and fork progression to repair damaged DNA. The intra-S-phase checkpoint kinase Chk1 phosphorylates Cdc25A to target the latter for degradation by CRL1(\u03b2-TrCP) and so inhibit origin firing. The mechanism for inhibiting fork progression, however, has not been identified. Here, we show that degradation of p12, the fourth subunit of DNA polymerase \u03b4, is critical for inhibiting fork progression. CRL4(Cdt2) is an E3 ligase that ubiquitinates and degrades p12 after UV treatment. Cells expressing a stable form of p12 exhibit UV-resistant DNA synthesis. DNA fiber assay and alkaline-sucrose gradient assay demonstrate that the impairment of fork progression after DNA damage requires p12 degradation. These results suggest that ubiquitination of p12 through CRL4(Cdt2) and subsequent degradation form one mechanism by which a cell responds to DNA damage to inhibit fork progression."
+}

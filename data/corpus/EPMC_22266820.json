@@ -1,0 +1,12 @@
+{
+    "PMC": "3888515",
+    "DOI": "10.1038/nsmb.2211",
+    "PMID": "22266820",
+    "PMCID": "PMC3888515",
+    "title": "The E3 ligase RNF8 regulates KU80 removal and NHEJ repair.",
+    "year": 2012,
+    "source_url": "https://europepmc.org/article/PMC/PMC3888515",
+    "source": "MED",
+    "abstract_text": "The ubiquitination cascade has a key role in the assembly of repair and signaling proteins at sites of double-strand DNA breaks. The E3 ubiquitin ligase RING finger protein 8 (RNF8) triggers the initial ubiquitination at double-strand DNA breaks, whereas sustained ubiquitination requires the downstream E3 ligase RING finger protein 168 (RNF168). It is not known whether RNF8 and RNF168 have discrete substrates and/or form different ubiquitin chains. Here we show that RNF168 acts with the ubiquitin-conjugating enzyme E2 13 (UBC13) and specifically synthesizes Lys63-linked chains, whereas RNF8 primarily forms Lys48-linked chains on chromatin, which promote substrate degradation. We also find that RNF8 regulates the abundance of the nonhomologous end-joining (NHEJ) repair protein KU80 at sites of DNA damage, and that RNF8 depletion results in prolonged retention of KU80 at damage sites and impaired nonhomologous end-joining repair. These findings reveal a distinct feature of RNF8 and indicate the involvement of the ubiquitination-mediated degradation pathway in DNA damage repair.",
+    "full_text_abstract": "The ubiquitination cascade has a key role in the assembly of repair and signaling proteins at sites of double-strand DNA breaks. The E3 ubiquitin ligase RING finger protein 8 (RNF8) triggers the initial ubiquitination at double-strand DNA breaks, whereas sustained ubiquitination requires the downstream E3 ligase RING finger protein 168 (RNF168). It is not known whether RNF8 and RNF168 have discrete substrates and/or form different ubiquitin chains. Here we show that RNF168 acts with the ubiquitin-conjugating enzyme E2 13 (UBC13) and specifically synthesizes Lys63-linked chains, whereas RNF8 primarily forms Lys48-linked chains on chromatin, which promote substrate degradation. We also find that RNF8 regulates the abundance of the nonhomologous end-joining (NHEJ) repair protein KU80 at sites of DNA damage, and that RNF8 depletion results in prolonged retention of KU80 at damage sites and impaired nonhomologous end-joining repair. These findings reveal a distinct feature of RNF8 and indicate the involvement of the ubiquitination-mediated degradation pathway in DNA damage repair."
+}

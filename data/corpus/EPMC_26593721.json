@@ -1,0 +1,12 @@
+{
+    "PMC": "4660248",
+    "DOI": "10.1016/j.molcel.2015.09.013",
+    "PMID": "26593721",
+    "PMCID": "PMC4660248",
+    "title": "Functional Dynamics within the Human Ribosome Regulate the Rate of Active Protein Synthesis.",
+    "year": 2015,
+    "source_url": "https://europepmc.org/article/PMC/PMC4660248",
+    "source": "MED",
+    "abstract_text": "The regulation of protein synthesis contributes to gene expression in both normal physiology and disease, yet kinetic investigations of the human translation mechanism are currently lacking. Using single-molecule fluorescence imaging methods, we have quantified the nature and timing of structural processes in human ribosomes during single-turnover and processive translation reactions. These measurements reveal that functional complexes exhibit dynamic behaviors and thermodynamic stabilities distinct from those observed for bacterial systems. Structurally defined sub-states of pre- and post-translocation complexes were sensitive to specific inhibitors of the eukaryotic ribosome, demonstrating the utility of this platform to probe drug mechanism. The application of three-color single-molecule fluorescence resonance energy transfer (smFRET) methods further revealed a long-distance allosteric coupling between distal tRNA binding sites within ribosomes bearing three tRNAs, which contributed to the rate of processive translation.",
+    "full_text_abstract": "The regulation of protein synthesis contributes to gene expression in both normal physiology and disease, yet kinetic investigations of the human translation mechanism are currently lacking. Using single-molecule fluorescence imaging methods, we have quantified the nature and timing of structural processes in human ribosomes during single-turnover and processive translation reactions. These measurements reveal that functional complexes exhibit dynamic behaviors and thermodynamic stabilities distinct from those observed for bacterial systems. Structurally defined sub-states of pre- and post-translocation complexes were sensitive to specific inhibitors of the eukaryotic ribosome, demonstrating the utility of this platform to probe drug mechanism. The application of three-color single-molecule fluorescence resonance energy transfer (smFRET) methods further revealed a long-distance allosteric coupling between distal tRNA binding sites within ribosomes bearing three tRNAs, which contributed to the rate of processive translation."
+}
