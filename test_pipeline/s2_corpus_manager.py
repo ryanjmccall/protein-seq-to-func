@@ -1,7 +1,6 @@
-# pipeline/02_corpus_manager.py
 import sqlite3
 import os
-from pipeline.config import CORPUS_DIR, SQLITE_DB_PATH
+from config import CORPUS_DIR, SQLITE_DB_PATH
 
 def manage_corpus_index():
     """

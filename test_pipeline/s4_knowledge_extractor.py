@@ -129,16 +129,11 @@ def extract_and_synthesize(index, protein_name: str) -> str:
     # }
     # print(f" -> Simulated structured data extraction: {structured_data}")
 
-    # Step 3: Fake the second LLM call (synthesis)
-    # final_article = (
-    #     f"# {protein_name}\n\nA key modification for {protein_name} is "
-    #     f"{structured_data['modification_name']}, which is known to "
-    #     f"{structured_data['functional_outcome'].lower()}"
-    # )
-    # print(" -> Synthesized fake article.")
-    # print(final_article)
 
-    final_article = make_llm_calls()
+    # The "Scientist"
+    # TODO: using the context_chunks, and template, query the LLM to produce structured_data.
+
+    final_article = write_article(STUB_STUCTURED_DATA)
 
     # (In a real implementation, you would store this article in the SQLite DB)
     save_article_as_md(protein_name=protein_name, final_article=final_article)
@@ -151,14 +146,15 @@ def save_article_as_md(protein_name: str, final_article: str):
     print(f"Saving article to Markdown file...")
     output_path = f"data/processed/{protein_name}_article.md"
     with open(output_path, "w", encoding="utf-8") as f:
-        f.write(final_article)
+        f.write(str(final_article))
 
     print(f" -> Generated {output_path}")
 
+TEMPLATE_PATH = "test_pipeline/templates/article.md"
 
 def load_markdown_template() -> str:
     # Define the path to your template file using pathlib for cross-platform compatibility
-    template_path = Path("pipeline/templates/article.md")
+    template_path = Path(TEMPLATE_PATH)
     try:
         with open(template_path, "r", encoding="utf-8") as f:
             markdown_template_string = f.read()
@@ -170,18 +166,16 @@ def load_markdown_template() -> str:
         print(f"An error occurred: {e}")
 
 
-def make_llm_calls() ->str:
+def write_article(structured_data: dict) ->str:
     load_dotenv()  # best practice: store the API key in .env file at repo root
     llm = NebiusLLM(model=MODEL, api_key=os.getenv("NEBIUS_API_KEY"))
 
-    # The "Scientist"
-    # TODO: using the context_chunks, and template, query the LLM to produce structured_data.
+    WRITER_SYSTEM_CONTENT = """You are a scientific writer creating a detailed 
+    wiki article in Markdown format about a specific protein, based ONLY on 
+    the structured JSON information provided. Follow the specified Markdown 
+    structure precisely. Generate complete sections based on the template."""
 
-    # The "Writer"
-    # System prompt defining the role and constraints
-    system_content = "You are a scientific writer creating a detailed wiki article in Markdown format about a specific protein, based ONLY on the structured JSON information provided. Follow the specified Markdown structure precisely. Generate complete sections based on the template."
-
-    structured_data_json_string = json.dumps(STUB_STUCTURED_DATA, indent=2)
+    structured_data_json_string = json.dumps(structured_data, indent=2)
     markdown_template_string = load_markdown_template()
     user_content = f"""JSON Information:
     ```json
@@ -195,16 +189,16 @@ def make_llm_calls() ->str:
     """
 
     messages = [
-        ChatMessage(role="system", content=system_content),
+        ChatMessage(role="system", content=WRITER_SYSTEM_CONTENT),
         ChatMessage(role="user", content=user_content),
     ]
-    # API example: https://github.com/Arindam200/awesome-ai-apps/blob/main/rag_apps/llamaIndex_starter/main.py
-    print(">>> Sending Writer/Synthesizer chat to LLM...")
-    writer_chat_response = llm.chat(messages)
-    print("\n>>> Got LLM Article Response\n")
-    print(writer_chat_response)
-    return writer_chat_response.message
+
+    print(">>> Sending Writer chat to LLM...")
+    response = llm.chat(messages)  # OpenAI api
+    content = response.message.content
+    print("\n>>> Got LLM Article Response content\n", str(content))
+    return content
 
 
 if __name__ == "__main__":
-    make_llm_calls()
+    write_article(STUB_STUCTURED_DATA)

@@ -1,6 +1,6 @@
 import os
 import json
-from pipeline.config import CORPUS_DIR
+from config import CORPUS_DIR
 
 def build_corpus():
     """
