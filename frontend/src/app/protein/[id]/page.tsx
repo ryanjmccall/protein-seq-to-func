@@ -11,6 +11,8 @@ import Function from '@/components/sections/Function';
 import ClinicalSignificance from '@/components/sections/ClinicalSignificance';
 import Interactions from '@/components/sections/Interactions';
 import References from '@/components/sections/References';
+import ProteinViewer from '@/components/viewer/ProteinViewer';
+import SequencePanel from '@/components/SequencePanel';
 import { ProteinArticle, Publication } from '@/types/protein';
 
 interface ParsedProteinArticle {
@@ -573,11 +575,21 @@ function parseProteinMarkdown(markdown: string): ParsedProteinArticle {
   };
 }
 
-function parseProteinHtml(html: string, fallbackTitle: string): { title: string; content: string } {
+interface HtmlArticleData {
+  title: string;
+  content: string;
+  metadata: {
+    uniprotId?: string;
+    pdbId?: string;
+  };
+}
+
+function parseProteinHtml(html: string, fallbackTitle: string): HtmlArticleData {
   if (typeof window === 'undefined') {
     return {
       title: fallbackTitle.toUpperCase(),
       content: html,
+      metadata: {},
     };
   }
 
@@ -586,10 +598,18 @@ function parseProteinHtml(html: string, fallbackTitle: string): { title: string;
   const title =
     document.querySelector('h1')?.textContent?.trim() || fallbackTitle.toUpperCase();
   const bodyContent = document.body.innerHTML.trim();
+  const metadataElement = document.querySelector('[data-protein-meta]');
+
+  const uniprotId = metadataElement?.getAttribute('data-uniprot') ?? undefined;
+  const pdbId = metadataElement?.getAttribute('data-pdb') ?? undefined;
 
   return {
     title,
     content: bodyContent || html,
+    metadata: {
+      uniprotId: uniprotId?.trim() || undefined,
+      pdbId: pdbId?.trim() || undefined,
+    },
   };
 }
 
@@ -603,7 +623,13 @@ export default function ProteinPage() {
     { symbol: string; name?: string; relationship?: string }[]
   >([]);
   const [articleMode, setArticleMode] = useState<'structured' | 'html' | null>(null);
-  const [htmlArticle, setHtmlArticle] = useState<{ title: string; content: string } | null>(null);
+  const [htmlArticle, setHtmlArticle] = useState<HtmlArticleData | null>(null);
+  const [htmlSequence, setHtmlSequence] = useState<string | null>(null);
+  const [htmlSequenceLoading, setHtmlSequenceLoading] = useState(false);
+  const [htmlSequenceError, setHtmlSequenceError] = useState<string | null>(null);
+  const [structuredSequence, setStructuredSequence] = useState<string | null>(null);
+  const [structuredSequenceLoading, setStructuredSequenceLoading] = useState(false);
+  const [structuredSequenceError, setStructuredSequenceError] = useState<string | null>(null);
   const proteinId = params?.id ?? 'ganab';
 
   useEffect(() => {
@@ -612,6 +638,12 @@ export default function ProteinPage() {
       setLoadError(null);
       setArticleMode(null);
       setHtmlArticle(null);
+      setHtmlSequence(null);
+      setHtmlSequenceLoading(false);
+      setHtmlSequenceError(null);
+      setStructuredSequence(null);
+      setStructuredSequenceLoading(false);
+      setStructuredSequenceError(null);
 
       try {
         const encodedId = encodeURIComponent(proteinId);
@@ -625,7 +657,11 @@ export default function ProteinPage() {
           setRelatedGenes(parsedRelatedGenes);
           setArticleMode('structured');
           setHtmlArticle(null);
+          setHtmlSequence(null);
           setActiveSection('overview');
+          setStructuredSequence(article.protein.sequence ?? null);
+          setStructuredSequenceLoading(false);
+          setStructuredSequenceError(null);
           return;
         }
 
@@ -639,6 +675,9 @@ export default function ProteinPage() {
           setArticleMode('html');
           setProteinData(null);
           setRelatedGenes([]);
+          setStructuredSequence(null);
+          setStructuredSequenceLoading(false);
+          setStructuredSequenceError(null);
           return;
         }
 
@@ -649,6 +688,7 @@ export default function ProteinPage() {
         setRelatedGenes([]);
         setArticleMode(null);
         setHtmlArticle(null);
+        setHtmlSequence(null);
       } finally {
         setIsLoading(false);
       }
@@ -656,6 +696,94 @@ export default function ProteinPage() {
 
     void loadProteinArticle();
   }, [proteinId]);
+
+  useEffect(() => {
+    async function fetchSequence(uniprotId: string, mode: 'html' | 'structured') {
+      try {
+        if (mode === 'html') {
+          setHtmlSequenceLoading(true);
+          setHtmlSequenceError(null);
+        } else {
+          setStructuredSequenceLoading(true);
+          setStructuredSequenceError(null);
+        }
+
+        const response = await fetch(
+          `https://rest.uniprot.org/uniprotkb/${encodeURIComponent(uniprotId)}.fasta`,
+        );
+
+        if (!response.ok) {
+          throw new Error(`Unable to fetch sequence for ${uniprotId}`);
+        }
+
+        const fasta = await response.text();
+        const lines = fasta
+          .split('\n')
+          .map((line) => line.trim())
+          .filter((line) => line && !line.startsWith('>'));
+
+        const sequence = lines.join('');
+
+        if (!sequence) {
+          throw new Error('Sequence data was empty');
+        }
+
+        if (mode === 'html') {
+          setHtmlSequence(sequence);
+        } else {
+          setStructuredSequence(sequence);
+        }
+      } catch (error) {
+        if (mode === 'html') {
+          setHtmlSequence(null);
+          setHtmlSequenceError((error as Error).message);
+        } else {
+          setStructuredSequence(null);
+          setStructuredSequenceError((error as Error).message);
+        }
+      } finally {
+        if (mode === 'html') {
+          setHtmlSequenceLoading(false);
+        } else {
+          setStructuredSequenceLoading(false);
+        }
+      }
+    }
+
+    if (articleMode === 'html') {
+      if (htmlArticle?.metadata?.uniprotId) {
+        void fetchSequence(htmlArticle.metadata.uniprotId, 'html');
+      } else {
+        setHtmlSequence(null);
+        setHtmlSequenceLoading(false);
+        setHtmlSequenceError(null);
+      }
+    } else {
+      setHtmlSequence(null);
+      setHtmlSequenceLoading(false);
+      setHtmlSequenceError(null);
+    }
+
+    if (articleMode === 'structured' && proteinData?.protein) {
+      const rawSequence = proteinData.protein.sequence?.replace(/[^A-Za-z]/g, '') || '';
+
+      if (rawSequence.length > 50 && !rawSequence.includes('.')) {
+        setStructuredSequence(proteinData.protein.sequence);
+        setStructuredSequenceLoading(false);
+        setStructuredSequenceError(null);
+      } else if (proteinData.protein.uniprot_id) {
+        void fetchSequence(proteinData.protein.uniprot_id, 'structured');
+      } else {
+        setStructuredSequence(null);
+        setStructuredSequenceLoading(false);
+        setStructuredSequenceError('Sequence unavailable');
+      }
+    } else if (articleMode !== 'structured') {
+      setStructuredSequence(null);
+      setStructuredSequenceLoading(false);
+      setStructuredSequenceError(null);
+    }
+  }, [articleMode, htmlArticle?.metadata?.uniprotId, proteinData?.protein]);
 
   if (isLoading) {
     return (
@@ -681,6 +809,30 @@ export default function ProteinPage() {
               <h1 className="text-3xl font-semibold tracking-tight sm:text-4xl">
                 {htmlArticle.title}
               </h1>
+              {(htmlArticle.metadata.uniprotId || htmlArticle.metadata.pdbId) && (
+                <div className="flex flex-wrap items-center gap-3 text-sm text-[var(--foreground-muted)]">
+                  {htmlArticle.metadata.uniprotId && (
+                    <a
+                      href={`https://www.uniprot.org/uniprotkb/${htmlArticle.metadata.uniprotId}`}
+                      target="_blank"
+                      rel="noreferrer"
+                      className="inline-flex items-center gap-1 rounded-full border border-[var(--accent-primary)] px-3 py-1 text-xs font-medium text-[var(--accent-primary)] transition-colors hover:bg-[var(--accent-primary)] hover:text-white"
+                    >
+                      UniProt {htmlArticle.metadata.uniprotId}
+                    </a>
+                  )}
+                  {htmlArticle.metadata.pdbId && (
+                    <a
+                      href={`https://www.rcsb.org/structure/${htmlArticle.metadata.pdbId}`}
+                      target="_blank"
+                      rel="noreferrer"
+                      className="inline-flex items-center gap-1 rounded-full border border-[var(--accent-primary)] px-3 py-1 text-xs font-medium text-[var(--accent-primary)] transition-colors hover:bg-[var(--accent-primary)] hover:text-white"
+                    >
+                      PDB {htmlArticle.metadata.pdbId}
+                    </a>
+                  )}
+                </div>
+              )}
             </div>
             <Link
               href="/"
@@ -691,7 +843,38 @@ export default function ProteinPage() {
           </div>
         </header>
 
-        <main className="mx-auto w-full max-w-6xl px-6 py-10">
+        <main className="mx-auto w-full max-w-6xl px-6 py-10 space-y-10">
+          {(htmlArticle.metadata.uniprotId || htmlArticle.metadata.pdbId) && (
+            <section className="grid gap-6 lg:grid-cols-2">
+              {htmlArticle.metadata.uniprotId && (
+                <SequencePanel
+                  title="Amino Acid Sequence"
+                  subtitle={`UniProt ${htmlArticle.metadata.uniprotId}`}
+                  sequence={htmlSequence ?? undefined}
+                  isLoading={htmlSequenceLoading}
+                  error={htmlSequenceError}
+                />
+              )}
+
+              {htmlArticle.metadata.pdbId && (
+                <div className="rounded-3xl border border-[var(--border-subtle)] bg-white/85 p-6 shadow-[var(--shadow-soft)]">
+                  <p className="text-xs font-semibold uppercase tracking-[0.35em] text-[var(--accent-primary)]">
+                    Structure Preview
+                  </p>
+                  <p className="mt-1 text-sm text-[var(--foreground-muted)]">
+                    PDB {htmlArticle.metadata.pdbId}
+                  </p>
+                  <div className="mt-4 overflow-hidden rounded-2xl border border-[var(--border-subtle)]">
+                    <ProteinViewer
+                      pdbId={htmlArticle.metadata.pdbId}
+                      description={`Structure view for ${htmlArticle.title}`}
+                    />
+                  </div>
+                </div>
+              )}
+            </section>
+          )}
+
           <article className="prose-custom max-w-none rounded-3xl border border-[var(--border-subtle)] bg-white/90 px-8 py-10 shadow-[var(--shadow-soft)]">
             <div className="space-y-6 text-[var(--foreground)] overflow-x-auto" dangerouslySetInnerHTML={{ __html: htmlArticle.content }} />
           </article>
@@ -720,10 +903,32 @@ export default function ProteinPage() {
               <h1 className="text-3xl font-semibold tracking-tight sm:text-4xl">
                 {geneSymbol}
               </h1>
-              <p className="text-sm text-[var(--foreground-muted)]">
-                UniProt {proteinData.protein.uniprot_id}
-                {proteinData.protein.family ? ` · ${proteinData.protein.family}` : ''}
-              </p>
+              <div className="flex flex-wrap items-center gap-3 text-sm text-[var(--foreground-muted)]">
+                <span>
+                  {proteinData.protein.family ? `${proteinData.protein.family} · ` : ''}
+                  {proteinData.protein.gene?.organism}
+                </span>
+                <div className="flex flex-wrap items-center gap-2">
+                  <a
+                    href={`https://www.uniprot.org/uniprotkb/${proteinData.protein.uniprot_id}`}
+                    target="_blank"
+                    rel="noreferrer"
+                    className="inline-flex items-center gap-1 rounded-full border border-[var(--accent-primary)] px-3 py-1 text-xs font-medium text-[var(--accent-primary)] transition-colors hover:bg-[var(--accent-primary)] hover:text-white"
+                  >
+                    UniProt {proteinData.protein.uniprot_id}
+                  </a>
+                  {proteinData.protein.structure_pdb_id && (
+                    <a
+                      href={`https://www.rcsb.org/structure/${proteinData.protein.structure_pdb_id}`}
+                      target="_blank"
+                      rel="noreferrer"
+                      className="inline-flex items-center gap-1 rounded-full border border-[var(--accent-primary)] px-3 py-1 text-xs font-medium text-[var(--accent-primary)] transition-colors hover:bg-[var(--accent-primary)] hover:text-white"
+                    >
+                      PDB {proteinData.protein.structure_pdb_id}
+                    </a>
+                  )}
+                </div>
+              </div>
             </div>
             <div className="flex flex-col items-start gap-3 sm:items-end sm:text-right">
               <Link
@@ -742,6 +947,37 @@ export default function ProteinPage() {
         </header>
 
         <main className="mx-auto w-full max-w-5xl px-6 py-10 space-y-10">
+          {(proteinData.protein.sequence || proteinData.protein.structure_pdb_id) && (
+            <section className="grid gap-6 lg:grid-cols-2">
+              {(proteinData.protein.sequence || structuredSequence || structuredSequenceLoading || structuredSequenceError) && (
+                <SequencePanel
+                  title="Amino Acid Sequence"
+                  subtitle={`UniProt ${proteinData.protein.uniprot_id}`}
+                  sequence={(structuredSequence ?? proteinData.protein.sequence) ?? undefined}
+                  isLoading={structuredSequenceLoading}
+                  error={structuredSequenceError}
+                />
+              )}
+
+              {proteinData.protein.structure_pdb_id && (
+                <div className="rounded-3xl border border-[var(--border-subtle)] bg-white/85 p-6 shadow-[var(--shadow-soft)]">
+                  <p className="text-xs font-semibold uppercase tracking-[0.35em] text-[var(--accent-primary)]">
+                    Structure Preview
+                  </p>
+                  <p className="mt-1 text-sm text-[var(--foreground-muted)]">
+                    PDB {proteinData.protein.structure_pdb_id}
+                  </p>
+                  <div className="mt-4 overflow-hidden rounded-2xl border border-[var(--border-subtle)]">
+                    <ProteinViewer
+                      pdbId={proteinData.protein.structure_pdb_id}
+                      description={`Structure view for ${geneSymbol}`}
+                    />
+                  </div>
+                </div>
+              )}
+            </section>
+          )}
+
           <section className="rounded-3xl border border-[var(--border-subtle)] bg-white/80 px-8 py-8 shadow-[var(--shadow-soft)]">
             <h2 className="text-xs font-semibold uppercase tracking-[0.45em] text-[var(--foreground-subtle)]">
               Executive Summary
