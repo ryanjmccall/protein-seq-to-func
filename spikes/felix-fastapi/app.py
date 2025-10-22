@@ -2019,23 +2019,49 @@ def index_run_all(batch_size: int = 1000, protein_name: str = "APOE", query: Opt
     print("[RUN-ALL] Done.")
     return {"status": "ok", "indexed": processed, "total": total}
 
-@app.get("/harvest/apoe")
-def harvest_apoe():
+@app.get("/harvest/{protein_name}")
+def harvest_protein(protein_name: str, limit: int = 1):
     """
-    Harvests *Open Access only* Europe PMC papers that mention APOE (incl. synonyms),
-    downloads JATS XML for fulltext, converts to plain text, and saves one JSON per paper
-    into the local 'papers/' directory so your /index/batch can ingest them.
+    Harvests Open Access Europe PMC papers for a given protein.
 
-    All parameters are hard-coded (no URL params).
+    This endpoint searches for *human* (TAXON_ID:9606) Open Access papers
+    mentioning the specified protein in the full text. It iterates through
+    search results using cursor-based pagination.
+
+    For each valid result, it:
+    1.  Fetches the full JATS XML from Europe PMC.
+    2.  Converts the XML to cleaned plain text, removing common noise
+        (e.g., reference lists, tables, figures).
+    3.  If XML is unavailable, it falls back to using the title and abstract.
+    4.  Saves the paper's metadata and text as one JSON file per paper
+        (named `{pmcid}.json`) in the configured `PAPERS_DIR`.
+
+    The harvest run stops when all results are processed or the
+    hard-coded `MAX_HARVEST` limit is reached.
+
+    Args:
+        protein_name (str): The protein to search for (e.g., "APOE", "TP53"),
+                            passed as a URL path parameter. The search is
+                            case-insensitive and uses Europe PMC's synonym
+                            expansion.
+        limit (int, optional): The maximum number of papers to harvest.
+                               Passed as a URL query parameter (e.g., `?limit=50`).
+                               Defaults to 1.
+
+    Returns:
+        dict: A JSON response confirming the operation status, the total
+              number of papers harvested (`harvested`), and an optional
+              `note` if the `limit` cap was reached.
     """
-
+    # Test proteins: NRF2, SOX2, APOE, OCT4
+    # cytokine family: CCR1, CCR2, CCR5, CCR7
+    PROTEIN = protein_name    # search term (Europe PMC search is case-insensitive)
     # ------------------------- Hard-coded settings -------------------------
-    PROTEIN = "CCR1"          # search term (Europe PMC search is case-insensitive)
     PAGE_SIZE = 1000          # Europe PMC maximum per page
     TIMEOUT_SECS = 60         # HTTP client timeout
     OA_ONLY = True            # we only collect Open Access; OA -> PMCID should be present
     SAVE_XML = True           # include raw JATS XML in JSON (can be set to False to save space)
-    MAX_HARVEST = 100000        # cap for test runs; raise/remove later
+    MAX_HARVEST = limit       # cap for test runs; raise/remove later
     # ----------------------------------------------------------------------
 
     # Ensure output directory exists (uses the global PAPERS_DIR defined at top of file)
