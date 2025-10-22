@@ -1,12 +1,12 @@
 {
-    "PMC": "2797245",
-    "DOI": "10.1074/jbc.m109.023424",
-    "PMID": "19759395",
-    "PMCID": "PMC2797245",
-    "title": "N terminus of CtIP is critical for homologous recombination-mediated double-strand break repair.",
-    "year": 2009,
-    "source_url": "https://europepmc.org/article/PMC/PMC2797245",
-    "source": "MED",
-    "abstract_text": "DNA double-strand breaks (DSBs) represent one of the most lethal types of DNA damage cells encounter. CtIP (also known as RBBP8) acts together with the MRN (MRE11-RAD50-NBS1) complex to promote DNA end resection and the generation of single-stranded DNA, which is critically important for homologous recombination repair. However, it is not yet clear exactly how CtIP participates in this process. Here, we demonstrate that besides the known conserved C terminus, the N terminus of CtIP protein is also required in DSB end resection and DNA damage-induced G(2)/M checkpoint control. We further show that both termini of CtIP can interact with the MRN complex and that the N terminus of CtIP, especially residues 22-45, binds to MRN and plays a critical role in targeting CtIP to sites of DNA breaks. Collectively, our results highlight the importance of the N terminus of CtIP in directing its localization and function in DSB repair.",
-    "full_text_abstract": "DNA double-strand breaks (DSBs) represent one of the most lethal types of DNA damage cells encounter. CtIP (also known as RBBP8) acts together with the MRN (MRE11-RAD50-NBS1) complex to promote DNA end resection and the generation of single-stranded DNA, which is critically important for homologous recombination repair. However, it is not yet clear exactly how CtIP participates in this process. Here, we demonstrate that besides the known conserved C terminus, the N terminus of CtIP protein is also required in DSB end resection and DNA damage-induced G(2)/M checkpoint control. We further show that both termini of CtIP can interact with the MRN complex and that the N terminus of CtIP, especially residues 22-45, binds to MRN and plays a critical role in targeting CtIP to sites of DNA breaks. Collectively, our results highlight the importance of the N terminus of CtIP in directing its localization and function in DSB repair."
+  "PMC": "2797245",
+  "DOI": "10.1074/jbc.m109.023424",
+  "PMID": "19759395",
+  "PMCID": "PMC2797245",
+  "title": "N terminus of CtIP is critical for homologous recombination-mediated double-strand break repair.",
+  "year": 2009,
+  "source_url": "https://europepmc.org/article/PMC/PMC2797245",
+  "source": "MED",
+  "abstract_text": "DNA double-strand breaks (DSBs) represent one of the most lethal types of DNA damage cells encounter. CtIP (also known as RBBP8) acts together with the MRN (MRE11-RAD50-NBS1) complex to promote DNA end resection and the generation of single-stranded DNA, which is critically important for homologous recombination repair. However, it is not yet clear exactly how CtIP participates in this process. Here, we demonstrate that besides the known conserved C terminus, the N terminus of CtIP protein is also required in DSB end resection and DNA damage-induced G(2)/M checkpoint control. We further show that both termini of CtIP can interact with the MRN complex and that the N terminus of CtIP, especially residues 22-45, binds to MRN and plays a critical role in targeting CtIP to sites of DNA breaks. Collectively, our results highlight the importance of the N terminus of CtIP in directing its localization and function in DSB repair.",
+  "plain_text": "DNA double-strand breaks (DSBs) represent one of the most lethal types of DNA damage cells encounter. CtIP (also known as RBBP8) acts together with the MRN (MRE11-RAD50-NBS1) complex to promote DNA end resection and the generation of single-stranded DNA, which is critically important for homologous recombination repair. However, it is not yet clear exactly how CtIP participates in this process. Here, we demonstrate that besides the known conserved C terminus, the N terminus of CtIP protein is also required in DSB end resection and DNA damage-induced G(2)/M checkpoint control. We further show that both termini of CtIP can interact with the MRN complex and that the N terminus of CtIP, especially residues 22-45, binds to MRN and plays a critical role in targeting CtIP to sites of DNA breaks. Collectively, our results highlight the importance of the N terminus of CtIP in directing its localization and function in DSB repair."
 }

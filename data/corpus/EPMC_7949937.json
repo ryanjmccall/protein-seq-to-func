@@ -1,11 +1,11 @@
 {
-    "PMC": "2247789",
-    "PMID": "7949937",
-    "PMCID": "PMC2247789",
-    "title": "Information engineering for molecular diagnostics.",
-    "year": 1994,
-    "source_url": "https://europepmc.org/article/PMC/PMC2247789",
-    "source": "MED",
-    "abstract_text": "Clinical laboratories are beginning to apply the recent advances in molecular biology to the testing of patient samples. The emerging field of Molecular Diagnostics will require a new Molecular Diagnostics Laboratory Information System which handles the data types, samples and test methods found in this field. The system must be very flexible in regards to supporting ad-hoc queries. The requirements which are shaping the developments in this field are reviewed and a data model developed. Several queries which demonstrate the data models ability to support the information needs of this area have been developed and run. These results demonstrate the ability of the purposed data model to meet the current and projected needs of this rapidly expanding field.",
-    "full_text_abstract": "Clinical laboratories are beginning to apply the recent advances in molecular biology to the testing of patient samples. The emerging field of Molecular Diagnostics will require a new Molecular Diagnostics Laboratory Information System which handles the data types, samples and test methods found in this field. The system must be very flexible in regards to supporting ad-hoc queries. The requirements which are shaping the developments in this field are reviewed and a data model developed. Several queries which demonstrate the data models ability to support the information needs of this area have been developed and run. These results demonstrate the ability of the purposed data model to meet the current and projected needs of this rapidly expanding field."
+  "PMC": "2247789",
+  "PMID": "7949937",
+  "PMCID": "PMC2247789",
+  "title": "Information engineering for molecular diagnostics.",
+  "year": 1994,
+  "source_url": "https://europepmc.org/article/PMC/PMC2247789",
+  "source": "MED",
+  "abstract_text": "Clinical laboratories are beginning to apply the recent advances in molecular biology to the testing of patient samples. The emerging field of Molecular Diagnostics will require a new Molecular Diagnostics Laboratory Information System which handles the data types, samples and test methods found in this field. The system must be very flexible in regards to supporting ad-hoc queries. The requirements which are shaping the developments in this field are reviewed and a data model developed. Several queries which demonstrate the data models ability to support the information needs of this area have been developed and run. These results demonstrate the ability of the purposed data model to meet the current and projected needs of this rapidly expanding field.",
+  "plain_text": "Clinical laboratories are beginning to apply the recent advances in molecular biology to the testing of patient samples. The emerging field of Molecular Diagnostics will require a new Molecular Diagnostics Laboratory Information System which handles the data types, samples and test methods found in this field. The system must be very flexible in regards to supporting ad-hoc queries. The requirements which are shaping the developments in this field are reviewed and a data model developed. Several queries which demonstrate the data models ability to support the information needs of this area have been developed and run. These results demonstrate the ability of the purposed data model to meet the current and projected needs of this rapidly expanding field."
 }

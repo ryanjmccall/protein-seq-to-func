@@ -1,12 +1,12 @@
 {
-    "PMC": "2606095",
-    "DOI": "10.1016/j.chembiol.2008.07.006",
-    "PMID": "18721752",
-    "PMCID": "PMC2606095",
-    "title": "System-wide investigation of ErbB4 reveals 19 sites of Tyr phosphorylation that are unusually selective in their recruitment properties.",
-    "year": 2008,
-    "source_url": "https://europepmc.org/article/PMC/PMC2606095",
-    "source": "MED",
-    "abstract_text": "The first three members of the ErbB family of receptor tyrosine kinases activate a wide variety of signaling pathways and are frequently misregulated in cancer. Much less is known about ErbB4. Here we use tandem mass spectrometry to identify 19 sites of tyrosine phosphorylation on ErbB4, and protein microarrays to quantify biophysical interactions between these sites and virtually every SH2 and PTB domain encoded in the human genome. Our unbiased approach highlighted several previously unrecognized interactions and led to the finding that ErbB4 can recruit and activate STAT1. At a systems level, we found that ErbB4 is much more selective than the other ErbB receptors. This suggests that ErbB4 may enable ErbB2 and ErbB3 to signal independently of EGFR under normal conditions, and provides a possible explanation for the protective properties of ErbB4 in cancer.",
-    "full_text_abstract": "The first three members of the ErbB family of receptor tyrosine kinases activate a wide variety of signaling pathways and are frequently misregulated in cancer. Much less is known about ErbB4. Here we use tandem mass spectrometry to identify 19 sites of tyrosine phosphorylation on ErbB4, and protein microarrays to quantify biophysical interactions between these sites and virtually every SH2 and PTB domain encoded in the human genome. Our unbiased approach highlighted several previously unrecognized interactions and led to the finding that ErbB4 can recruit and activate STAT1. At a systems level, we found that ErbB4 is much more selective than the other ErbB receptors. This suggests that ErbB4 may enable ErbB2 and ErbB3 to signal independently of EGFR under normal conditions, and provides a possible explanation for the protective properties of ErbB4 in cancer."
+  "PMC": "2606095",
+  "DOI": "10.1016/j.chembiol.2008.07.006",
+  "PMID": "18721752",
+  "PMCID": "PMC2606095",
+  "title": "System-wide investigation of ErbB4 reveals 19 sites of Tyr phosphorylation that are unusually selective in their recruitment properties.",
+  "year": 2008,
+  "source_url": "https://europepmc.org/article/PMC/PMC2606095",
+  "source": "MED",
+  "abstract_text": "The first three members of the ErbB family of receptor tyrosine kinases activate a wide variety of signaling pathways and are frequently misregulated in cancer. Much less is known about ErbB4. Here we use tandem mass spectrometry to identify 19 sites of tyrosine phosphorylation on ErbB4, and protein microarrays to quantify biophysical interactions between these sites and virtually every SH2 and PTB domain encoded in the human genome. Our unbiased approach highlighted several previously unrecognized interactions and led to the finding that ErbB4 can recruit and activate STAT1. At a systems level, we found that ErbB4 is much more selective than the other ErbB receptors. This suggests that ErbB4 may enable ErbB2 and ErbB3 to signal independently of EGFR under normal conditions, and provides a possible explanation for the protective properties of ErbB4 in cancer.",
+  "plain_text": "The first three members of the ErbB family of receptor tyrosine kinases activate a wide variety of signaling pathways and are frequently misregulated in cancer. Much less is known about ErbB4. Here we use tandem mass spectrometry to identify 19 sites of tyrosine phosphorylation on ErbB4, and protein microarrays to quantify biophysical interactions between these sites and virtually every SH2 and PTB domain encoded in the human genome. Our unbiased approach highlighted several previously unrecognized interactions and led to the finding that ErbB4 can recruit and activate STAT1. At a systems level, we found that ErbB4 is much more selective than the other ErbB receptors. This suggests that ErbB4 may enable ErbB2 and ErbB3 to signal independently of EGFR under normal conditions, and provides a possible explanation for the protective properties of ErbB4 in cancer."
 }

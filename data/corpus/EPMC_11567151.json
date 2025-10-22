@@ -1,10 +1,10 @@
 {
-    "DOI": "10.1107/s0907444901012434",
-    "PMID": "11567151",
-    "title": "NMR trial models: experiences with the colicin immunity protein Im7 and the p85alpha C-terminal SH2-peptide complex.",
-    "year": 2001,
-    "source_url": "https://europepmc.org/article/MED/11567151",
-    "source": "MED",
-    "abstract_text": "Two cases of successful molecular replacement using NMR trial models are presented. One is the crystal structure of the Escherichia coli colicin immunity protein Im7; the other is a heretofore unreported crystal structure of a specific PDGF receptor-derived peptide complex of the carboxy-terminal SH2 domain from the p85alpha subunit of human phosphatidylinositol 3-OH kinase. In both cases, molecular replacement was non-trivial. Success was achieved using trial models that consisted of an ensemble of NMR structures from which the more flexible portions had been excised. Use of maximum-likelihood refinement proved critical to be able to refine the poor starting models. The challenges typical of the use of NMR trial models in molecular replacement are discussed.",
-    "full_text_abstract": "Two cases of successful molecular replacement using NMR trial models are presented. One is the crystal structure of the Escherichia coli colicin immunity protein Im7; the other is a heretofore unreported crystal structure of a specific PDGF receptor-derived peptide complex of the carboxy-terminal SH2 domain from the p85alpha subunit of human phosphatidylinositol 3-OH kinase. In both cases, molecular replacement was non-trivial. Success was achieved using trial models that consisted of an ensemble of NMR structures from which the more flexible portions had been excised. Use of maximum-likelihood refinement proved critical to be able to refine the poor starting models. The challenges typical of the use of NMR trial models in molecular replacement are discussed."
+  "DOI": "10.1107/s0907444901012434",
+  "PMID": "11567151",
+  "title": "NMR trial models: experiences with the colicin immunity protein Im7 and the p85alpha C-terminal SH2-peptide complex.",
+  "year": 2001,
+  "source_url": "https://europepmc.org/article/MED/11567151",
+  "source": "MED",
+  "abstract_text": "Two cases of successful molecular replacement using NMR trial models are presented. One is the crystal structure of the Escherichia coli colicin immunity protein Im7; the other is a heretofore unreported crystal structure of a specific PDGF receptor-derived peptide complex of the carboxy-terminal SH2 domain from the p85alpha subunit of human phosphatidylinositol 3-OH kinase. In both cases, molecular replacement was non-trivial. Success was achieved using trial models that consisted of an ensemble of NMR structures from which the more flexible portions had been excised. Use of maximum-likelihood refinement proved critical to be able to refine the poor starting models. The challenges typical of the use of NMR trial models in molecular replacement are discussed.",
+  "plain_text": "Two cases of successful molecular replacement using NMR trial models are presented. One is the crystal structure of the Escherichia coli colicin immunity protein Im7; the other is a heretofore unreported crystal structure of a specific PDGF receptor-derived peptide complex of the carboxy-terminal SH2 domain from the p85alpha subunit of human phosphatidylinositol 3-OH kinase. In both cases, molecular replacement was non-trivial. Success was achieved using trial models that consisted of an ensemble of NMR structures from which the more flexible portions had been excised. Use of maximum-likelihood refinement proved critical to be able to refine the poor starting models. The challenges typical of the use of NMR trial models in molecular replacement are discussed."
 }

@@ -1,12 +1,12 @@
 {
-    "PMC": "4889030",
-    "DOI": "10.1016/j.molcel.2016.02.032",
-    "PMID": "26990986",
-    "PMCID": "PMC4889030",
-    "title": "Glutamine Triggers Acetylation-Dependent Degradation of Glutamine Synthetase via the Thalidomide Receptor Cereblon.",
-    "year": 2016,
-    "source_url": "https://europepmc.org/article/PMC/PMC4889030",
-    "source": "MED",
-    "abstract_text": "Cereblon (CRBN), a substrate receptor for the cullin-RING ubiquitin ligase 4 (CRL4) complex, is a direct protein target for thalidomide teratogenicity and antitumor activity of immunomodulatory drugs (IMiDs). Here we report that glutamine synthetase (GS) is an endogenous substrate of CRL4(CRBN). Upon exposing cells to high glutamine concentration, GS is acetylated at lysines 11 and 14, yielding a degron that is necessary and sufficient for binding and ubiquitylation by CRL4(CRBN) and degradation by the proteasome. Binding of acetylated degron peptides to CRBN depends on an intact thalidomide-binding pocket but is not competitive with IMiDs. These findings reveal a feedback loop involving CRL4(CRBN) that adjusts GS protein levels in response to glutamine and uncover a new function for lysine acetylation.",
-    "full_text_abstract": "Cereblon (CRBN), a substrate receptor for the cullin-RING ubiquitin ligase 4 (CRL4) complex, is a direct protein target for thalidomide teratogenicity and antitumor activity of immunomodulatory drugs (IMiDs). Here we report that glutamine synthetase (GS) is an endogenous substrate of CRL4(CRBN). Upon exposing cells to high glutamine concentration, GS is acetylated at lysines 11 and 14, yielding a degron that is necessary and sufficient for binding and ubiquitylation by CRL4(CRBN) and degradation by the proteasome. Binding of acetylated degron peptides to CRBN depends on an intact thalidomide-binding pocket but is not competitive with IMiDs. These findings reveal a feedback loop involving CRL4(CRBN) that adjusts GS protein levels in response to glutamine and uncover a new function for lysine acetylation."
+  "PMC": "4889030",
+  "DOI": "10.1016/j.molcel.2016.02.032",
+  "PMID": "26990986",
+  "PMCID": "PMC4889030",
+  "title": "Glutamine Triggers Acetylation-Dependent Degradation of Glutamine Synthetase via the Thalidomide Receptor Cereblon.",
+  "year": 2016,
+  "source_url": "https://europepmc.org/article/PMC/PMC4889030",
+  "source": "MED",
+  "abstract_text": "Cereblon (CRBN), a substrate receptor for the cullin-RING ubiquitin ligase 4 (CRL4) complex, is a direct protein target for thalidomide teratogenicity and antitumor activity of immunomodulatory drugs (IMiDs). Here we report that glutamine synthetase (GS) is an endogenous substrate of CRL4(CRBN). Upon exposing cells to high glutamine concentration, GS is acetylated at lysines 11 and 14, yielding a degron that is necessary and sufficient for binding and ubiquitylation by CRL4(CRBN) and degradation by the proteasome. Binding of acetylated degron peptides to CRBN depends on an intact thalidomide-binding pocket but is not competitive with IMiDs. These findings reveal a feedback loop involving CRL4(CRBN) that adjusts GS protein levels in response to glutamine and uncover a new function for lysine acetylation.",
+  "plain_text": "Cereblon (CRBN), a substrate receptor for the cullin-RING ubiquitin ligase 4 (CRL4) complex, is a direct protein target for thalidomide teratogenicity and antitumor activity of immunomodulatory drugs (IMiDs). Here we report that glutamine synthetase (GS) is an endogenous substrate of CRL4(CRBN). Upon exposing cells to high glutamine concentration, GS is acetylated at lysines 11 and 14, yielding a degron that is necessary and sufficient for binding and ubiquitylation by CRL4(CRBN) and degradation by the proteasome. Binding of acetylated degron peptides to CRBN depends on an intact thalidomide-binding pocket but is not competitive with IMiDs. These findings reveal a feedback loop involving CRL4(CRBN) that adjusts GS protein levels in response to glutamine and uncover a new function for lysine acetylation."
 }

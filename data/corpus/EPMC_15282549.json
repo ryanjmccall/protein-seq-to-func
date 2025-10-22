@@ -1,12 +1,12 @@
 {
-    "PMC": "514515",
-    "DOI": "10.1038/sj.emboj.7600342",
-    "PMID": "15282549",
-    "PMCID": "PMC514515",
-    "title": "LRIG1 restricts growth factor signaling by enhancing receptor ubiquitylation and degradation.",
-    "year": 2004,
-    "source_url": "https://europepmc.org/article/PMC/PMC514515",
-    "source": "MED",
-    "abstract_text": "Kekkon proteins negatively regulate the epidermal growth factor receptor (EGFR) during oogenesis in Drosophila. Their structural relative in mammals, LRIG1, is a transmembrane protein whose inactivation in rodents promotes skin hyperplasia, suggesting involvement in EGFR regulation. We report upregulation of LRIG1 transcript and protein upon EGF stimulation, and physical association of the encoded protein with the four EGFR orthologs of mammals. Upregulation of LRIG1 is followed by enhanced ubiquitylation and degradation of EGFR. The underlying mechanism involves recruitment of c-Cbl, an E3 ubiquitin ligase that simultaneously ubiquitylates EGFR and LRIG1 and sorts them for degradation. We conclude that LRIG1 evolved in mammals as a feedback negative attenuator of signaling by receptor tyrosine kinases.",
-    "full_text_abstract": "Kekkon proteins negatively regulate the epidermal growth factor receptor (EGFR) during oogenesis in Drosophila. Their structural relative in mammals, LRIG1, is a transmembrane protein whose inactivation in rodents promotes skin hyperplasia, suggesting involvement in EGFR regulation. We report upregulation of LRIG1 transcript and protein upon EGF stimulation, and physical association of the encoded protein with the four EGFR orthologs of mammals. Upregulation of LRIG1 is followed by enhanced ubiquitylation and degradation of EGFR. The underlying mechanism involves recruitment of c-Cbl, an E3 ubiquitin ligase that simultaneously ubiquitylates EGFR and LRIG1 and sorts them for degradation. We conclude that LRIG1 evolved in mammals as a feedback negative attenuator of signaling by receptor tyrosine kinases."
+  "PMC": "514515",
+  "DOI": "10.1038/sj.emboj.7600342",
+  "PMID": "15282549",
+  "PMCID": "PMC514515",
+  "title": "LRIG1 restricts growth factor signaling by enhancing receptor ubiquitylation and degradation.",
+  "year": 2004,
+  "source_url": "https://europepmc.org/article/PMC/PMC514515",
+  "source": "MED",
+  "abstract_text": "Kekkon proteins negatively regulate the epidermal growth factor receptor (EGFR) during oogenesis in Drosophila. Their structural relative in mammals, LRIG1, is a transmembrane protein whose inactivation in rodents promotes skin hyperplasia, suggesting involvement in EGFR regulation. We report upregulation of LRIG1 transcript and protein upon EGF stimulation, and physical association of the encoded protein with the four EGFR orthologs of mammals. Upregulation of LRIG1 is followed by enhanced ubiquitylation and degradation of EGFR. The underlying mechanism involves recruitment of c-Cbl, an E3 ubiquitin ligase that simultaneously ubiquitylates EGFR and LRIG1 and sorts them for degradation. We conclude that LRIG1 evolved in mammals as a feedback negative attenuator of signaling by receptor tyrosine kinases.",
+  "plain_text": "Kekkon proteins negatively regulate the epidermal growth factor receptor (EGFR) during oogenesis in Drosophila. Their structural relative in mammals, LRIG1, is a transmembrane protein whose inactivation in rodents promotes skin hyperplasia, suggesting involvement in EGFR regulation. We report upregulation of LRIG1 transcript and protein upon EGF stimulation, and physical association of the encoded protein with the four EGFR orthologs of mammals. Upregulation of LRIG1 is followed by enhanced ubiquitylation and degradation of EGFR. The underlying mechanism involves recruitment of c-Cbl, an E3 ubiquitin ligase that simultaneously ubiquitylates EGFR and LRIG1 and sorts them for degradation. We conclude that LRIG1 evolved in mammals as a feedback negative attenuator of signaling by receptor tyrosine kinases."
 }

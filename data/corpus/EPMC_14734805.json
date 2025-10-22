@@ -1,12 +1,12 @@
 {
-    "PMC": "337038",
-    "DOI": "10.1073/pnas.0307765100",
-    "PMID": "14734805",
-    "PMCID": "PMC337038",
-    "title": "DNA-PKcs function regulated specifically by protein phosphatase 5.",
-    "year": 2004,
-    "source_url": "https://europepmc.org/article/PMC/PMC337038",
-    "source": "MED",
-    "abstract_text": "Unrepaired DNA double-strand breaks can lead to apoptosis or tumorigenesis. In mammals double-strand breaks are repaired mainly by nonhomologous end-joining mediated by the DNA-PK complex. The core protein of this complex, DNA-PKcs, is a DNA-dependent serine/threonine kinase that phosphorylates protein targets as well as itself. Although the (auto)phosphorylation activity has been shown to be essential for repair of both random double-strand breaks and induced breaks at the immunoglobulin locus, the corresponding phosphatase has been elusive. In fact, to date, none of the putative phosphatases in DNA double-strand break repair has been identified. Here we show that protein phosphatase 5 interacts with DNA-PKcs and dephosphorylates with surprising specificity at least two functional sites. Cells with either hypo- or hyperphosphorylation of DNA-PKcs at these sites show increased radiation sensitivity.",
-    "full_text_abstract": "Unrepaired DNA double-strand breaks can lead to apoptosis or tumorigenesis. In mammals double-strand breaks are repaired mainly by nonhomologous end-joining mediated by the DNA-PK complex. The core protein of this complex, DNA-PKcs, is a DNA-dependent serine/threonine kinase that phosphorylates protein targets as well as itself. Although the (auto)phosphorylation activity has been shown to be essential for repair of both random double-strand breaks and induced breaks at the immunoglobulin locus, the corresponding phosphatase has been elusive. In fact, to date, none of the putative phosphatases in DNA double-strand break repair has been identified. Here we show that protein phosphatase 5 interacts with DNA-PKcs and dephosphorylates with surprising specificity at least two functional sites. Cells with either hypo- or hyperphosphorylation of DNA-PKcs at these sites show increased radiation sensitivity."
+  "PMC": "337038",
+  "DOI": "10.1073/pnas.0307765100",
+  "PMID": "14734805",
+  "PMCID": "PMC337038",
+  "title": "DNA-PKcs function regulated specifically by protein phosphatase 5.",
+  "year": 2004,
+  "source_url": "https://europepmc.org/article/PMC/PMC337038",
+  "source": "MED",
+  "abstract_text": "Unrepaired DNA double-strand breaks can lead to apoptosis or tumorigenesis. In mammals double-strand breaks are repaired mainly by nonhomologous end-joining mediated by the DNA-PK complex. The core protein of this complex, DNA-PKcs, is a DNA-dependent serine/threonine kinase that phosphorylates protein targets as well as itself. Although the (auto)phosphorylation activity has been shown to be essential for repair of both random double-strand breaks and induced breaks at the immunoglobulin locus, the corresponding phosphatase has been elusive. In fact, to date, none of the putative phosphatases in DNA double-strand break repair has been identified. Here we show that protein phosphatase 5 interacts with DNA-PKcs and dephosphorylates with surprising specificity at least two functional sites. Cells with either hypo- or hyperphosphorylation of DNA-PKcs at these sites show increased radiation sensitivity.",
+  "plain_text": "Unrepaired DNA double-strand breaks can lead to apoptosis or tumorigenesis. In mammals double-strand breaks are repaired mainly by nonhomologous end-joining mediated by the DNA-PK complex. The core protein of this complex, DNA-PKcs, is a DNA-dependent serine/threonine kinase that phosphorylates protein targets as well as itself. Although the (auto)phosphorylation activity has been shown to be essential for repair of both random double-strand breaks and induced breaks at the immunoglobulin locus, the corresponding phosphatase has been elusive. In fact, to date, none of the putative phosphatases in DNA double-strand break repair has been identified. Here we show that protein phosphatase 5 interacts with DNA-PKcs and dephosphorylates with surprising specificity at least two functional sites. Cells with either hypo- or hyperphosphorylation of DNA-PKcs at these sites show increased radiation sensitivity."
 }

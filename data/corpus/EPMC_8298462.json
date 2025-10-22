@@ -1,12 +1,12 @@
 {
-    "PMC": "2142327",
-    "DOI": "10.1002/pro.5560021214",
-    "PMID": "8298462",
-    "PMCID": "PMC2142327",
-    "title": "Classification of doubly wound nucleotide binding topologies using automated loop searches.",
-    "year": 1993,
-    "source_url": "https://europepmc.org/article/PMC/PMC2142327",
-    "source": "MED",
-    "abstract_text": "A classification is presented of doubly wound alpha/beta nucleotide binding topologies, whose binding sites are located in the cleft formed by a topological switch point. In particular, the switch point loop nearest the N-terminus is used to identify specific structural classes of binding protein. This yields seven structurally distinct loop conformations, which are subsequently used as motifs for scanning the Protein Data Bank. The searches, which are effective at identifying functional relationships within a large database of structures, reveal a remarkable and previously unnoticed similarity between the coenzyme binding sites of flavodoxin and tryptophan synthetase, even though there is no sequence or topological similarity between them.",
-    "full_text_abstract": "A classification is presented of doubly wound alpha/beta nucleotide binding topologies, whose binding sites are located in the cleft formed by a topological switch point. In particular, the switch point loop nearest the N-terminus is used to identify specific structural classes of binding protein. This yields seven structurally distinct loop conformations, which are subsequently used as motifs for scanning the Protein Data Bank. The searches, which are effective at identifying functional relationships within a large database of structures, reveal a remarkable and previously unnoticed similarity between the coenzyme binding sites of flavodoxin and tryptophan synthetase, even though there is no sequence or topological similarity between them."
+  "PMC": "2142327",
+  "DOI": "10.1002/pro.5560021214",
+  "PMID": "8298462",
+  "PMCID": "PMC2142327",
+  "title": "Classification of doubly wound nucleotide binding topologies using automated loop searches.",
+  "year": 1993,
+  "source_url": "https://europepmc.org/article/PMC/PMC2142327",
+  "source": "MED",
+  "abstract_text": "A classification is presented of doubly wound alpha/beta nucleotide binding topologies, whose binding sites are located in the cleft formed by a topological switch point. In particular, the switch point loop nearest the N-terminus is used to identify specific structural classes of binding protein. This yields seven structurally distinct loop conformations, which are subsequently used as motifs for scanning the Protein Data Bank. The searches, which are effective at identifying functional relationships within a large database of structures, reveal a remarkable and previously unnoticed similarity between the coenzyme binding sites of flavodoxin and tryptophan synthetase, even though there is no sequence or topological similarity between them.",
+  "plain_text": "A classification is presented of doubly wound alpha/beta nucleotide binding topologies, whose binding sites are located in the cleft formed by a topological switch point. In particular, the switch point loop nearest the N-terminus is used to identify specific structural classes of binding protein. This yields seven structurally distinct loop conformations, which are subsequently used as motifs for scanning the Protein Data Bank. The searches, which are effective at identifying functional relationships within a large database of structures, reveal a remarkable and previously unnoticed similarity between the coenzyme binding sites of flavodoxin and tryptophan synthetase, even though there is no sequence or topological similarity between them."
 }

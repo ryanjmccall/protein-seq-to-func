@@ -1,12 +1,12 @@
 {
-    "PMC": "2754589",
-    "DOI": "10.1016/j.ceb.2009.05.006",
-    "PMID": "19525103",
-    "PMCID": "PMC2754589",
-    "title": "Focal adhesion kinase: switching between GAPs and GEFs in the regulation of cell motility.",
-    "year": 2009,
-    "source_url": "https://europepmc.org/article/PMC/PMC2754589",
-    "source": "MED",
-    "abstract_text": "Focal adhesion (FA) kinase (FAK) is a cytoplasmic protein-tyrosine kinase involved in cytoskeleton remodeling, formation and disassembly of cell adhesion structures, and in the regulation of Rho-family GTPases. Therefore, FAK is widely accepted as an important promoter of directional cell movement. Recent studies have elucidated new molecular connections of FAK in these processes. Specifically, FAK facilitates the localized and cyclic activation of guanine nucleotide exchange factors (GEFs) and GTPases-activating proteins (GAPs). In general, GEFs activate, while GAPs inactivate RhoGTPases. Therefore, FAK is in a unique signaling position to modulate RhoGTPase activity in space and time, thereby affecting various steps (integrin activation, leading edge formation, FA turnover, and trailing edge retraction) needed for efficient directional cell migration.",
-    "full_text_abstract": "Focal adhesion (FA) kinase (FAK) is a cytoplasmic protein-tyrosine kinase involved in cytoskeleton remodeling, formation and disassembly of cell adhesion structures, and in the regulation of Rho-family GTPases. Therefore, FAK is widely accepted as an important promoter of directional cell movement. Recent studies have elucidated new molecular connections of FAK in these processes. Specifically, FAK facilitates the localized and cyclic activation of guanine nucleotide exchange factors (GEFs) and GTPases-activating proteins (GAPs). In general, GEFs activate, while GAPs inactivate RhoGTPases. Therefore, FAK is in a unique signaling position to modulate RhoGTPase activity in space and time, thereby affecting various steps (integrin activation, leading edge formation, FA turnover, and trailing edge retraction) needed for efficient directional cell migration."
+  "PMC": "2754589",
+  "DOI": "10.1016/j.ceb.2009.05.006",
+  "PMID": "19525103",
+  "PMCID": "PMC2754589",
+  "title": "Focal adhesion kinase: switching between GAPs and GEFs in the regulation of cell motility.",
+  "year": 2009,
+  "source_url": "https://europepmc.org/article/PMC/PMC2754589",
+  "source": "MED",
+  "abstract_text": "Focal adhesion (FA) kinase (FAK) is a cytoplasmic protein-tyrosine kinase involved in cytoskeleton remodeling, formation and disassembly of cell adhesion structures, and in the regulation of Rho-family GTPases. Therefore, FAK is widely accepted as an important promoter of directional cell movement. Recent studies have elucidated new molecular connections of FAK in these processes. Specifically, FAK facilitates the localized and cyclic activation of guanine nucleotide exchange factors (GEFs) and GTPases-activating proteins (GAPs). In general, GEFs activate, while GAPs inactivate RhoGTPases. Therefore, FAK is in a unique signaling position to modulate RhoGTPase activity in space and time, thereby affecting various steps (integrin activation, leading edge formation, FA turnover, and trailing edge retraction) needed for efficient directional cell migration.",
+  "plain_text": "Focal adhesion (FA) kinase (FAK) is a cytoplasmic protein-tyrosine kinase involved in cytoskeleton remodeling, formation and disassembly of cell adhesion structures, and in the regulation of Rho-family GTPases. Therefore, FAK is widely accepted as an important promoter of directional cell movement. Recent studies have elucidated new molecular connections of FAK in these processes. Specifically, FAK facilitates the localized and cyclic activation of guanine nucleotide exchange factors (GEFs) and GTPases-activating proteins (GAPs). In general, GEFs activate, while GAPs inactivate RhoGTPases. Therefore, FAK is in a unique signaling position to modulate RhoGTPase activity in space and time, thereby affecting various steps (integrin activation, leading edge formation, FA turnover, and trailing edge retraction) needed for efficient directional cell migration."
 }

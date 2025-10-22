@@ -1,12 +1,12 @@
 {
-    "PMC": "3855730",
-    "DOI": "10.1107/s1744309113030649",
-    "PMID": "24316840",
-    "PMCID": "PMC3855730",
-    "title": "Preliminary crystallographic studies of BRCA1 BRCT-ABRAXAS complex.",
-    "year": 2013,
-    "source_url": "https://europepmc.org/article/PMC/PMC3855730",
-    "source": "MED",
-    "abstract_text": "The BRCA1 holoenzyme complex plays an important role in DNA damage repair. ABRAXAS is a newly discovered component of this complex and its C-terminal region directly binds to the BRCA1 BRCT domain. Single crystals of the BRCA1 BRCT-ABRAXAS complex grown by co-crystallization belonged to space group P4(1)2(1)2, with unit-cell parameters a = b = 187.18, c = 85.31 \u00c5. Diffraction data were collected on the BM-14 beamline at the ESRF. Molecular-replacement calculations using Phaser led to three molecules in the asymmetric unit and a high solvent content of 76%.",
-    "full_text_abstract": "The BRCA1 holoenzyme complex plays an important role in DNA damage repair. ABRAXAS is a newly discovered component of this complex and its C-terminal region directly binds to the BRCA1 BRCT domain. Single crystals of the BRCA1 BRCT-ABRAXAS complex grown by co-crystallization belonged to space group P4(1)2(1)2, with unit-cell parameters a = b = 187.18, c = 85.31 \u00c5. Diffraction data were collected on the BM-14 beamline at the ESRF. Molecular-replacement calculations using Phaser led to three molecules in the asymmetric unit and a high solvent content of 76%."
+  "PMC": "3855730",
+  "DOI": "10.1107/s1744309113030649",
+  "PMID": "24316840",
+  "PMCID": "PMC3855730",
+  "title": "Preliminary crystallographic studies of BRCA1 BRCT-ABRAXAS complex.",
+  "year": 2013,
+  "source_url": "https://europepmc.org/article/PMC/PMC3855730",
+  "source": "MED",
+  "abstract_text": "The BRCA1 holoenzyme complex plays an important role in DNA damage repair. ABRAXAS is a newly discovered component of this complex and its C-terminal region directly binds to the BRCA1 BRCT domain. Single crystals of the BRCA1 BRCT-ABRAXAS complex grown by co-crystallization belonged to space group P4(1)2(1)2, with unit-cell parameters a = b = 187.18, c = 85.31 Å. Diffraction data were collected on the BM-14 beamline at the ESRF. Molecular-replacement calculations using Phaser led to three molecules in the asymmetric unit and a high solvent content of 76%.",
+  "plain_text": "The BRCA1 holoenzyme complex plays an important role in DNA damage repair. ABRAXAS is a newly discovered component of this complex and its C-terminal region directly binds to the BRCA1 BRCT domain. Single crystals of the BRCA1 BRCT-ABRAXAS complex grown by co-crystallization belonged to space group P4(1)2(1)2, with unit-cell parameters a = b = 187.18, c = 85.31 Å. Diffraction data were collected on the BM-14 beamline at the ESRF. Molecular-replacement calculations using Phaser led to three molecules in the asymmetric unit and a high solvent content of 76%."
 }

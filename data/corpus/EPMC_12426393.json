@@ -1,12 +1,12 @@
 {
-    "PMC": "137209",
-    "DOI": "10.1093/emboj/cdf620",
-    "PMID": "12426393",
-    "PMCID": "PMC137209",
-    "title": "Exportin-5-mediated nuclear export of eukaryotic elongation factor 1A and tRNA.",
-    "year": 2002,
-    "source_url": "https://europepmc.org/article/PMC/PMC137209",
-    "source": "MED",
-    "abstract_text": "Transport of proteins and RNA into and out of the cell nucleus is mediated largely by a family of RanGTP-binding transport receptors. Export receptors (exportins) need to bind RanGTP for efficient loading of their export cargo. We have identified eukaryotic elongation factor 1A (eEF1A) and tRNA as RanGTP-dependent binding partners of exportin-5 (Exp5). Exp5 stimulates nuclear export of eEF1A when microinjected into the nucleus of Xenopus laevis oocytes. Surprisingly, the interaction between eEF1A and Exp5 is dependent on tRNA that can interact directly with Exp5 and, if aminoacylated, recruits eEF1A into the export complex. These data suggested to us that Exp5 might support tRNA export. Indeed, not only the canonical tRNA export receptor, exportin-t, but also Exp5 can drive nuclear export of tRNA. Taken together, we show that there exists an alternative tRNA export pathway which can be exploited to keep eEF1A out of the cell nucleus.",
-    "full_text_abstract": "Transport of proteins and RNA into and out of the cell nucleus is mediated largely by a family of RanGTP-binding transport receptors. Export receptors (exportins) need to bind RanGTP for efficient loading of their export cargo. We have identified eukaryotic elongation factor 1A (eEF1A) and tRNA as RanGTP-dependent binding partners of exportin-5 (Exp5). Exp5 stimulates nuclear export of eEF1A when microinjected into the nucleus of Xenopus laevis oocytes. Surprisingly, the interaction between eEF1A and Exp5 is dependent on tRNA that can interact directly with Exp5 and, if aminoacylated, recruits eEF1A into the export complex. These data suggested to us that Exp5 might support tRNA export. Indeed, not only the canonical tRNA export receptor, exportin-t, but also Exp5 can drive nuclear export of tRNA. Taken together, we show that there exists an alternative tRNA export pathway which can be exploited to keep eEF1A out of the cell nucleus."
+  "PMC": "137209",
+  "DOI": "10.1093/emboj/cdf620",
+  "PMID": "12426393",
+  "PMCID": "PMC137209",
+  "title": "Exportin-5-mediated nuclear export of eukaryotic elongation factor 1A and tRNA.",
+  "year": 2002,
+  "source_url": "https://europepmc.org/article/PMC/PMC137209",
+  "source": "MED",
+  "abstract_text": "Transport of proteins and RNA into and out of the cell nucleus is mediated largely by a family of RanGTP-binding transport receptors. Export receptors (exportins) need to bind RanGTP for efficient loading of their export cargo. We have identified eukaryotic elongation factor 1A (eEF1A) and tRNA as RanGTP-dependent binding partners of exportin-5 (Exp5). Exp5 stimulates nuclear export of eEF1A when microinjected into the nucleus of Xenopus laevis oocytes. Surprisingly, the interaction between eEF1A and Exp5 is dependent on tRNA that can interact directly with Exp5 and, if aminoacylated, recruits eEF1A into the export complex. These data suggested to us that Exp5 might support tRNA export. Indeed, not only the canonical tRNA export receptor, exportin-t, but also Exp5 can drive nuclear export of tRNA. Taken together, we show that there exists an alternative tRNA export pathway which can be exploited to keep eEF1A out of the cell nucleus.",
+  "plain_text": "Transport of proteins and RNA into and out of the cell nucleus is mediated largely by a family of RanGTP-binding transport receptors. Export receptors (exportins) need to bind RanGTP for efficient loading of their export cargo. We have identified eukaryotic elongation factor 1A (eEF1A) and tRNA as RanGTP-dependent binding partners of exportin-5 (Exp5). Exp5 stimulates nuclear export of eEF1A when microinjected into the nucleus of Xenopus laevis oocytes. Surprisingly, the interaction between eEF1A and Exp5 is dependent on tRNA that can interact directly with Exp5 and, if aminoacylated, recruits eEF1A into the export complex. These data suggested to us that Exp5 might support tRNA export. Indeed, not only the canonical tRNA export receptor, exportin-t, but also Exp5 can drive nuclear export of tRNA. Taken together, we show that there exists an alternative tRNA export pathway which can be exploited to keep eEF1A out of the cell nucleus."
 }

@@ -1,12 +1,12 @@
 {
-    "PMC": "1171708",
-    "DOI": "10.1093/emboj/18.22.6455",
-    "PMID": "10562557",
-    "PMCID": "PMC1171708",
-    "title": "SUMO-1 modification activates the transcriptional response of p53.",
-    "year": 1999,
-    "source_url": "https://europepmc.org/article/PMC/PMC1171708",
-    "source": "MED",
-    "abstract_text": "The p53 tumour suppressor protein is regulated by ubiquitin-mediated proteasomal degradation. In normal cells p53 is constitutively ubiquitylated by the Mdm2 ubiquitin ligase. When the p53 response is activated by stress signals p53 levels rise due to inhibition of this degradative pathway. Here we show that p53 is modified by the small ubiquitin-like protein SUMO-1 at a single site, K386, in the C-terminus of the protein. Modification in vitro requires only SUMO-1, the SUMO-1 activating enzyme and ubc9. SUMO-1 and ubiquitin modification do not compete for the same lysine acceptor sites in p53. Overexpression of SUMO-1 activates the transcriptional activity of wild-type p53, but not K386R p53 where the SUMO-1 acceptor site has been mutated. The SUMO-1 modification pathway therefore acts as a potential regulator of the p53 response and may represent a novel target for the development of therapeutically useful modulators of the p53 response.",
-    "full_text_abstract": "The p53 tumour suppressor protein is regulated by ubiquitin-mediated proteasomal degradation. In normal cells p53 is constitutively ubiquitylated by the Mdm2 ubiquitin ligase. When the p53 response is activated by stress signals p53 levels rise due to inhibition of this degradative pathway. Here we show that p53 is modified by the small ubiquitin-like protein SUMO-1 at a single site, K386, in the C-terminus of the protein. Modification in vitro requires only SUMO-1, the SUMO-1 activating enzyme and ubc9. SUMO-1 and ubiquitin modification do not compete for the same lysine acceptor sites in p53. Overexpression of SUMO-1 activates the transcriptional activity of wild-type p53, but not K386R p53 where the SUMO-1 acceptor site has been mutated. The SUMO-1 modification pathway therefore acts as a potential regulator of the p53 response and may represent a novel target for the development of therapeutically useful modulators of the p53 response."
+  "PMC": "1171708",
+  "DOI": "10.1093/emboj/18.22.6455",
+  "PMID": "10562557",
+  "PMCID": "PMC1171708",
+  "title": "SUMO-1 modification activates the transcriptional response of p53.",
+  "year": 1999,
+  "source_url": "https://europepmc.org/article/PMC/PMC1171708",
+  "source": "MED",
+  "abstract_text": "The p53 tumour suppressor protein is regulated by ubiquitin-mediated proteasomal degradation. In normal cells p53 is constitutively ubiquitylated by the Mdm2 ubiquitin ligase. When the p53 response is activated by stress signals p53 levels rise due to inhibition of this degradative pathway. Here we show that p53 is modified by the small ubiquitin-like protein SUMO-1 at a single site, K386, in the C-terminus of the protein. Modification in vitro requires only SUMO-1, the SUMO-1 activating enzyme and ubc9. SUMO-1 and ubiquitin modification do not compete for the same lysine acceptor sites in p53. Overexpression of SUMO-1 activates the transcriptional activity of wild-type p53, but not K386R p53 where the SUMO-1 acceptor site has been mutated. The SUMO-1 modification pathway therefore acts as a potential regulator of the p53 response and may represent a novel target for the development of therapeutically useful modulators of the p53 response.",
+  "plain_text": "The p53 tumour suppressor protein is regulated by ubiquitin-mediated proteasomal degradation. In normal cells p53 is constitutively ubiquitylated by the Mdm2 ubiquitin ligase. When the p53 response is activated by stress signals p53 levels rise due to inhibition of this degradative pathway. Here we show that p53 is modified by the small ubiquitin-like protein SUMO-1 at a single site, K386, in the C-terminus of the protein. Modification in vitro requires only SUMO-1, the SUMO-1 activating enzyme and ubc9. SUMO-1 and ubiquitin modification do not compete for the same lysine acceptor sites in p53. Overexpression of SUMO-1 activates the transcriptional activity of wild-type p53, but not K386R p53 where the SUMO-1 acceptor site has been mutated. The SUMO-1 modification pathway therefore acts as a potential regulator of the p53 response and may represent a novel target for the development of therapeutically useful modulators of the p53 response."
 }

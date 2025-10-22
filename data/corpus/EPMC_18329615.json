@@ -1,12 +1,12 @@
 {
-    "PMC": "2680745",
-    "DOI": "10.1016/j.chom.2008.02.002",
-    "PMID": "18329615",
-    "PMCID": "PMC2680745",
-    "title": "Human immunodeficiency virus type 1 Tat protein inhibits the SIRT1 deacetylase and induces T cell hyperactivation.",
-    "year": 2008,
-    "source_url": "https://europepmc.org/article/PMC/PMC2680745",
-    "source": "MED",
-    "abstract_text": "Symptoms of T cell hyperactivation shape the course and outcome of HIV-1 infection, but the mechanism(s) underlying this chronic immune activation are not well understood. We find that the viral transactivator Tat promotes hyperactivation of T cells by blocking the nicotinamide adenine dinucleotide (NAD(+))-dependent deacetylase SIRT1. Tat directly interacts with the deacetylase domain of SIRT1 and blocks the ability of SIRT1 to deacetylate lysine 310 in the p65 subunit of NF-kappaB. Because acetylated p65 is more active as a transcription factor, Tat hyperactivates the expression of NF-kappaB-responsive genes, a function lost in SIRT1-/- cells. These results support a model where the normal function of SIRT1 as a negative regulator of T cell activation is suppressed by Tat during HIV infection. These events likely contribute to the state of immune cell hyperactivation found in HIV-infected individuals.",
-    "full_text_abstract": "Symptoms of T cell hyperactivation shape the course and outcome of HIV-1 infection, but the mechanism(s) underlying this chronic immune activation are not well understood. We find that the viral transactivator Tat promotes hyperactivation of T cells by blocking the nicotinamide adenine dinucleotide (NAD(+))-dependent deacetylase SIRT1. Tat directly interacts with the deacetylase domain of SIRT1 and blocks the ability of SIRT1 to deacetylate lysine 310 in the p65 subunit of NF-kappaB. Because acetylated p65 is more active as a transcription factor, Tat hyperactivates the expression of NF-kappaB-responsive genes, a function lost in SIRT1-/- cells. These results support a model where the normal function of SIRT1 as a negative regulator of T cell activation is suppressed by Tat during HIV infection. These events likely contribute to the state of immune cell hyperactivation found in HIV-infected individuals."
+  "PMC": "2680745",
+  "DOI": "10.1016/j.chom.2008.02.002",
+  "PMID": "18329615",
+  "PMCID": "PMC2680745",
+  "title": "Human immunodeficiency virus type 1 Tat protein inhibits the SIRT1 deacetylase and induces T cell hyperactivation.",
+  "year": 2008,
+  "source_url": "https://europepmc.org/article/PMC/PMC2680745",
+  "source": "MED",
+  "abstract_text": "Symptoms of T cell hyperactivation shape the course and outcome of HIV-1 infection, but the mechanism(s) underlying this chronic immune activation are not well understood. We find that the viral transactivator Tat promotes hyperactivation of T cells by blocking the nicotinamide adenine dinucleotide (NAD(+))-dependent deacetylase SIRT1. Tat directly interacts with the deacetylase domain of SIRT1 and blocks the ability of SIRT1 to deacetylate lysine 310 in the p65 subunit of NF-kappaB. Because acetylated p65 is more active as a transcription factor, Tat hyperactivates the expression of NF-kappaB-responsive genes, a function lost in SIRT1-/- cells. These results support a model where the normal function of SIRT1 as a negative regulator of T cell activation is suppressed by Tat during HIV infection. These events likely contribute to the state of immune cell hyperactivation found in HIV-infected individuals.",
+  "plain_text": "Symptoms of T cell hyperactivation shape the course and outcome of HIV-1 infection, but the mechanism(s) underlying this chronic immune activation are not well understood. We find that the viral transactivator Tat promotes hyperactivation of T cells by blocking the nicotinamide adenine dinucleotide (NAD(+))-dependent deacetylase SIRT1. Tat directly interacts with the deacetylase domain of SIRT1 and blocks the ability of SIRT1 to deacetylate lysine 310 in the p65 subunit of NF-kappaB. Because acetylated p65 is more active as a transcription factor, Tat hyperactivates the expression of NF-kappaB-responsive genes, a function lost in SIRT1-/- cells. These results support a model where the normal function of SIRT1 as a negative regulator of T cell activation is suppressed by Tat during HIV infection. These events likely contribute to the state of immune cell hyperactivation found in HIV-infected individuals."
 }

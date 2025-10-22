@@ -1,12 +1,12 @@
 {
-    "PMC": "3527981",
-    "DOI": "10.1074/jbc.m112.421545",
-    "PMID": "23115235",
-    "PMCID": "PMC3527981",
-    "title": "The RING finger protein RNF8 ubiquitinates Nbs1 to promote DNA double-strand break repair by homologous recombination.",
-    "year": 2012,
-    "source_url": "https://europepmc.org/article/PMC/PMC3527981",
-    "source": "MED",
-    "abstract_text": "Ubiquitination plays an important role in the DNA damage response. We identified a novel interaction of the E3 ubiquitin ligase RNF8 with Nbs1, a key regulator of DNA double-strand break (DSB) repair. We found that Nbs1 is ubiquitinated both before and after DNA damage and is a direct ubiquitination substrate of RNF8. We also identified key residues on Nbs1 that are ubiquitinated by RNF8. By using laser microirradiation and live-cell imaging, we observed that RNF8 and its ubiquitination activity are important for promoting optimal binding of Nbs1 to DSB-containing chromatin. We also demonstrated that RNF8-mediated ubiquitination of Nbs1 contributes to the efficient and stable binding of Nbs1 to DSBs and is important for HR-mediated DSB repair. Taken together, these studies suggest that Nbs1 is one important target of RNF8 to regulate DNA DSB repair.",
-    "full_text_abstract": "Ubiquitination plays an important role in the DNA damage response. We identified a novel interaction of the E3 ubiquitin ligase RNF8 with Nbs1, a key regulator of DNA double-strand break (DSB) repair. We found that Nbs1 is ubiquitinated both before and after DNA damage and is a direct ubiquitination substrate of RNF8. We also identified key residues on Nbs1 that are ubiquitinated by RNF8. By using laser microirradiation and live-cell imaging, we observed that RNF8 and its ubiquitination activity are important for promoting optimal binding of Nbs1 to DSB-containing chromatin. We also demonstrated that RNF8-mediated ubiquitination of Nbs1 contributes to the efficient and stable binding of Nbs1 to DSBs and is important for HR-mediated DSB repair. Taken together, these studies suggest that Nbs1 is one important target of RNF8 to regulate DNA DSB repair."
+  "PMC": "3527981",
+  "DOI": "10.1074/jbc.m112.421545",
+  "PMID": "23115235",
+  "PMCID": "PMC3527981",
+  "title": "The RING finger protein RNF8 ubiquitinates Nbs1 to promote DNA double-strand break repair by homologous recombination.",
+  "year": 2012,
+  "source_url": "https://europepmc.org/article/PMC/PMC3527981",
+  "source": "MED",
+  "abstract_text": "Ubiquitination plays an important role in the DNA damage response. We identified a novel interaction of the E3 ubiquitin ligase RNF8 with Nbs1, a key regulator of DNA double-strand break (DSB) repair. We found that Nbs1 is ubiquitinated both before and after DNA damage and is a direct ubiquitination substrate of RNF8. We also identified key residues on Nbs1 that are ubiquitinated by RNF8. By using laser microirradiation and live-cell imaging, we observed that RNF8 and its ubiquitination activity are important for promoting optimal binding of Nbs1 to DSB-containing chromatin. We also demonstrated that RNF8-mediated ubiquitination of Nbs1 contributes to the efficient and stable binding of Nbs1 to DSBs and is important for HR-mediated DSB repair. Taken together, these studies suggest that Nbs1 is one important target of RNF8 to regulate DNA DSB repair.",
+  "plain_text": "Ubiquitination plays an important role in the DNA damage response. We identified a novel interaction of the E3 ubiquitin ligase RNF8 with Nbs1, a key regulator of DNA double-strand break (DSB) repair. We found that Nbs1 is ubiquitinated both before and after DNA damage and is a direct ubiquitination substrate of RNF8. We also identified key residues on Nbs1 that are ubiquitinated by RNF8. By using laser microirradiation and live-cell imaging, we observed that RNF8 and its ubiquitination activity are important for promoting optimal binding of Nbs1 to DSB-containing chromatin. We also demonstrated that RNF8-mediated ubiquitination of Nbs1 contributes to the efficient and stable binding of Nbs1 to DSBs and is important for HR-mediated DSB repair. Taken together, these studies suggest that Nbs1 is one important target of RNF8 to regulate DNA DSB repair."
 }

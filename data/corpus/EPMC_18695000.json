@@ -1,12 +1,12 @@
 {
-    "PMC": "2572802",
-    "DOI": "10.1182/blood-2008-01-134122",
-    "PMID": "18695000",
-    "PMCID": "PMC2572802",
-    "title": "PEBP2-beta/CBF-beta-dependent phosphorylation of RUNX1 and p300 by HIPK2: implications for leukemogenesis.",
-    "year": 2008,
-    "source_url": "https://europepmc.org/article/PMC/PMC2572802",
-    "source": "MED",
-    "abstract_text": "The heterodimeric transcription factor RUNX1/PEBP2-beta (also known as AML1/CBF-beta) is essential for definitive hematopoiesis. Here, we show that interaction with PEBP2-beta leads to the phosphorylation of RUNX1, which in turn induces p300 phosphorylation. This is mediated by homeodomain interacting kinase 2 (HIPK2), targeting Ser(249), Ser(273), and Thr(276) in RUNX1, in a manner that is also dependent on the RUNX1 PY motif. Importantly, we observed the in vitro disruption of this phosphorylation cascade by multiple leukemogenic genetic defects targeting RUNX1/CBFB. In particular, the oncogenic protein PEBP2-beta-SMMHC prevents RUNX1/p300 phosphorylation by sequestering HIPK2 to mislocalized RUNX1/beta-SMMHC complexes. Therefore, phosphorylation of RUNX1 appears a critical step in its association with and phosphorylation of p300, and its disruption may be a common theme in RUNX1-associated leukemogenesis.",
-    "full_text_abstract": "The heterodimeric transcription factor RUNX1/PEBP2-beta (also known as AML1/CBF-beta) is essential for definitive hematopoiesis. Here, we show that interaction with PEBP2-beta leads to the phosphorylation of RUNX1, which in turn induces p300 phosphorylation. This is mediated by homeodomain interacting kinase 2 (HIPK2), targeting Ser(249), Ser(273), and Thr(276) in RUNX1, in a manner that is also dependent on the RUNX1 PY motif. Importantly, we observed the in vitro disruption of this phosphorylation cascade by multiple leukemogenic genetic defects targeting RUNX1/CBFB. In particular, the oncogenic protein PEBP2-beta-SMMHC prevents RUNX1/p300 phosphorylation by sequestering HIPK2 to mislocalized RUNX1/beta-SMMHC complexes. Therefore, phosphorylation of RUNX1 appears a critical step in its association with and phosphorylation of p300, and its disruption may be a common theme in RUNX1-associated leukemogenesis."
+  "PMC": "2572802",
+  "DOI": "10.1182/blood-2008-01-134122",
+  "PMID": "18695000",
+  "PMCID": "PMC2572802",
+  "title": "PEBP2-beta/CBF-beta-dependent phosphorylation of RUNX1 and p300 by HIPK2: implications for leukemogenesis.",
+  "year": 2008,
+  "source_url": "https://europepmc.org/article/PMC/PMC2572802",
+  "source": "MED",
+  "abstract_text": "The heterodimeric transcription factor RUNX1/PEBP2-beta (also known as AML1/CBF-beta) is essential for definitive hematopoiesis. Here, we show that interaction with PEBP2-beta leads to the phosphorylation of RUNX1, which in turn induces p300 phosphorylation. This is mediated by homeodomain interacting kinase 2 (HIPK2), targeting Ser(249), Ser(273), and Thr(276) in RUNX1, in a manner that is also dependent on the RUNX1 PY motif. Importantly, we observed the in vitro disruption of this phosphorylation cascade by multiple leukemogenic genetic defects targeting RUNX1/CBFB. In particular, the oncogenic protein PEBP2-beta-SMMHC prevents RUNX1/p300 phosphorylation by sequestering HIPK2 to mislocalized RUNX1/beta-SMMHC complexes. Therefore, phosphorylation of RUNX1 appears a critical step in its association with and phosphorylation of p300, and its disruption may be a common theme in RUNX1-associated leukemogenesis.",
+  "plain_text": "The heterodimeric transcription factor RUNX1/PEBP2-beta (also known as AML1/CBF-beta) is essential for definitive hematopoiesis. Here, we show that interaction with PEBP2-beta leads to the phosphorylation of RUNX1, which in turn induces p300 phosphorylation. This is mediated by homeodomain interacting kinase 2 (HIPK2), targeting Ser(249), Ser(273), and Thr(276) in RUNX1, in a manner that is also dependent on the RUNX1 PY motif. Importantly, we observed the in vitro disruption of this phosphorylation cascade by multiple leukemogenic genetic defects targeting RUNX1/CBFB. In particular, the oncogenic protein PEBP2-beta-SMMHC prevents RUNX1/p300 phosphorylation by sequestering HIPK2 to mislocalized RUNX1/beta-SMMHC complexes. Therefore, phosphorylation of RUNX1 appears a critical step in its association with and phosphorylation of p300, and its disruption may be a common theme in RUNX1-associated leukemogenesis."
 }

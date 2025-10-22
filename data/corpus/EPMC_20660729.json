@@ -1,12 +1,12 @@
 {
-    "PMC": "2922604",
-    "DOI": "10.1073/pnas.1009559107",
-    "PMID": "20660729",
-    "PMCID": "PMC2922604",
-    "title": "Polybromo-associated BRG1-associated factor components BRD7 and BAF180 are critical regulators of p53 required for induction of replicative senescence.",
-    "year": 2010,
-    "source_url": "https://europepmc.org/article/PMC/PMC2922604",
-    "source": "MED",
-    "abstract_text": "A variety of tumor-suppressor mechanisms exist to promote genome integrity and organismal survival. One such mechanism is cellular senescence. In response to replicative aging, DNA damage, and oncogenic stimuli, the p53 and Rb pathways are activated to prevent the proliferation of damaged cells by inducing senescence or apoptosis. We have performed a loss-of-function genetic screen in primary human cells to identify components of the senescence machinery. Here we describe BRD7 and BAF180 as unique regulators of replicative senescence in human cells. Both regulate p53 transcriptional activity toward a subset of its target genes required for replicative and oncogenic stress senescence induction, and BRD7 physically interacts with p53. BRD7 is a deletion target in human cancer, suggesting that loss of BRD7 may provide an additional mechanism to antagonize p53 function in cancer cells.",
-    "full_text_abstract": "A variety of tumor-suppressor mechanisms exist to promote genome integrity and organismal survival. One such mechanism is cellular senescence. In response to replicative aging, DNA damage, and oncogenic stimuli, the p53 and Rb pathways are activated to prevent the proliferation of damaged cells by inducing senescence or apoptosis. We have performed a loss-of-function genetic screen in primary human cells to identify components of the senescence machinery. Here we describe BRD7 and BAF180 as unique regulators of replicative senescence in human cells. Both regulate p53 transcriptional activity toward a subset of its target genes required for replicative and oncogenic stress senescence induction, and BRD7 physically interacts with p53. BRD7 is a deletion target in human cancer, suggesting that loss of BRD7 may provide an additional mechanism to antagonize p53 function in cancer cells."
+  "PMC": "2922604",
+  "DOI": "10.1073/pnas.1009559107",
+  "PMID": "20660729",
+  "PMCID": "PMC2922604",
+  "title": "Polybromo-associated BRG1-associated factor components BRD7 and BAF180 are critical regulators of p53 required for induction of replicative senescence.",
+  "year": 2010,
+  "source_url": "https://europepmc.org/article/PMC/PMC2922604",
+  "source": "MED",
+  "abstract_text": "A variety of tumor-suppressor mechanisms exist to promote genome integrity and organismal survival. One such mechanism is cellular senescence. In response to replicative aging, DNA damage, and oncogenic stimuli, the p53 and Rb pathways are activated to prevent the proliferation of damaged cells by inducing senescence or apoptosis. We have performed a loss-of-function genetic screen in primary human cells to identify components of the senescence machinery. Here we describe BRD7 and BAF180 as unique regulators of replicative senescence in human cells. Both regulate p53 transcriptional activity toward a subset of its target genes required for replicative and oncogenic stress senescence induction, and BRD7 physically interacts with p53. BRD7 is a deletion target in human cancer, suggesting that loss of BRD7 may provide an additional mechanism to antagonize p53 function in cancer cells.",
+  "plain_text": "A variety of tumor-suppressor mechanisms exist to promote genome integrity and organismal survival. One such mechanism is cellular senescence. In response to replicative aging, DNA damage, and oncogenic stimuli, the p53 and Rb pathways are activated to prevent the proliferation of damaged cells by inducing senescence or apoptosis. We have performed a loss-of-function genetic screen in primary human cells to identify components of the senescence machinery. Here we describe BRD7 and BAF180 as unique regulators of replicative senescence in human cells. Both regulate p53 transcriptional activity toward a subset of its target genes required for replicative and oncogenic stress senescence induction, and BRD7 physically interacts with p53. BRD7 is a deletion target in human cancer, suggesting that loss of BRD7 may provide an additional mechanism to antagonize p53 function in cancer cells."
 }

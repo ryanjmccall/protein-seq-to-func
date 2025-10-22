@@ -1,10 +1,10 @@
 {
-    "DOI": "10.1038/ncb1601",
-    "PMID": "17558397",
-    "title": "The ubiquitin-specific protease USP28 is required for MYC stability.",
-    "year": 2007,
-    "source_url": "https://europepmc.org/article/MED/17558397",
-    "source": "MED",
-    "abstract_text": "The MYC proto-oncogene encodes a transcription factor that has been implicated in the genesis of many human tumours. Here, we used a bar-code short hairpin RNA (shRNA) screen to identify multiple genes that are required for MYC function. One of these genes encodes USP28, an ubiquitin-specific protease. USP28 is required for MYC stability in human tumour cells. USP28 binds to MYC through an interaction with FBW7alpha, an F-box protein that is part of an SCF-type ubiquitin ligase. Therefore, it stabilizes MYC in the nucleus, but not in the nucleolus, where MYC is degraded by FBW7gamma. High expression levels of USP28 are found in colon and breast carcinomas, and stabilization of MYC by USP28 is essential for tumour-cell proliferation.",
-    "full_text_abstract": "The MYC proto-oncogene encodes a transcription factor that has been implicated in the genesis of many human tumours. Here, we used a bar-code short hairpin RNA (shRNA) screen to identify multiple genes that are required for MYC function. One of these genes encodes USP28, an ubiquitin-specific protease. USP28 is required for MYC stability in human tumour cells. USP28 binds to MYC through an interaction with FBW7alpha, an F-box protein that is part of an SCF-type ubiquitin ligase. Therefore, it stabilizes MYC in the nucleus, but not in the nucleolus, where MYC is degraded by FBW7gamma. High expression levels of USP28 are found in colon and breast carcinomas, and stabilization of MYC by USP28 is essential for tumour-cell proliferation."
+  "DOI": "10.1038/ncb1601",
+  "PMID": "17558397",
+  "title": "The ubiquitin-specific protease USP28 is required for MYC stability.",
+  "year": 2007,
+  "source_url": "https://europepmc.org/article/MED/17558397",
+  "source": "MED",
+  "abstract_text": "The MYC proto-oncogene encodes a transcription factor that has been implicated in the genesis of many human tumours. Here, we used a bar-code short hairpin RNA (shRNA) screen to identify multiple genes that are required for MYC function. One of these genes encodes USP28, an ubiquitin-specific protease. USP28 is required for MYC stability in human tumour cells. USP28 binds to MYC through an interaction with FBW7alpha, an F-box protein that is part of an SCF-type ubiquitin ligase. Therefore, it stabilizes MYC in the nucleus, but not in the nucleolus, where MYC is degraded by FBW7gamma. High expression levels of USP28 are found in colon and breast carcinomas, and stabilization of MYC by USP28 is essential for tumour-cell proliferation.",
+  "plain_text": "The MYC proto-oncogene encodes a transcription factor that has been implicated in the genesis of many human tumours. Here, we used a bar-code short hairpin RNA (shRNA) screen to identify multiple genes that are required for MYC function. One of these genes encodes USP28, an ubiquitin-specific protease. USP28 is required for MYC stability in human tumour cells. USP28 binds to MYC through an interaction with FBW7alpha, an F-box protein that is part of an SCF-type ubiquitin ligase. Therefore, it stabilizes MYC in the nucleus, but not in the nucleolus, where MYC is degraded by FBW7gamma. High expression levels of USP28 are found in colon and breast carcinomas, and stabilization of MYC by USP28 is essential for tumour-cell proliferation."
 }

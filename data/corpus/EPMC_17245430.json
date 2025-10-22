@@ -1,12 +1,12 @@
 {
-    "PMC": "1783465",
-    "DOI": "10.1038/sj.emboj.7601519",
-    "PMID": "17245430",
-    "PMCID": "PMC1783465",
-    "title": "A specific PP2A regulatory subunit, B56gamma, mediates DNA damage-induced dephosphorylation of p53 at Thr55.",
-    "year": 2007,
-    "source_url": "https://europepmc.org/article/PMC/PMC1783465",
-    "source": "MED",
-    "abstract_text": "Protein phosphatase 2A (PP2A) has been implicated to exert its tumor suppressive function via a small subset of regulatory subunits. In this study, we reported that the specific B regulatory subunits of PP2A B56gamma1 and B56gamma3 mediate dephosphorylation of p53 at Thr55. Ablation of the B56gamma protein by RNAi, which abolishes the Thr55 dephosphorylation in response to DNA damage, reduces p53 stabilization, Bax expression and cell apoptosis. To investigate the molecular mechanisms, we have shown that the endogenous B56gamma protein level and association with p53 increase after DNA damage. Finally, we demonstrate that Thr55 dephosphorylation is required for B56gamma3-mediated inhibition of cell proliferation and cell transformation. These results suggest a molecular mechanism for B56gamma-mediated tumor suppression and provide a potential route for regulation of B56gamma-specific PP2A complex function.",
-    "full_text_abstract": "Protein phosphatase 2A (PP2A) has been implicated to exert its tumor suppressive function via a small subset of regulatory subunits. In this study, we reported that the specific B regulatory subunits of PP2A B56gamma1 and B56gamma3 mediate dephosphorylation of p53 at Thr55. Ablation of the B56gamma protein by RNAi, which abolishes the Thr55 dephosphorylation in response to DNA damage, reduces p53 stabilization, Bax expression and cell apoptosis. To investigate the molecular mechanisms, we have shown that the endogenous B56gamma protein level and association with p53 increase after DNA damage. Finally, we demonstrate that Thr55 dephosphorylation is required for B56gamma3-mediated inhibition of cell proliferation and cell transformation. These results suggest a molecular mechanism for B56gamma-mediated tumor suppression and provide a potential route for regulation of B56gamma-specific PP2A complex function."
+  "PMC": "1783465",
+  "DOI": "10.1038/sj.emboj.7601519",
+  "PMID": "17245430",
+  "PMCID": "PMC1783465",
+  "title": "A specific PP2A regulatory subunit, B56gamma, mediates DNA damage-induced dephosphorylation of p53 at Thr55.",
+  "year": 2007,
+  "source_url": "https://europepmc.org/article/PMC/PMC1783465",
+  "source": "MED",
+  "abstract_text": "Protein phosphatase 2A (PP2A) has been implicated to exert its tumor suppressive function via a small subset of regulatory subunits. In this study, we reported that the specific B regulatory subunits of PP2A B56gamma1 and B56gamma3 mediate dephosphorylation of p53 at Thr55. Ablation of the B56gamma protein by RNAi, which abolishes the Thr55 dephosphorylation in response to DNA damage, reduces p53 stabilization, Bax expression and cell apoptosis. To investigate the molecular mechanisms, we have shown that the endogenous B56gamma protein level and association with p53 increase after DNA damage. Finally, we demonstrate that Thr55 dephosphorylation is required for B56gamma3-mediated inhibition of cell proliferation and cell transformation. These results suggest a molecular mechanism for B56gamma-mediated tumor suppression and provide a potential route for regulation of B56gamma-specific PP2A complex function.",
+  "plain_text": "Protein phosphatase 2A (PP2A) has been implicated to exert its tumor suppressive function via a small subset of regulatory subunits. In this study, we reported that the specific B regulatory subunits of PP2A B56gamma1 and B56gamma3 mediate dephosphorylation of p53 at Thr55. Ablation of the B56gamma protein by RNAi, which abolishes the Thr55 dephosphorylation in response to DNA damage, reduces p53 stabilization, Bax expression and cell apoptosis. To investigate the molecular mechanisms, we have shown that the endogenous B56gamma protein level and association with p53 increase after DNA damage. Finally, we demonstrate that Thr55 dephosphorylation is required for B56gamma3-mediated inhibition of cell proliferation and cell transformation. These results suggest a molecular mechanism for B56gamma-mediated tumor suppression and provide a potential route for regulation of B56gamma-specific PP2A complex function."
 }

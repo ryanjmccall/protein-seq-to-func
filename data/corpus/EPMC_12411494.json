@@ -1,12 +1,12 @@
 {
-    "PMC": "131059",
-    "DOI": "10.1093/emboj/cdf562",
-    "PMID": "12411494",
-    "PMCID": "PMC131059",
-    "title": "The Src family kinase Hck couples BCR/ABL to STAT5 activation in myeloid leukemia cells.",
-    "year": 2002,
-    "source_url": "https://europepmc.org/article/PMC/PMC131059",
-    "source": "MED",
-    "abstract_text": "Signal transducer and activator of transcription 5 (STAT5) is constitutively activated by BCR/ABL, the oncogenic tyrosine kinase responsible for chronic myelogenous leukemia. The mechanism of BCR/ABL-mediated STAT5 activation is unknown. We show here that the BCR/ABL SH3 and SH2 domains interact with hematopoietic cell kinase (Hck), leading to the stimulation of Hck catalytic activity. Active Hck phosphorylated STAT5B on Tyr699, which represents an essential step in STAT5B stimulation. Moreover, a kinase-dead Hck mutant and Hck inhibitor PP2 abrogated BCR/ABL-dependent activation of STAT5 and elevation of expression of STAT5 downstream effectors A1 and pim-1. These data identify a novel BCR/ABL-Hck-STAT5 signaling pathway, which plays an important role in BCR/ABL-mediated transformation of myeloid cells.",
-    "full_text_abstract": "Signal transducer and activator of transcription 5 (STAT5) is constitutively activated by BCR/ABL, the oncogenic tyrosine kinase responsible for chronic myelogenous leukemia. The mechanism of BCR/ABL-mediated STAT5 activation is unknown. We show here that the BCR/ABL SH3 and SH2 domains interact with hematopoietic cell kinase (Hck), leading to the stimulation of Hck catalytic activity. Active Hck phosphorylated STAT5B on Tyr699, which represents an essential step in STAT5B stimulation. Moreover, a kinase-dead Hck mutant and Hck inhibitor PP2 abrogated BCR/ABL-dependent activation of STAT5 and elevation of expression of STAT5 downstream effectors A1 and pim-1. These data identify a novel BCR/ABL-Hck-STAT5 signaling pathway, which plays an important role in BCR/ABL-mediated transformation of myeloid cells."
+  "PMC": "131059",
+  "DOI": "10.1093/emboj/cdf562",
+  "PMID": "12411494",
+  "PMCID": "PMC131059",
+  "title": "The Src family kinase Hck couples BCR/ABL to STAT5 activation in myeloid leukemia cells.",
+  "year": 2002,
+  "source_url": "https://europepmc.org/article/PMC/PMC131059",
+  "source": "MED",
+  "abstract_text": "Signal transducer and activator of transcription 5 (STAT5) is constitutively activated by BCR/ABL, the oncogenic tyrosine kinase responsible for chronic myelogenous leukemia. The mechanism of BCR/ABL-mediated STAT5 activation is unknown. We show here that the BCR/ABL SH3 and SH2 domains interact with hematopoietic cell kinase (Hck), leading to the stimulation of Hck catalytic activity. Active Hck phosphorylated STAT5B on Tyr699, which represents an essential step in STAT5B stimulation. Moreover, a kinase-dead Hck mutant and Hck inhibitor PP2 abrogated BCR/ABL-dependent activation of STAT5 and elevation of expression of STAT5 downstream effectors A1 and pim-1. These data identify a novel BCR/ABL-Hck-STAT5 signaling pathway, which plays an important role in BCR/ABL-mediated transformation of myeloid cells.",
+  "plain_text": "Signal transducer and activator of transcription 5 (STAT5) is constitutively activated by BCR/ABL, the oncogenic tyrosine kinase responsible for chronic myelogenous leukemia. The mechanism of BCR/ABL-mediated STAT5 activation is unknown. We show here that the BCR/ABL SH3 and SH2 domains interact with hematopoietic cell kinase (Hck), leading to the stimulation of Hck catalytic activity. Active Hck phosphorylated STAT5B on Tyr699, which represents an essential step in STAT5B stimulation. Moreover, a kinase-dead Hck mutant and Hck inhibitor PP2 abrogated BCR/ABL-dependent activation of STAT5 and elevation of expression of STAT5 downstream effectors A1 and pim-1. These data identify a novel BCR/ABL-Hck-STAT5 signaling pathway, which plays an important role in BCR/ABL-mediated transformation of myeloid cells."
 }

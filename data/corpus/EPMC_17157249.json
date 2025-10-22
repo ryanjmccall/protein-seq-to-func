@@ -1,12 +1,12 @@
 {
-    "PMC": "5030714",
-    "DOI": "10.1016/j.molcel.2006.10.024",
-    "PMID": "17157249",
-    "PMCID": "PMC5030714",
-    "title": "Recognition of a functional peroxisome type 1 target by the dynamic import receptor pex5p.",
-    "year": 2006,
-    "source_url": "https://europepmc.org/article/PMC/PMC5030714",
-    "source": "MED",
-    "abstract_text": "Peroxisomes require the translocation of folded and functional target proteins of various sizes across the peroxisomal membrane. We have investigated the structure and function of the principal import receptor Pex5p, which recognizes targets bearing a C-terminal peroxisomal targeting signal type 1. Crystal structures of the receptor in the presence and absence of a peroxisomal target, sterol carrier protein 2, reveal major structural changes from an open, snail-like conformation into a closed, circular conformation. These changes are caused by a long loop C terminal to the 7-fold tetratricopeptide repeat segments. Mutations in residues of this loop lead to defects in peroxisomal import in human fibroblasts. The structure of the receptor/cargo complex demonstrates that the primary receptor-binding site of the cargo is structurally and topologically autonomous, enabling the cargo to retain its native structure and function.",
-    "full_text_abstract": "Peroxisomes require the translocation of folded and functional target proteins of various sizes across the peroxisomal membrane. We have investigated the structure and function of the principal import receptor Pex5p, which recognizes targets bearing a C-terminal peroxisomal targeting signal type 1. Crystal structures of the receptor in the presence and absence of a peroxisomal target, sterol carrier protein 2, reveal major structural changes from an open, snail-like conformation into a closed, circular conformation. These changes are caused by a long loop C terminal to the 7-fold tetratricopeptide repeat segments. Mutations in residues of this loop lead to defects in peroxisomal import in human fibroblasts. The structure of the receptor/cargo complex demonstrates that the primary receptor-binding site of the cargo is structurally and topologically autonomous, enabling the cargo to retain its native structure and function."
+  "PMC": "5030714",
+  "DOI": "10.1016/j.molcel.2006.10.024",
+  "PMID": "17157249",
+  "PMCID": "PMC5030714",
+  "title": "Recognition of a functional peroxisome type 1 target by the dynamic import receptor pex5p.",
+  "year": 2006,
+  "source_url": "https://europepmc.org/article/PMC/PMC5030714",
+  "source": "MED",
+  "abstract_text": "Peroxisomes require the translocation of folded and functional target proteins of various sizes across the peroxisomal membrane. We have investigated the structure and function of the principal import receptor Pex5p, which recognizes targets bearing a C-terminal peroxisomal targeting signal type 1. Crystal structures of the receptor in the presence and absence of a peroxisomal target, sterol carrier protein 2, reveal major structural changes from an open, snail-like conformation into a closed, circular conformation. These changes are caused by a long loop C terminal to the 7-fold tetratricopeptide repeat segments. Mutations in residues of this loop lead to defects in peroxisomal import in human fibroblasts. The structure of the receptor/cargo complex demonstrates that the primary receptor-binding site of the cargo is structurally and topologically autonomous, enabling the cargo to retain its native structure and function.",
+  "plain_text": "Peroxisomes require the translocation of folded and functional target proteins of various sizes across the peroxisomal membrane. We have investigated the structure and function of the principal import receptor Pex5p, which recognizes targets bearing a C-terminal peroxisomal targeting signal type 1. Crystal structures of the receptor in the presence and absence of a peroxisomal target, sterol carrier protein 2, reveal major structural changes from an open, snail-like conformation into a closed, circular conformation. These changes are caused by a long loop C terminal to the 7-fold tetratricopeptide repeat segments. Mutations in residues of this loop lead to defects in peroxisomal import in human fibroblasts. The structure of the receptor/cargo complex demonstrates that the primary receptor-binding site of the cargo is structurally and topologically autonomous, enabling the cargo to retain its native structure and function."
 }

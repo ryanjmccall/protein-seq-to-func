@@ -1,12 +1,12 @@
 {
-    "PMC": "9357288",
-    "DOI": "10.1007/s00018-008-8122-2",
-    "PMID": "18563293",
-    "PMCID": "PMC9357288",
-    "title": "Structure and dynamic regulation of Src-family kinases.",
-    "year": 2008,
-    "source_url": "https://europepmc.org/article/PMC/PMC9357288",
-    "source": "MED",
-    "abstract_text": "Src-family kinases are modular signaling proteins involved in a diverse array of cellular processes. All members of the Src family share the same domain organization, with modular SH3, SH2 and kinase domains followed by a C-terminal negative regulatory tail. X-ray crystallographic analyses of several Src family members have revealed critical roles for the SH3 and SH2 domains in the down-regulation of the kinase domain. This review focuses on biological, biophysical, and computational studies that reveal conformationally distinct active states within this unique kinase family.",
-    "full_text_abstract": "Src-family kinases are modular signaling proteins involved in a diverse array of cellular processes. All members of the Src family share the same domain organization, with modular SH3, SH2 and kinase domains followed by a C-terminal negative regulatory tail. X-ray crystallographic analyses of several Src family members have revealed critical roles for the SH3 and SH2 domains in the down-regulation of the kinase domain. This review focuses on biological, biophysical, and computational studies that reveal conformationally distinct active states within this unique kinase family."
+  "PMC": "9357288",
+  "DOI": "10.1007/s00018-008-8122-2",
+  "PMID": "18563293",
+  "PMCID": "PMC9357288",
+  "title": "Structure and dynamic regulation of Src-family kinases.",
+  "year": 2008,
+  "source_url": "https://europepmc.org/article/PMC/PMC9357288",
+  "source": "MED",
+  "abstract_text": "Src-family kinases are modular signaling proteins involved in a diverse array of cellular processes. All members of the Src family share the same domain organization, with modular SH3, SH2 and kinase domains followed by a C-terminal negative regulatory tail. X-ray crystallographic analyses of several Src family members have revealed critical roles for the SH3 and SH2 domains in the down-regulation of the kinase domain. This review focuses on biological, biophysical, and computational studies that reveal conformationally distinct active states within this unique kinase family.",
+  "plain_text": "Src-family kinases are modular signaling proteins involved in a diverse array of cellular processes. All members of the Src family share the same domain organization, with modular SH3, SH2 and kinase domains followed by a C-terminal negative regulatory tail. X-ray crystallographic analyses of several Src family members have revealed critical roles for the SH3 and SH2 domains in the down-regulation of the kinase domain. This review focuses on biological, biophysical, and computational studies that reveal conformationally distinct active states within this unique kinase family."
 }

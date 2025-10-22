@@ -1,12 +1,12 @@
 {
-    "PMC": "3440717",
-    "DOI": "10.3892/etm.2011.232",
-    "PMID": "22977523",
-    "PMCID": "PMC3440717",
-    "title": "Functional interaction of BRCA1/ATM-associated BAAT1 with the DNA-PK catalytic subunit.",
-    "year": 2011,
-    "source_url": "https://europepmc.org/article/PMC/PMC3440717",
-    "source": "MED",
-    "abstract_text": "Ataxia telangiectasia mutated (ATM) and DNA-dependent protein kinase (DNA-PK) play a crucial role in the initial stages of cell response, when cells are exposed to DNA insult such as ionizing radiation (IR) and chemical agents. We previously demonstrated that ATM requires BAAT1 for its activation in response to IR. In the present study, BAAT1 was found to bind to the DNA-PK catalytic subunit (DNA-PKcs) and SMC1. Biochemical analysis indicated that several regions of BAAT1 were responsible for the interaction with these proteins, and their binding affinity was altered after treatment with the IR mimetic, neocarzinostatin (NCS). Phosphorylation of the DNA-PKcs at Ser2056 and SMC1 at Ser966 was induced by NCS, while phosphorylation was reduced when BAAT1 was depleted by siRNA. These results indicate that BAAT1 globally regulates DNA damage signaling during the early stages of apoptosis.",
-    "full_text_abstract": "Ataxia telangiectasia mutated (ATM) and DNA-dependent protein kinase (DNA-PK) play a crucial role in the initial stages of cell response, when cells are exposed to DNA insult such as ionizing radiation (IR) and chemical agents. We previously demonstrated that ATM requires BAAT1 for its activation in response to IR. In the present study, BAAT1 was found to bind to the DNA-PK catalytic subunit (DNA-PKcs) and SMC1. Biochemical analysis indicated that several regions of BAAT1 were responsible for the interaction with these proteins, and their binding affinity was altered after treatment with the IR mimetic, neocarzinostatin (NCS). Phosphorylation of the DNA-PKcs at Ser2056 and SMC1 at Ser966 was induced by NCS, while phosphorylation was reduced when BAAT1 was depleted by siRNA. These results indicate that BAAT1 globally regulates DNA damage signaling during the early stages of apoptosis."
+  "PMC": "3440717",
+  "DOI": "10.3892/etm.2011.232",
+  "PMID": "22977523",
+  "PMCID": "PMC3440717",
+  "title": "Functional interaction of BRCA1/ATM-associated BAAT1 with the DNA-PK catalytic subunit.",
+  "year": 2011,
+  "source_url": "https://europepmc.org/article/PMC/PMC3440717",
+  "source": "MED",
+  "abstract_text": "Ataxia telangiectasia mutated (ATM) and DNA-dependent protein kinase (DNA-PK) play a crucial role in the initial stages of cell response, when cells are exposed to DNA insult such as ionizing radiation (IR) and chemical agents. We previously demonstrated that ATM requires BAAT1 for its activation in response to IR. In the present study, BAAT1 was found to bind to the DNA-PK catalytic subunit (DNA-PKcs) and SMC1. Biochemical analysis indicated that several regions of BAAT1 were responsible for the interaction with these proteins, and their binding affinity was altered after treatment with the IR mimetic, neocarzinostatin (NCS). Phosphorylation of the DNA-PKcs at Ser2056 and SMC1 at Ser966 was induced by NCS, while phosphorylation was reduced when BAAT1 was depleted by siRNA. These results indicate that BAAT1 globally regulates DNA damage signaling during the early stages of apoptosis.",
+  "plain_text": "Ataxia telangiectasia mutated (ATM) and DNA-dependent protein kinase (DNA-PK) play a crucial role in the initial stages of cell response, when cells are exposed to DNA insult such as ionizing radiation (IR) and chemical agents. We previously demonstrated that ATM requires BAAT1 for its activation in response to IR. In the present study, BAAT1 was found to bind to the DNA-PK catalytic subunit (DNA-PKcs) and SMC1. Biochemical analysis indicated that several regions of BAAT1 were responsible for the interaction with these proteins, and their binding affinity was altered after treatment with the IR mimetic, neocarzinostatin (NCS). Phosphorylation of the DNA-PKcs at Ser2056 and SMC1 at Ser966 was induced by NCS, while phosphorylation was reduced when BAAT1 was depleted by siRNA. These results indicate that BAAT1 globally regulates DNA damage signaling during the early stages of apoptosis."
 }

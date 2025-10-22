@@ -1,12 +1,12 @@
 {
-    "PMC": "1074314",
-    "DOI": "10.1101/gad.1289405",
-    "PMID": "15805468",
-    "PMCID": "PMC1074314",
-    "title": "Ubiquitin ligase MKRN1 modulates telomere length homeostasis through a proteolysis of hTERT.",
-    "year": 2005,
-    "source_url": "https://europepmc.org/article/PMC/PMC1074314",
-    "source": "MED",
-    "abstract_text": "Telomere homeostasis is regulated by telomerase and a collection of associated proteins. Telomerase is, in turn, regulated by post-translational modifications of the rate-limiting catalytic subunit hTERT. Here we show that disruption of Hsp90 by geldanamycin promotes efficient ubiquitination and proteasome-mediated degradation of hTERT. Furthermore, we have used the yeast two-hybrid method to identify a novel RING finger gene (MKRN1) encoding an E3 ligase that mediates ubiquitination of hTERT. Overexpression of MKRN1 in telomerase-positive cells promotes the degradation of hTERT and decreases telomerase activity and subsequently telomere length. Our data suggest that MKRN1 plays an important role in modulating telomere length homeostasis through a dynamic balance involving hTERT protein stability.",
-    "full_text_abstract": "Telomere homeostasis is regulated by telomerase and a collection of associated proteins. Telomerase is, in turn, regulated by post-translational modifications of the rate-limiting catalytic subunit hTERT. Here we show that disruption of Hsp90 by geldanamycin promotes efficient ubiquitination and proteasome-mediated degradation of hTERT. Furthermore, we have used the yeast two-hybrid method to identify a novel RING finger gene (MKRN1) encoding an E3 ligase that mediates ubiquitination of hTERT. Overexpression of MKRN1 in telomerase-positive cells promotes the degradation of hTERT and decreases telomerase activity and subsequently telomere length. Our data suggest that MKRN1 plays an important role in modulating telomere length homeostasis through a dynamic balance involving hTERT protein stability."
+  "PMC": "1074314",
+  "DOI": "10.1101/gad.1289405",
+  "PMID": "15805468",
+  "PMCID": "PMC1074314",
+  "title": "Ubiquitin ligase MKRN1 modulates telomere length homeostasis through a proteolysis of hTERT.",
+  "year": 2005,
+  "source_url": "https://europepmc.org/article/PMC/PMC1074314",
+  "source": "MED",
+  "abstract_text": "Telomere homeostasis is regulated by telomerase and a collection of associated proteins. Telomerase is, in turn, regulated by post-translational modifications of the rate-limiting catalytic subunit hTERT. Here we show that disruption of Hsp90 by geldanamycin promotes efficient ubiquitination and proteasome-mediated degradation of hTERT. Furthermore, we have used the yeast two-hybrid method to identify a novel RING finger gene (MKRN1) encoding an E3 ligase that mediates ubiquitination of hTERT. Overexpression of MKRN1 in telomerase-positive cells promotes the degradation of hTERT and decreases telomerase activity and subsequently telomere length. Our data suggest that MKRN1 plays an important role in modulating telomere length homeostasis through a dynamic balance involving hTERT protein stability.",
+  "plain_text": "Telomere homeostasis is regulated by telomerase and a collection of associated proteins. Telomerase is, in turn, regulated by post-translational modifications of the rate-limiting catalytic subunit hTERT. Here we show that disruption of Hsp90 by geldanamycin promotes efficient ubiquitination and proteasome-mediated degradation of hTERT. Furthermore, we have used the yeast two-hybrid method to identify a novel RING finger gene (MKRN1) encoding an E3 ligase that mediates ubiquitination of hTERT. Overexpression of MKRN1 in telomerase-positive cells promotes the degradation of hTERT and decreases telomerase activity and subsequently telomere length. Our data suggest that MKRN1 plays an important role in modulating telomere length homeostasis through a dynamic balance involving hTERT protein stability."
 }

@@ -1,12 +1,12 @@
 {
-    "PMC": "1169877",
-    "DOI": "10.1093/emboj/16.10.2665",
-    "PMID": "9184213",
-    "PMCID": "PMC1169877",
-    "title": "Stimulation of V(D)J cleavage by high mobility group proteins.",
-    "year": 1997,
-    "source_url": "https://europepmc.org/article/PMC/PMC1169877",
-    "source": "MED",
-    "abstract_text": "V(D)J recombination requires a pair of signal sequences with spacer lengths of 12 and 23 bp between the conserved heptamer and nonamer elements. The RAG1 and RAG2 proteins initiate the reaction by making double-strand DNA breaks at both signals, and must thus be able to operate on these two different spatial arrangements. We show that the DNA-bending proteins HMG1 and HMG2 stimulate cleavage and RAG protein binding at the 23 bp spacer signal. These findings suggest that DNA bending is important for bridging the longer spacer, and explain how a similar array of RAG proteins could accommodate a signal with either a 12 or a 23 bp spacer. An additional effect of HMG proteins is to stimulate coupled cleavage greatly when both signal sequences are present, suggesting that these proteins also aid the formation of a synaptic complex.",
-    "full_text_abstract": "V(D)J recombination requires a pair of signal sequences with spacer lengths of 12 and 23 bp between the conserved heptamer and nonamer elements. The RAG1 and RAG2 proteins initiate the reaction by making double-strand DNA breaks at both signals, and must thus be able to operate on these two different spatial arrangements. We show that the DNA-bending proteins HMG1 and HMG2 stimulate cleavage and RAG protein binding at the 23 bp spacer signal. These findings suggest that DNA bending is important for bridging the longer spacer, and explain how a similar array of RAG proteins could accommodate a signal with either a 12 or a 23 bp spacer. An additional effect of HMG proteins is to stimulate coupled cleavage greatly when both signal sequences are present, suggesting that these proteins also aid the formation of a synaptic complex."
+  "PMC": "1169877",
+  "DOI": "10.1093/emboj/16.10.2665",
+  "PMID": "9184213",
+  "PMCID": "PMC1169877",
+  "title": "Stimulation of V(D)J cleavage by high mobility group proteins.",
+  "year": 1997,
+  "source_url": "https://europepmc.org/article/PMC/PMC1169877",
+  "source": "MED",
+  "abstract_text": "V(D)J recombination requires a pair of signal sequences with spacer lengths of 12 and 23 bp between the conserved heptamer and nonamer elements. The RAG1 and RAG2 proteins initiate the reaction by making double-strand DNA breaks at both signals, and must thus be able to operate on these two different spatial arrangements. We show that the DNA-bending proteins HMG1 and HMG2 stimulate cleavage and RAG protein binding at the 23 bp spacer signal. These findings suggest that DNA bending is important for bridging the longer spacer, and explain how a similar array of RAG proteins could accommodate a signal with either a 12 or a 23 bp spacer. An additional effect of HMG proteins is to stimulate coupled cleavage greatly when both signal sequences are present, suggesting that these proteins also aid the formation of a synaptic complex.",
+  "plain_text": "V(D)J recombination requires a pair of signal sequences with spacer lengths of 12 and 23 bp between the conserved heptamer and nonamer elements. The RAG1 and RAG2 proteins initiate the reaction by making double-strand DNA breaks at both signals, and must thus be able to operate on these two different spatial arrangements. We show that the DNA-bending proteins HMG1 and HMG2 stimulate cleavage and RAG protein binding at the 23 bp spacer signal. These findings suggest that DNA bending is important for bridging the longer spacer, and explain how a similar array of RAG proteins could accommodate a signal with either a 12 or a 23 bp spacer. An additional effect of HMG proteins is to stimulate coupled cleavage greatly when both signal sequences are present, suggesting that these proteins also aid the formation of a synaptic complex."
 }

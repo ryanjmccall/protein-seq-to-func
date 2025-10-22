@@ -1,12 +1,12 @@
 {
-    "PMC": "4253602",
-    "DOI": "10.1016/j.molonc.2014.06.009",
-    "PMID": "25091737",
-    "PMCID": "PMC4253602",
-    "title": "Identification of a new androgen receptor (AR) co-regulator BUD31 and related peptides to suppress wild-type and mutated AR-mediated prostate cancer growth via peptide screening and X-ray structure analysis.",
-    "year": 2014,
-    "source_url": "https://europepmc.org/article/PMC/PMC4253602",
-    "source": "MED",
-    "abstract_text": "Treatment with individual anti-androgens is associated with the development of hot-spot mutations in the androgen receptor (AR). Here, we found that anti-androgens-mt-ARs have similar binary structure to the 5\u03b1-dihydrotestosterone-wt-AR. Phage display revealed that these ARs bound to similar peptides, including BUD31, containing an Fxx(F/H/L/W/Y)Y motif cluster with Tyr in the +5 position. Structural analyses of the AR-LBD-BUD31 complex revealed formation of an extra hydrogen bond between the Tyr+5 residue of the peptide and the AR. Functional studies showed that BUD31-related peptides suppressed AR transactivation, interrupted AR N-C interaction, and suppressed AR-mediated cell growth. Combination of peptide screening and X-ray structure analysis may serve as a new strategy for developing anti-ARs that simultaneously suppress both wt and mutated AR function.",
-    "full_text_abstract": "Treatment with individual anti-androgens is associated with the development of hot-spot mutations in the androgen receptor (AR). Here, we found that anti-androgens-mt-ARs have similar binary structure to the 5\u03b1-dihydrotestosterone-wt-AR. Phage display revealed that these ARs bound to similar peptides, including BUD31, containing an Fxx(F/H/L/W/Y)Y motif cluster with Tyr in the +5 position. Structural analyses of the AR-LBD-BUD31 complex revealed formation of an extra hydrogen bond between the Tyr+5 residue of the peptide and the AR. Functional studies showed that BUD31-related peptides suppressed AR transactivation, interrupted AR N-C interaction, and suppressed AR-mediated cell growth. Combination of peptide screening and X-ray structure analysis may serve as a new strategy for developing anti-ARs that simultaneously suppress both wt and mutated AR function."
+  "PMC": "4253602",
+  "DOI": "10.1016/j.molonc.2014.06.009",
+  "PMID": "25091737",
+  "PMCID": "PMC4253602",
+  "title": "Identification of a new androgen receptor (AR) co-regulator BUD31 and related peptides to suppress wild-type and mutated AR-mediated prostate cancer growth via peptide screening and X-ray structure analysis.",
+  "year": 2014,
+  "source_url": "https://europepmc.org/article/PMC/PMC4253602",
+  "source": "MED",
+  "abstract_text": "Treatment with individual anti-androgens is associated with the development of hot-spot mutations in the androgen receptor (AR). Here, we found that anti-androgens-mt-ARs have similar binary structure to the 5α-dihydrotestosterone-wt-AR. Phage display revealed that these ARs bound to similar peptides, including BUD31, containing an Fxx(F/H/L/W/Y)Y motif cluster with Tyr in the +5 position. Structural analyses of the AR-LBD-BUD31 complex revealed formation of an extra hydrogen bond between the Tyr+5 residue of the peptide and the AR. Functional studies showed that BUD31-related peptides suppressed AR transactivation, interrupted AR N-C interaction, and suppressed AR-mediated cell growth. Combination of peptide screening and X-ray structure analysis may serve as a new strategy for developing anti-ARs that simultaneously suppress both wt and mutated AR function.",
+  "plain_text": "Treatment with individual anti-androgens is associated with the development of hot-spot mutations in the androgen receptor (AR). Here, we found that anti-androgens-mt-ARs have similar binary structure to the 5α-dihydrotestosterone-wt-AR. Phage display revealed that these ARs bound to similar peptides, including BUD31, containing an Fxx(F/H/L/W/Y)Y motif cluster with Tyr in the +5 position. Structural analyses of the AR-LBD-BUD31 complex revealed formation of an extra hydrogen bond between the Tyr+5 residue of the peptide and the AR. Functional studies showed that BUD31-related peptides suppressed AR transactivation, interrupted AR N-C interaction, and suppressed AR-mediated cell growth. Combination of peptide screening and X-ray structure analysis may serve as a new strategy for developing anti-ARs that simultaneously suppress both wt and mutated AR function."
 }

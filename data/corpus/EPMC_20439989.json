@@ -1,12 +1,12 @@
 {
-    "PMC": "2898296",
-    "DOI": "10.1074/jbc.m110.106443",
-    "PMID": "20439989",
-    "PMCID": "PMC2898296",
-    "title": "ZF21 protein regulates cell adhesion and motility.",
-    "year": 2010,
-    "source_url": "https://europepmc.org/article/PMC/PMC2898296",
-    "source": "MED",
-    "abstract_text": "Cell migration on an extracellular matrix (ECM) requires continuous formation and turnover of focal adhesions (FAs) along the direction of cell movement. However, our knowledge of the components of FAs and the mechanism of their regulation remains limited. Here, we identify ZF21, a member of a protein family characterized by the presence of a phosphatidylinositol 3-phosphate-binding FYVE domain, to be a new regulator of FAs and cell movement. Knockdown of ZF21 expression in cells increased the number of FAs and suppressed cell migration. Knockdown of ZF21 expression also led to a significant delay in FA disassembly following induction of synchronous disassembly of FAs by nocodazole treatment. ZF21 bound to focal adhesion kinase, localized to FAs, and was necessary for dephosphorylation of FAK at Tyr(397), which is important for disassembly of FAs. Thus, ZF21 represents a new component of FAs, mediates disassembly of FAs, and thereby regulates cell motility.",
-    "full_text_abstract": "Cell migration on an extracellular matrix (ECM) requires continuous formation and turnover of focal adhesions (FAs) along the direction of cell movement. However, our knowledge of the components of FAs and the mechanism of their regulation remains limited. Here, we identify ZF21, a member of a protein family characterized by the presence of a phosphatidylinositol 3-phosphate-binding FYVE domain, to be a new regulator of FAs and cell movement. Knockdown of ZF21 expression in cells increased the number of FAs and suppressed cell migration. Knockdown of ZF21 expression also led to a significant delay in FA disassembly following induction of synchronous disassembly of FAs by nocodazole treatment. ZF21 bound to focal adhesion kinase, localized to FAs, and was necessary for dephosphorylation of FAK at Tyr(397), which is important for disassembly of FAs. Thus, ZF21 represents a new component of FAs, mediates disassembly of FAs, and thereby regulates cell motility."
+  "PMC": "2898296",
+  "DOI": "10.1074/jbc.m110.106443",
+  "PMID": "20439989",
+  "PMCID": "PMC2898296",
+  "title": "ZF21 protein regulates cell adhesion and motility.",
+  "year": 2010,
+  "source_url": "https://europepmc.org/article/PMC/PMC2898296",
+  "source": "MED",
+  "abstract_text": "Cell migration on an extracellular matrix (ECM) requires continuous formation and turnover of focal adhesions (FAs) along the direction of cell movement. However, our knowledge of the components of FAs and the mechanism of their regulation remains limited. Here, we identify ZF21, a member of a protein family characterized by the presence of a phosphatidylinositol 3-phosphate-binding FYVE domain, to be a new regulator of FAs and cell movement. Knockdown of ZF21 expression in cells increased the number of FAs and suppressed cell migration. Knockdown of ZF21 expression also led to a significant delay in FA disassembly following induction of synchronous disassembly of FAs by nocodazole treatment. ZF21 bound to focal adhesion kinase, localized to FAs, and was necessary for dephosphorylation of FAK at Tyr(397), which is important for disassembly of FAs. Thus, ZF21 represents a new component of FAs, mediates disassembly of FAs, and thereby regulates cell motility.",
+  "plain_text": "Cell migration on an extracellular matrix (ECM) requires continuous formation and turnover of focal adhesions (FAs) along the direction of cell movement. However, our knowledge of the components of FAs and the mechanism of their regulation remains limited. Here, we identify ZF21, a member of a protein family characterized by the presence of a phosphatidylinositol 3-phosphate-binding FYVE domain, to be a new regulator of FAs and cell movement. Knockdown of ZF21 expression in cells increased the number of FAs and suppressed cell migration. Knockdown of ZF21 expression also led to a significant delay in FA disassembly following induction of synchronous disassembly of FAs by nocodazole treatment. ZF21 bound to focal adhesion kinase, localized to FAs, and was necessary for dephosphorylation of FAK at Tyr(397), which is important for disassembly of FAs. Thus, ZF21 represents a new component of FAs, mediates disassembly of FAs, and thereby regulates cell motility."
 }

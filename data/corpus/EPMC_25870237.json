@@ -1,12 +1,12 @@
 {
-    "PMC": "4417450",
-    "DOI": "10.4049/jimmunol.1400560",
-    "PMID": "25870237",
-    "PMCID": "PMC4417450",
-    "title": "Recycled IL-7 Can Be Delivered to Neighboring T Cells.",
-    "year": 2015,
-    "source_url": "https://europepmc.org/article/PMC/PMC4417450",
-    "source": "MED",
-    "abstract_text": "IL-7 is a key homeostatic cytokine that provides signals for T cell survival and proliferation in vivo. In this article, we provide evidence that IL-7 utilization is enhanced by a novel mechanism of cytokine \"recycling\" during which T cells treated with rIL-7 are rapidly induced to express p-STAT5 and are subsequently able to recycle biologically active cytokine for release to neighboring cells in soluble form. Our observations indicate that the ability of cells to recycle IL-7 is dependent on IL-7R \u03b1-chain (CD127) and endocytosis, consistent with a model whereby IL-7 is internalized via receptor interactions before recycling. These observations provide evidence of a novel mechanism that enables cells to optimally use IL-7.",
-    "full_text_abstract": "IL-7 is a key homeostatic cytokine that provides signals for T cell survival and proliferation in vivo. In this article, we provide evidence that IL-7 utilization is enhanced by a novel mechanism of cytokine \"recycling\" during which T cells treated with rIL-7 are rapidly induced to express p-STAT5 and are subsequently able to recycle biologically active cytokine for release to neighboring cells in soluble form. Our observations indicate that the ability of cells to recycle IL-7 is dependent on IL-7R \u03b1-chain (CD127) and endocytosis, consistent with a model whereby IL-7 is internalized via receptor interactions before recycling. These observations provide evidence of a novel mechanism that enables cells to optimally use IL-7."
+  "PMC": "4417450",
+  "DOI": "10.4049/jimmunol.1400560",
+  "PMID": "25870237",
+  "PMCID": "PMC4417450",
+  "title": "Recycled IL-7 Can Be Delivered to Neighboring T Cells.",
+  "year": 2015,
+  "source_url": "https://europepmc.org/article/PMC/PMC4417450",
+  "source": "MED",
+  "abstract_text": "IL-7 is a key homeostatic cytokine that provides signals for T cell survival and proliferation in vivo. In this article, we provide evidence that IL-7 utilization is enhanced by a novel mechanism of cytokine \"recycling\" during which T cells treated with rIL-7 are rapidly induced to express p-STAT5 and are subsequently able to recycle biologically active cytokine for release to neighboring cells in soluble form. Our observations indicate that the ability of cells to recycle IL-7 is dependent on IL-7R α-chain (CD127) and endocytosis, consistent with a model whereby IL-7 is internalized via receptor interactions before recycling. These observations provide evidence of a novel mechanism that enables cells to optimally use IL-7.",
+  "plain_text": "IL-7 is a key homeostatic cytokine that provides signals for T cell survival and proliferation in vivo. In this article, we provide evidence that IL-7 utilization is enhanced by a novel mechanism of cytokine \"recycling\" during which T cells treated with rIL-7 are rapidly induced to express p-STAT5 and are subsequently able to recycle biologically active cytokine for release to neighboring cells in soluble form. Our observations indicate that the ability of cells to recycle IL-7 is dependent on IL-7R α-chain (CD127) and endocytosis, consistent with a model whereby IL-7 is internalized via receptor interactions before recycling. These observations provide evidence of a novel mechanism that enables cells to optimally use IL-7."
 }

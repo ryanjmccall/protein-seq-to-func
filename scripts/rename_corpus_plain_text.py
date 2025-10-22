@@ -52,7 +52,7 @@ if __name__ == "__main__":
     print(f"Found {len(files)} files to process.")
     for file in files:
         checked += 1
-        if rename_key(file, dry_run=True):
+        if rename_key(file, dry_run=False):
             updated += 1
             print(f"[DRY RUN] Renamed key in {file}")
 

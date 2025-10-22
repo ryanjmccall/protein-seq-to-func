@@ -1,12 +1,12 @@
 {
-    "PMC": "152280",
-    "DOI": "10.1073/pnas.0538058100",
-    "PMID": "12626766",
-    "PMCID": "PMC152280",
-    "title": "Proteasome-dependent, ubiquitin-independent degradation of the Rb family of tumor suppressors by the human cytomegalovirus pp71 protein.",
-    "year": 2003,
-    "source_url": "https://europepmc.org/article/PMC/PMC152280",
-    "source": "MED",
-    "abstract_text": "Most of the substrates degraded by the proteasome are marked with polyubiquitin chains. However, there are a limited number of examples of nonubiquitinated proteins that are degraded by the proteasome. Here, we describe the degradation of the retinoblastoma family of tumor suppressor proteins by the proteasome in the absence of polyubiquitination. The retinoblastoma protein (p105), p107, and p130 are each targeted for degradation by the pp71 protein, which is encoded by the UL82 gene of human cytomegalovirus. It functions to direct their degradation in the absence of other viral proteins. While the pp71-mediated degradation of the retinoblastoma family of proteins requires proteasome function, it occurs without the attachment of ubiquitin to the substrates and in the absence of a functioning ubiquitin-conjugation system.",
-    "full_text_abstract": "Most of the substrates degraded by the proteasome are marked with polyubiquitin chains. However, there are a limited number of examples of nonubiquitinated proteins that are degraded by the proteasome. Here, we describe the degradation of the retinoblastoma family of tumor suppressor proteins by the proteasome in the absence of polyubiquitination. The retinoblastoma protein (p105), p107, and p130 are each targeted for degradation by the pp71 protein, which is encoded by the UL82 gene of human cytomegalovirus. It functions to direct their degradation in the absence of other viral proteins. While the pp71-mediated degradation of the retinoblastoma family of proteins requires proteasome function, it occurs without the attachment of ubiquitin to the substrates and in the absence of a functioning ubiquitin-conjugation system."
+  "PMC": "152280",
+  "DOI": "10.1073/pnas.0538058100",
+  "PMID": "12626766",
+  "PMCID": "PMC152280",
+  "title": "Proteasome-dependent, ubiquitin-independent degradation of the Rb family of tumor suppressors by the human cytomegalovirus pp71 protein.",
+  "year": 2003,
+  "source_url": "https://europepmc.org/article/PMC/PMC152280",
+  "source": "MED",
+  "abstract_text": "Most of the substrates degraded by the proteasome are marked with polyubiquitin chains. However, there are a limited number of examples of nonubiquitinated proteins that are degraded by the proteasome. Here, we describe the degradation of the retinoblastoma family of tumor suppressor proteins by the proteasome in the absence of polyubiquitination. The retinoblastoma protein (p105), p107, and p130 are each targeted for degradation by the pp71 protein, which is encoded by the UL82 gene of human cytomegalovirus. It functions to direct their degradation in the absence of other viral proteins. While the pp71-mediated degradation of the retinoblastoma family of proteins requires proteasome function, it occurs without the attachment of ubiquitin to the substrates and in the absence of a functioning ubiquitin-conjugation system.",
+  "plain_text": "Most of the substrates degraded by the proteasome are marked with polyubiquitin chains. However, there are a limited number of examples of nonubiquitinated proteins that are degraded by the proteasome. Here, we describe the degradation of the retinoblastoma family of tumor suppressor proteins by the proteasome in the absence of polyubiquitination. The retinoblastoma protein (p105), p107, and p130 are each targeted for degradation by the pp71 protein, which is encoded by the UL82 gene of human cytomegalovirus. It functions to direct their degradation in the absence of other viral proteins. While the pp71-mediated degradation of the retinoblastoma family of proteins requires proteasome function, it occurs without the attachment of ubiquitin to the substrates and in the absence of a functioning ubiquitin-conjugation system."
 }

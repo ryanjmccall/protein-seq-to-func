@@ -1,12 +1,12 @@
 {
-    "PMC": "3753690",
-    "DOI": "10.1126/science.1228792",
-    "PMID": "23429703",
-    "PMCID": "PMC3753690",
-    "title": "Stimulation of de novo pyrimidine synthesis by growth signaling through mTOR and S6K1.",
-    "year": 2013,
-    "source_url": "https://europepmc.org/article/PMC/PMC3753690",
-    "source": "MED",
-    "abstract_text": "Cellular growth signals stimulate anabolic processes. The mechanistic target of rapamycin complex 1 (mTORC1) is a protein kinase that senses growth signals to regulate anabolic growth and proliferation. Activation of mTORC1 led to the acute stimulation of metabolic flux through the de novo pyrimidine synthesis pathway. mTORC1 signaling posttranslationally regulated this metabolic pathway via its downstream target ribosomal protein S6 kinase 1 (S6K1), which directly phosphorylates S1859 on CAD (carbamoyl-phosphate synthetase 2, aspartate transcarbamoylase, dihydroorotase), the enzyme that catalyzes the first three steps of de novo pyrimidine synthesis. Growth signaling through mTORC1 thus stimulates the production of new nucleotides to accommodate an increase in RNA and DNA synthesis needed for ribosome biogenesis and anabolic growth.",
-    "full_text_abstract": "Cellular growth signals stimulate anabolic processes. The mechanistic target of rapamycin complex 1 (mTORC1) is a protein kinase that senses growth signals to regulate anabolic growth and proliferation. Activation of mTORC1 led to the acute stimulation of metabolic flux through the de novo pyrimidine synthesis pathway. mTORC1 signaling posttranslationally regulated this metabolic pathway via its downstream target ribosomal protein S6 kinase 1 (S6K1), which directly phosphorylates S1859 on CAD (carbamoyl-phosphate synthetase 2, aspartate transcarbamoylase, dihydroorotase), the enzyme that catalyzes the first three steps of de novo pyrimidine synthesis. Growth signaling through mTORC1 thus stimulates the production of new nucleotides to accommodate an increase in RNA and DNA synthesis needed for ribosome biogenesis and anabolic growth."
+  "PMC": "3753690",
+  "DOI": "10.1126/science.1228792",
+  "PMID": "23429703",
+  "PMCID": "PMC3753690",
+  "title": "Stimulation of de novo pyrimidine synthesis by growth signaling through mTOR and S6K1.",
+  "year": 2013,
+  "source_url": "https://europepmc.org/article/PMC/PMC3753690",
+  "source": "MED",
+  "abstract_text": "Cellular growth signals stimulate anabolic processes. The mechanistic target of rapamycin complex 1 (mTORC1) is a protein kinase that senses growth signals to regulate anabolic growth and proliferation. Activation of mTORC1 led to the acute stimulation of metabolic flux through the de novo pyrimidine synthesis pathway. mTORC1 signaling posttranslationally regulated this metabolic pathway via its downstream target ribosomal protein S6 kinase 1 (S6K1), which directly phosphorylates S1859 on CAD (carbamoyl-phosphate synthetase 2, aspartate transcarbamoylase, dihydroorotase), the enzyme that catalyzes the first three steps of de novo pyrimidine synthesis. Growth signaling through mTORC1 thus stimulates the production of new nucleotides to accommodate an increase in RNA and DNA synthesis needed for ribosome biogenesis and anabolic growth.",
+  "plain_text": "Cellular growth signals stimulate anabolic processes. The mechanistic target of rapamycin complex 1 (mTORC1) is a protein kinase that senses growth signals to regulate anabolic growth and proliferation. Activation of mTORC1 led to the acute stimulation of metabolic flux through the de novo pyrimidine synthesis pathway. mTORC1 signaling posttranslationally regulated this metabolic pathway via its downstream target ribosomal protein S6 kinase 1 (S6K1), which directly phosphorylates S1859 on CAD (carbamoyl-phosphate synthetase 2, aspartate transcarbamoylase, dihydroorotase), the enzyme that catalyzes the first three steps of de novo pyrimidine synthesis. Growth signaling through mTORC1 thus stimulates the production of new nucleotides to accommodate an increase in RNA and DNA synthesis needed for ribosome biogenesis and anabolic growth."
 }

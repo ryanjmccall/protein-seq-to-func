@@ -1,10 +1,10 @@
 {
-    "DOI": "10.1158/0008-5472.can-10-1383",
-    "PMID": "20713526",
-    "title": "Tipping the balance: Cdk2 enables Myc to suppress senescence.",
-    "year": 2010,
-    "source_url": "https://europepmc.org/article/MED/20713526",
-    "source": "MED",
-    "abstract_text": "Intrinsic tumor-suppressor pathways protect healthy cells from transformation by activated oncogenes like MYC or RAS through induction of apoptosis or cellular senescence, respectively. However, when expressed together, MYC and RAS evade these barriers and initiate tumorigenesis. Although Ras suppresses Myc-induced apoptosis, the role of Myc in this cooperation has remained undefined. In a recent report, we showed that Myc represses Ras-induced senescence, thereby overcoming the second major barrier of tumorigenesis. Inhibition of Ras-induced senescence required specific phosphorylation of Myc by cyclin-dependent kinase 2 (Cdk2) and was abrogated by pharmacologic Cdk2 inhibitors, urging a reevaluation of this kinase as a therapeutic target in Myc- or Ras-driven tumors.",
-    "full_text_abstract": "Intrinsic tumor-suppressor pathways protect healthy cells from transformation by activated oncogenes like MYC or RAS through induction of apoptosis or cellular senescence, respectively. However, when expressed together, MYC and RAS evade these barriers and initiate tumorigenesis. Although Ras suppresses Myc-induced apoptosis, the role of Myc in this cooperation has remained undefined. In a recent report, we showed that Myc represses Ras-induced senescence, thereby overcoming the second major barrier of tumorigenesis. Inhibition of Ras-induced senescence required specific phosphorylation of Myc by cyclin-dependent kinase 2 (Cdk2) and was abrogated by pharmacologic Cdk2 inhibitors, urging a reevaluation of this kinase as a therapeutic target in Myc- or Ras-driven tumors."
+  "DOI": "10.1158/0008-5472.can-10-1383",
+  "PMID": "20713526",
+  "title": "Tipping the balance: Cdk2 enables Myc to suppress senescence.",
+  "year": 2010,
+  "source_url": "https://europepmc.org/article/MED/20713526",
+  "source": "MED",
+  "abstract_text": "Intrinsic tumor-suppressor pathways protect healthy cells from transformation by activated oncogenes like MYC or RAS through induction of apoptosis or cellular senescence, respectively. However, when expressed together, MYC and RAS evade these barriers and initiate tumorigenesis. Although Ras suppresses Myc-induced apoptosis, the role of Myc in this cooperation has remained undefined. In a recent report, we showed that Myc represses Ras-induced senescence, thereby overcoming the second major barrier of tumorigenesis. Inhibition of Ras-induced senescence required specific phosphorylation of Myc by cyclin-dependent kinase 2 (Cdk2) and was abrogated by pharmacologic Cdk2 inhibitors, urging a reevaluation of this kinase as a therapeutic target in Myc- or Ras-driven tumors.",
+  "plain_text": "Intrinsic tumor-suppressor pathways protect healthy cells from transformation by activated oncogenes like MYC or RAS through induction of apoptosis or cellular senescence, respectively. However, when expressed together, MYC and RAS evade these barriers and initiate tumorigenesis. Although Ras suppresses Myc-induced apoptosis, the role of Myc in this cooperation has remained undefined. In a recent report, we showed that Myc represses Ras-induced senescence, thereby overcoming the second major barrier of tumorigenesis. Inhibition of Ras-induced senescence required specific phosphorylation of Myc by cyclin-dependent kinase 2 (Cdk2) and was abrogated by pharmacologic Cdk2 inhibitors, urging a reevaluation of this kinase as a therapeutic target in Myc- or Ras-driven tumors."
 }
