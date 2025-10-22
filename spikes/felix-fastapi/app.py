@@ -950,9 +950,275 @@ def index_batch(limit: int = 200, offset: int = 0):
     return {"status": "ok"}
 
 
-
 @app.post("/index/faiss_batch")
-def index_faiss_batch(limit: int = 200, offset: int = 0):
+def index_faiss_batch(
+    limit: int = 200,
+    offset: int = 0,
+    use_scoring: bool = True,
+    top_n: int = 1000,
+    emb_batch_size: int = 96,
+):
+# call e.g.: POST http://localhost:8000/index/faiss_batch?limit=1000&offset=0
+
+    """
+    Indexing-only endpoint:
+    - Loads JSON files from 'papers/' sliced by offset/limit
+    - Builds chunks, embeds via Nebius, appends to FAISS index and meta.jsonl
+    - Does NOT run query/extraction/article generation
+    Returns only {"status": "ok"} (plus small counters).
+    """
+
+    # --- Helper functions for scoring (local scope, no global effects) ---
+    aging_re = re.compile(r"\b(aging|ageing|inflammaging|senescence|lifespan|longevity|healthspan)\b", re.I)
+    mut_re = re.compile(r"\b(mutation(?:s)?|variant(?:s)?|polymorphism(?:s)?|snp(?:s)?|rs\d{3,}|allele(?:s)?|genotype(?:s)?)\b", re.I)
+
+    def _textcount(text: str, rx: re.Pattern) -> int:
+        if not text:
+            return 0
+        return len(rx.findall(text))
+
+    def _extract_abstract(xml_str: str) -> str:
+        """Extracts <abstract> text from JATS XML robustly; returns empty string on failure."""
+        if not xml_str:
+            return ""
+        try:
+            root = ET.fromstring(xml_str)
+            abs_nodes = root.findall(".//abstract")
+            parts = []
+            for node in abs_nodes:
+                parts.append("".join(node.itertext()))
+            return "\n".join(p.strip() for p in parts if p and p.strip())
+        except Exception:
+            return ""
+
+    def _score_paper(paper: Dict[str, Any]) -> float:
+        title = (paper.get("title") or "")
+        body = (paper.get("plain_text") or "")
+        year = paper.get("year") or 0
+        try:
+            year = int(year)
+        except Exception:
+            year = 0
+        abstract = _extract_abstract(paper.get("xml") or "")
+
+        # Count matches by section
+        t_mut = _textcount(title, mut_re)
+        t_age = _textcount(title, aging_re)
+        a_mut = _textcount(abstract, mut_re)
+        a_age = _textcount(abstract, aging_re)
+        b_mut = _textcount(body, mut_re)
+        b_age = _textcount(body, aging_re)
+
+        # Weighted sum with mild recency bonus
+        score = (
+            4.0 * t_mut
+            + 3.0 * t_age
+            + 2.5 * a_mut
+            + 2.0 * a_age
+            + 1.2 * b_mut
+            + 0.8 * b_age
+        )
+        if year > 0:
+            score += max(0, year - 2010) * 0.05
+
+        return float(score)
+
+    # --- Gather JSON files (no filtering) ---
+    if not os.path.isdir(PAPERS_DIR):
+        print(f"[INDEX] Folder '{PAPERS_DIR}' does not exist. Create it and drop JSON files inside.")
+        return {"status": "ok"}
+
+    all_files = [os.path.join(PAPERS_DIR, fn) for fn in os.listdir(PAPERS_DIR) if fn.endswith(".json")]
+    all_files.sort()
+
+    # --- Optional scoring and Top-N selection (streaming) ---
+    selected_paths = all_files
+    if use_scoring:
+        scored: List[tuple[float, str]] = []
+        bad = 0
+        for p in all_files:
+            try:
+                with open(p, "r", encoding="utf-8") as f:
+                    paper = json.load(f)
+                sc = _score_paper(paper)
+                scored.append((sc, p))
+            except Exception:
+                bad += 1
+        scored.sort(key=lambda x: x[0], reverse=True)
+        selected_paths = [p for _, p in scored[: max(1, int(top_n))]]
+        print(f"[INDEX-ONLY][RANK] scanned={len(all_files)}, bad_json={bad}, selected_top_n={len(selected_paths)}")
+        if selected_paths:
+            print("[INDEX-ONLY][RANK] top5:", [os.path.basename(x) for x in selected_paths[:5]])
+
+    # --- Batch slice after selection ---
+    files = selected_paths[offset: offset + limit]
+
+    print(f"[INDEX-ONLY] files_seen_total={len(all_files)} | after_select={len(selected_paths)} | batch_offset={offset} | batch_limit={limit} | batch_files={len(files)}")
+    if not files:
+        print("[INDEX-ONLY] Nothing to do for this batch.")
+        return {"status": "ok", "files": 0}
+
+    # --- Build Documents ---
+    docs: List[Document] = []
+    skipped_empty = 0
+    for path in files:
+        try:
+            with open(path, "r", encoding="utf-8") as f:
+                paper: Dict[str, Any] = json.load(f)
+            text = (paper.get("plain_text") or "").strip()
+            if not text:
+                skipped_empty += 1
+                continue
+            metadata = {
+                "pmcid": paper.get("pmcid"),
+                "doi": paper.get("doi"),
+                "title": paper.get("title"),
+                "year": paper.get("year"),
+                "journal": paper.get("journal"),
+                "protein_hits": paper.get("protein_hits"),
+                "source_url": paper.get("source_url"),
+            }
+            pmcid = paper.get("pmcid")
+            if pmcid and isinstance(pmcid, str) and pmcid.strip():
+                doc_id = pmcid.strip()
+            else:
+                base = os.path.basename(path)
+                doc_id = os.path.splitext(base)[0]
+            docs.append(Document(text=text, metadata=metadata, doc_id=doc_id))
+        except Exception as e:
+            print(f"[INDEX-ONLY][skip broken] {os.path.basename(path)}: {e}")
+
+    print(f"[INDEX-ONLY] docs_used={len(docs)} | docs_skipped_empty={skipped_empty}")
+    if not docs:
+        print("[INDEX-ONLY] No usable documents in this batch (empty/plain_text or load fail).")
+        return {"status": "ok", "docs": 0}
+
+    # --- Chunking ---
+    splitter = SentenceSplitter(chunk_size=800, chunk_overlap=120)
+    nodes = splitter.get_nodes_from_documents(docs)
+    print(f"[INDEX-ONLY] chunks_created={len(nodes)}")
+    if not nodes:
+        print("[INDEX-ONLY] No chunks created.")
+        return {"status": "ok", "chunks": 0}
+
+    # --- Embeddings via Nebius ---
+    print("[INDEX-ONLY] Creating OpenAI client for Nebius...")
+    client = OpenAI(api_key=settings.nebius_api_key, base_url=NEBIUS_BASE_URL)
+    node_ids = [n.id_ for n in nodes]
+    node_texts = [n.get_content(metadata_mode="none") for n in nodes]
+    print(f"[INDEX-ONLY] Prepared {len(node_ids)} node IDs and {len(node_texts)} texts")
+
+    def clean_metadata_for_chroma(meta: Dict[str, Any]) -> Dict[str, Any]:
+        cleaned = {}
+        for key, value in (meta or {}).items():
+            if value is None:
+                if key == "year":
+                    cleaned[key] = 0
+                else:
+                    cleaned[key] = ""
+            elif isinstance(value, (str, int, float, bool)):
+                cleaned[key] = value
+            elif isinstance(value, list):
+                cleaned[key] = json.dumps(value)
+            elif isinstance(value, dict):
+                cleaned[key] = json.dumps(value)
+            else:
+                cleaned[key] = str(value)
+        return cleaned
+
+    print("[INDEX-ONLY] Cleaning metadata for Chroma...")
+    node_metas = [clean_metadata_for_chroma(n.metadata) for n in nodes]
+    print(f"[INDEX-ONLY] Cleaned {len(node_metas)} metadata entries")
+
+    try:
+        print(f"[INDEX-ONLY] Embedding with model='{NEBIUS_EMBED_MODEL}' at base_url='{NEBIUS_BASE_URL}' ...")
+        print(f"[INDEX-ONLY] Sending {len(node_texts)} texts to Nebius for embedding...")
+        embeddings = []
+        total_batches = (len(node_texts) + emb_batch_size - 1) // emb_batch_size
+        for start in range(0, len(node_texts), emb_batch_size):
+            batch = node_texts[start:start + emb_batch_size]
+            batch_num = start // emb_batch_size + 1
+            if batch_num == 1 or batch_num % 10 == 0 or batch_num == total_batches:
+                print(f"[INDEX-ONLY][EMB] batch {batch_num}/{total_batches} (+{len(batch)} texts)")
+            resp = client.embeddings.create(model=NEBIUS_EMBED_MODEL, input=batch)
+            embeddings.extend([item.embedding for item in resp.data])
+        print(f"[INDEX-ONLY] Total embeddings: {len(embeddings)}")
+    except Exception as e:
+        print(f"[INDEX-ONLY][embed error] {e}")
+        raise HTTPException(status_code=500, detail="Nebius embedding request failed (index-only)")
+
+    if len(embeddings) != len(node_ids):
+        print(f"[INDEX-ONLY][embed mismatch] ids={len(node_ids)} vs embeds={len(embeddings)}")
+        raise HTTPException(status_code=500, detail="Embedding count mismatch (index-only)")
+
+    if embeddings:
+        emb_dim = len(embeddings[0])
+        print(f"[INDEX-ONLY] Embedding dimensions: {emb_dim} (first vector)")
+
+    # --- FAISS append-only ---
+    try:
+        os.makedirs(FAISS_DIR, exist_ok=True)
+    except Exception as e:
+        print(f"[INDEX-ONLY][FAISS dir error] {e}")
+        raise HTTPException(status_code=500, detail="Failed to create FAISS directory (index-only)")
+
+    X = np.array(embeddings, dtype="float32")
+    if X.ndim != 2 or X.shape[0] == 0:
+        raise HTTPException(status_code=500, detail="No embeddings to index (index-only)")
+    faiss.normalize_L2(X)
+
+    dim = int(X.shape[1])
+    faiss_path = os.path.join(FAISS_DIR, "index.faiss")
+    dim_path = os.path.join(FAISS_DIR, "dim.txt")
+
+    if os.path.isfile(faiss_path):
+        index = faiss.read_index(faiss_path)
+        if int(index.d) != dim:
+            raise HTTPException(status_code=400, detail=f"FAISS dim mismatch: index has {int(index.d)}, new vectors have {dim}")
+        print(f"[INDEX-ONLY][FAISS] Loaded existing index: {faiss_path} (ntotal={index.ntotal}, dim={int(index.d)})")
+    else:
+        index = faiss.IndexFlatIP(dim)
+        print(f"[INDEX-ONLY][FAISS] Created new IndexFlatIP dim={dim}")
+
+    try:
+        if os.path.isfile(dim_path):
+            try:
+                with open(dim_path, "r", encoding="utf-8") as g:
+                    prev_dim = int((g.read() or "").strip() or "0")
+                if prev_dim != dim:
+                    raise HTTPException(status_code=400, detail=f"FAISS dim mismatch: stored dim.txt={prev_dim}, new vectors have {dim}")
+            except ValueError:
+                print("[INDEX-ONLY][FAISS dim warn] dim.txt is not an integer; rewriting")
+                with open(dim_path, "w", encoding="utf-8") as g:
+                    g.write(str(dim))
+        else:
+            with open(dim_path, "w", encoding="utf-8") as g:
+                g.write(str(dim))
+    except HTTPException:
+        raise
+    except Exception as e:
+        print(f"[INDEX-ONLY][FAISS dim write warn] {e}")
+
+    index.add(X)
+    faiss.write_index(index, faiss_path)
+    print(f"[INDEX-ONLY][FAISS] Saved index: {faiss_path} (ntotal={index.ntotal})")
+
+    meta_path = os.path.join(FAISS_DIR, "meta.jsonl")
+    try:
+        with open(meta_path, "a", encoding="utf-8") as f:
+            for _id, _txt, _meta in zip(node_ids, node_texts, node_metas):
+                f.write(json.dumps({"id": _id, "text": _txt, "meta": _meta}, ensure_ascii=False) + "\n")
+        print(f"[INDEX-ONLY][FAISS] Appended metadata JSONL: {meta_path} (+{len(node_ids)} lines)")
+    except Exception as e:
+        print(f"[INDEX-ONLY][FAISS meta write error] {e}")
+        raise HTTPException(status_code=500, detail="Failed to write FAISS metadata JSONL (index-only)")
+
+    print("[INDEX-ONLY] Batch done (FAISS append).")
+    return {"status": "ok", "files": len(files), "docs": len(docs), "chunks": len(node_ids)}
+
+
+@app.post("/index/faiss_batch_without_scoring")
+def index_faiss_batch_without_scoring(limit: int = 200, offset: int = 0):
 # call e.g.: POST http://localhost:8000/index/faiss_batch?limit=1000&offset=0
 
     """
