@@ -3,7 +3,7 @@
 # Accepts DOI / PMID / PMCID / title, returns tidy dicts/DataFrames.
 
 from __future__ import annotations
-
+import os
 import re
 import time
 import json
@@ -601,6 +601,7 @@ def fetch_epmc_batch_save_json(
     *,
     include_full_text: bool = True,
     include_xml: bool = False,
+    skip_existing: bool = True,
 ) -> list[dict]:
     """
     Batch wrapper for fetch_epmc.
@@ -609,6 +610,9 @@ def fetch_epmc_batch_save_json(
     results = []
     for (i, it) in enumerate(items): 
         print(f"Fetching EPMC metadata for item {i+1} of {n_items}: {it}")
+        if skip_existing and os.path.exists(os.path.join(directory, f"{filename_prefix}item{i:04d}.json")):
+            print(f"Skipping existing file: {it} (filename: {filename_prefix}item{i:04d}.json)")
+            continue
         epmc_object = fetch_epmc(
             it,
             delay=delay,
@@ -741,7 +745,8 @@ def save_json_payload(
     indent: int = 2,
     drop_missing: bool = False,
     fallback_basename: str = "payload",
-) -> Optional[Path]:
+    skip_existing: bool = False,
+) -> tuple[Optional[Path], bool]:
     """
     Persist a single JSON-compatible payload to disk, auto-naming by identifier where possible.
 
@@ -755,10 +760,10 @@ def save_json_payload(
         fallback_basename: Filename stem used when no identifier can be derived.
 
     Returns:
-        pathlib.Path to the written file, or None if payload is None.
+        Tuple of (Path to the file, written_flag). When payload is None, returns (None, False).
     """
     if payload is None:
-        return None
+        return None, False
 
     target_dir = Path(directory)
     target_dir.mkdir(parents=True, exist_ok=True)
@@ -780,12 +785,15 @@ def save_json_payload(
         safe_name = f"{filename_prefix}{safe_name}"
 
     filepath = target_dir / f"{safe_name}.json"
-    serializable = _json_safe_recursive(payload, drop_missing=drop_missing)
 
+    if skip_existing and filepath.exists():
+        return filepath, False
+
+    serializable = _json_safe_recursive(payload, drop_missing=drop_missing)
     with filepath.open("w", encoding="utf-8") as handle:
         json.dump(serializable, handle, indent=indent)
 
-    return filepath
+    return filepath, True
 
 
 def save_dataframe_rows_as_json(
