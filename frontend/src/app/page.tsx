@@ -6,7 +6,7 @@ export default function Home() {
       {/* Header */}
       <header className="border-b border-[var(--border-color)] bg-[var(--background-elevated)]">
         <div className="max-w-[1200px] mx-auto px-8 py-4">
-          <h1 className="text-3xl font-bold text-[var(--foreground)]">WCVikiCrow (tesitng CI)</h1>
+          <h1 className="text-3xl font-bold text-[var(--foreground)]">WCVikiCrow</h1>
           <p className="text-[var(--foreground-muted)] text-sm mt-1">
             Protein Sequence-to-Function Explorer
           </p>
