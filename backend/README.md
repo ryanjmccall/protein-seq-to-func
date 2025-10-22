@@ -1,9 +1,9 @@
-# Felix FastAPI Spike
+# FastAPI
 
 ## Quick start (Windows/PowerShell)
 - Prereqs: Python 3.11+ installed
 - Get code and enter folder:
-  - cd spikes\felix-fastapi
+  - cd backend
 - Create and activate venv:
   - python -m venv venv_311
   - .\venv_311\Scripts\activate
@@ -37,21 +37,19 @@ This project's dependencies are managed with `conda` via the `environment.yml` f
 - Swagger UI:
   - http://127.0.0.1:8000/docs
 
-
 ## Data locations
 - Input JSON papers folder:
-  - spikes\felix-fastapi\papers\
+  - backend\papers\
 - Outputs:
-  - FAISS index: spikes\felix-fastapi\faiss_store\index.faiss (+ meta.jsonl)
-  - Articles (HTML): spikes\felix-fastapi\faiss_store\articles\
+  - FAISS index: backend\faiss_store\index.faiss (+ meta.jsonl)
+  - Articles (HTML): backend\faiss_store\articles\
 
 ## Endpoints (use via Swagger)
-- Optional: harvest APOE papers (creates JSONs in `papers/`)
-  - GET /harvest/apoe
+- Optional: harvest protein papers (creates JSONs in `papers/`)
+  - GET /harvest/{protein_name}
 - Full pipeline (index all in batches, then generate article)
   - POST /index/run_all
   - Params: batch_size (e.g., 1000), protein_name (e.g., APOE), query (optional), top_k (e.g., 10)
-
 
 ## Notes
 - Swagger usage: open /docs, expand the endpoint, set params, click “Try it out” → “Execute”.
