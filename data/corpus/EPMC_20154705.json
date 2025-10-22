@@ -1,0 +1,12 @@
+{
+  "PMC": "3057140",
+  "DOI": "10.1038/nsmb.1769",
+  "PMID": "20154705",
+  "PMCID": "PMC3057140",
+  "title": "A PP4 phosphatase complex dephosphorylates RPA2 to facilitate DNA repair via homologous recombination.",
+  "year": 2010,
+  "source_url": "https://europepmc.org/article/PMC/PMC3057140",
+  "source": "MED",
+  "abstract_text": "Double-stranded DNA breaks (DSBs) induce a phosphorylation-mediated signaling cascade, but the role of phosphatases in this pathway remains unclear. Here we show that human protein phosphatase 4 (PP4) dephosphorylates replication protein A (RPA) subunit RPA2, regulating its role in the DSB response. PP4R2, a regulatory subunit of PP4, mediates the DNA damage-dependent association between RPA2 and the PP4C catalytic subunit. PP4 efficiently dephosphorylates phospho-RPA2 in vitro, and silencing PP4R2 in cells alters the kinetics and pattern of RPA2 phosphorylation. Depletion of PP4R2 impedes homologous recombination (HR) via inefficient loading of the essential HR factor RAD51, causing an extended G2-M checkpoint and hypersensitivity to DNA damage. Cells expressing phosphomimetic RPA2 mutants have a comparable phenotype, suggesting that PP4-mediated dephosphorylation of RPA2 is necessary for an efficient DNA-damage response. These observations provide new insight into the role and regulation of RPA phosphorylation in HR-mediated repair.",
+  "plain_text": "Double-stranded DNA breaks (DSBs) induce a phosphorylation-mediated signaling cascade, but the role of phosphatases in this pathway remains unclear. Here we show that human protein phosphatase 4 (PP4) dephosphorylates replication protein A (RPA) subunit RPA2, regulating its role in the DSB response. PP4R2, a regulatory subunit of PP4, mediates the DNA damage-dependent association between RPA2 and the PP4C catalytic subunit. PP4 efficiently dephosphorylates phospho-RPA2 in vitro, and silencing PP4R2 in cells alters the kinetics and pattern of RPA2 phosphorylation. Depletion of PP4R2 impedes homologous recombination (HR) via inefficient loading of the essential HR factor RAD51, causing an extended G2-M checkpoint and hypersensitivity to DNA damage. Cells expressing phosphomimetic RPA2 mutants have a comparable phenotype, suggesting that PP4-mediated dephosphorylation of RPA2 is necessary for an efficient DNA-damage response. These observations provide new insight into the role and regulation of RPA phosphorylation in HR-mediated repair."
+}

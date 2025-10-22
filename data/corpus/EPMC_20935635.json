@@ -1,0 +1,12 @@
+{
+  "PMC": "3292434",
+  "DOI": "10.1038/ncb2116",
+  "PMID": "20935635",
+  "PMCID": "PMC3292434",
+  "title": "Cyclin-dependent kinases regulate epigenetic gene silencing through phosphorylation of EZH2.",
+  "year": 2010,
+  "source_url": "https://europepmc.org/article/PMC/PMC3292434",
+  "source": "MED",
+  "abstract_text": "The Polycomb group (PcG) protein, enhancer of zeste homologue 2 (EZH2), has an essential role in promoting histone H3 lysine 27 trimethylation (H3K27me3) and epigenetic gene silencing. This function of EZH2 is important for cell proliferation and inhibition of cell differentiation, and is implicated in cancer progression. Here, we demonstrate that under physiological conditions, cyclin-dependent kinase 1 (CDK1) and cyclin-dependent kinase 2 (CDK2) phosphorylate EZH2 at Thr 350 in an evolutionarily conserved motif. Phosphorylation of Thr 350 is important for recruitment of EZH2 and maintenance of H3K27me3 levels at EZH2-target loci. Blockage of Thr 350 phosphorylation not only diminishes the global effect of EZH2 on gene silencing, it also mitigates EZH2-mediated cell proliferation and migration. These results demonstrate that CDK-mediated phosphorylation is a key mechanism governing EZH2 function and that there is a link between the cell-cycle machinery and epigenetic gene silencing.",
+  "plain_text": "The Polycomb group (PcG) protein, enhancer of zeste homologue 2 (EZH2), has an essential role in promoting histone H3 lysine 27 trimethylation (H3K27me3) and epigenetic gene silencing. This function of EZH2 is important for cell proliferation and inhibition of cell differentiation, and is implicated in cancer progression. Here, we demonstrate that under physiological conditions, cyclin-dependent kinase 1 (CDK1) and cyclin-dependent kinase 2 (CDK2) phosphorylate EZH2 at Thr 350 in an evolutionarily conserved motif. Phosphorylation of Thr 350 is important for recruitment of EZH2 and maintenance of H3K27me3 levels at EZH2-target loci. Blockage of Thr 350 phosphorylation not only diminishes the global effect of EZH2 on gene silencing, it also mitigates EZH2-mediated cell proliferation and migration. These results demonstrate that CDK-mediated phosphorylation is a key mechanism governing EZH2 function and that there is a link between the cell-cycle machinery and epigenetic gene silencing."
+}

@@ -1,17 +1,12 @@
 {
-    "PMC": "4963185",
-    "DOI": "10.1016/j.cell.2015.05.028",
-    "PMID": "26091039",
-    "PMCID": "PMC4963185",
-    "title": "A Single Kinase Generates the Majority of the Secreted Phosphoproteome.",
-    "year": 2015,
-    "source_url": "https://europepmc.org/article/PMC/PMC4963185",
-    "source": "MED",
-    "full_text_abstract": "The existence of extracellular phosphoproteins has been acknowledged for over a century. However, research in this area has been undeveloped largely because the kinases that phosphorylate secreted proteins have escaped identification. Fam20C is a kinase that phosphorylates S-x-E/pS motifs on proteins in milk and in the extracellular matrix of bones and teeth. Here, we show that Fam20C generates the majority of the extracellular phosphoproteome. Using CRISPR/Cas9 genome editing, mass spectrometry, and biochemistry, we identify more than 100 secreted phosphoproteins as genuine Fam20C substrates. Further, we show that Fam20C exhibits broader substrate specificity than previously appreciated. Functional annotations of Fam20C substrates suggest roles for the kinase beyond biomineralization, including lipid homeostasis, wound healing, and cell migration and adhesion. Our results establish Fam20C as the major secretory pathway protein kinase and serve as a foundation for new areas of investigation into the role of secreted protein phosphorylation in human biology and disease.",
-    "function_signal": 0.0,
-    "longevity_signal": 0.0,
-    "year_score": 0.09090909090909091,
-    "functionality_score": 0.0,
-    "longevity_score": 0.0,
-    "composite_score": 0.03636363636363637
+  "PMC": "4963185",
+  "DOI": "10.1016/j.cell.2015.05.028",
+  "PMID": "26091039",
+  "PMCID": "PMC4963185",
+  "title": "A Single Kinase Generates the Majority of the Secreted Phosphoproteome.",
+  "year": 2015,
+  "source_url": "https://europepmc.org/article/PMC/PMC4963185",
+  "source": "MED",
+  "abstract_text": "The existence of extracellular phosphoproteins has been acknowledged for over a century. However, research in this area has been undeveloped largely because the kinases that phosphorylate secreted proteins have escaped identification. Fam20C is a kinase that phosphorylates S-x-E/pS motifs on proteins in milk and in the extracellular matrix of bones and teeth. Here, we show that Fam20C generates the majority of the extracellular phosphoproteome. Using CRISPR/Cas9 genome editing, mass spectrometry, and biochemistry, we identify more than 100 secreted phosphoproteins as genuine Fam20C substrates. Further, we show that Fam20C exhibits broader substrate specificity than previously appreciated. Functional annotations of Fam20C substrates suggest roles for the kinase beyond biomineralization, including lipid homeostasis, wound healing, and cell migration and adhesion. Our results establish Fam20C as the major secretory pathway protein kinase and serve as a foundation for new areas of investigation into the role of secreted protein phosphorylation in human biology and disease.",
+  "plain_text": "The existence of extracellular phosphoproteins has been acknowledged for over a century. However, research in this area has been undeveloped largely because the kinases that phosphorylate secreted proteins have escaped identification. Fam20C is a kinase that phosphorylates S-x-E/pS motifs on proteins in milk and in the extracellular matrix of bones and teeth. Here, we show that Fam20C generates the majority of the extracellular phosphoproteome. Using CRISPR/Cas9 genome editing, mass spectrometry, and biochemistry, we identify more than 100 secreted phosphoproteins as genuine Fam20C substrates. Further, we show that Fam20C exhibits broader substrate specificity than previously appreciated. Functional annotations of Fam20C substrates suggest roles for the kinase beyond biomineralization, including lipid homeostasis, wound healing, and cell migration and adhesion. Our results establish Fam20C as the major secretory pathway protein kinase and serve as a foundation for new areas of investigation into the role of secreted protein phosphorylation in human biology and disease."
 }

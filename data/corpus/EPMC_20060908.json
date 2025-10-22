@@ -1,0 +1,12 @@
+{
+  "PMC": "2856717",
+  "DOI": "10.1016/j.jsb.2010.01.002",
+  "PMID": "20060908",
+  "PMCID": "PMC2856717",
+  "title": "Insights into the domain and repeat architecture of target of rapamycin.",
+  "year": 2010,
+  "source_url": "https://europepmc.org/article/PMC/PMC2856717",
+  "source": "MED",
+  "abstract_text": "A simple and efficient protein sequence analysis strategy was developed to predict the number and location of structural repeats in the TOR protein. This strategy uses multiple HHpred alignments against proteins of known 3D structure to enable protein repeats referenced from the 3D structure to be traced back to the query protein sequence by using user-directed repeat assignments. The HHpred strategy performed with high sensitivity by predicting 100% of the repeat units within a test set of HEAT- and TPR-repeat-containing proteins of known three-dimensional structure. The HHpred strategy predicts that TOR contains 32 tandem HEAT repeats extending from the N-terminus to the FAT domain, which is itself comprised of 16 tandem TPR repeats. These findings were used to assemble a 3D atomic model for the TOR protein.",
+  "plain_text": "A simple and efficient protein sequence analysis strategy was developed to predict the number and location of structural repeats in the TOR protein. This strategy uses multiple HHpred alignments against proteins of known 3D structure to enable protein repeats referenced from the 3D structure to be traced back to the query protein sequence by using user-directed repeat assignments. The HHpred strategy performed with high sensitivity by predicting 100% of the repeat units within a test set of HEAT- and TPR-repeat-containing proteins of known three-dimensional structure. The HHpred strategy predicts that TOR contains 32 tandem HEAT repeats extending from the N-terminus to the FAT domain, which is itself comprised of 16 tandem TPR repeats. These findings were used to assemble a 3D atomic model for the TOR protein."
+}

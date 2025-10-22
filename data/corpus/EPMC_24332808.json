@@ -1,0 +1,12 @@
+{
+  "PMC": "3946837",
+  "DOI": "10.1016/j.molcel.2013.11.002",
+  "PMID": "24332808",
+  "PMCID": "PMC3946837",
+  "title": "PRP19 transforms into a sensor of RPA-ssDNA after DNA damage and drives ATR activation via a ubiquitin-mediated circuitry.",
+  "year": 2014,
+  "source_url": "https://europepmc.org/article/PMC/PMC3946837",
+  "source": "MED",
+  "abstract_text": "PRP19 is a ubiquitin ligase involved in pre-mRNA splicing and the DNA damage response (DDR). Although the role for PRP19 in splicing is well characterized, its role in the DDR remains elusive. Through a proteomic screen for proteins that interact with RPA-coated single-stranded DNA (RPA-ssDNA), we identified PRP19 as a sensor of DNA damage. PRP19 directly binds RPA and localizes to DNA damage sites via RPA, promoting RPA ubiquitylation in a DNA-damage-induced manner. PRP19 facilitates the accumulation of ATRIP, the regulatory partner of the ataxia telangiectasia mutated and Rad3-related (ATR) kinase, at DNA damage sites. Depletion of PRP19 compromised the phosphorylation of ATR substrates, recovery of stalled replication forks, and progression of replication forks on damaged DNA. Importantly, PRP19 mutants that cannot bind RPA or function as an E3 ligase failed to support the ATR response, revealing that PRP19 drives ATR activation by acting as an RPA-ssDNA-sensing ubiquitin ligase during the DDR.",
+  "plain_text": "PRP19 is a ubiquitin ligase involved in pre-mRNA splicing and the DNA damage response (DDR). Although the role for PRP19 in splicing is well characterized, its role in the DDR remains elusive. Through a proteomic screen for proteins that interact with RPA-coated single-stranded DNA (RPA-ssDNA), we identified PRP19 as a sensor of DNA damage. PRP19 directly binds RPA and localizes to DNA damage sites via RPA, promoting RPA ubiquitylation in a DNA-damage-induced manner. PRP19 facilitates the accumulation of ATRIP, the regulatory partner of the ataxia telangiectasia mutated and Rad3-related (ATR) kinase, at DNA damage sites. Depletion of PRP19 compromised the phosphorylation of ATR substrates, recovery of stalled replication forks, and progression of replication forks on damaged DNA. Importantly, PRP19 mutants that cannot bind RPA or function as an E3 ligase failed to support the ATR response, revealing that PRP19 drives ATR activation by acting as an RPA-ssDNA-sensing ubiquitin ligase during the DDR."
+}

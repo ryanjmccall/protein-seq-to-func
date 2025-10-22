@@ -1,0 +1,11 @@
+{
+  "PMC": "2244360",
+  "PMID": "12463865",
+  "PMCID": "PMC2244360",
+  "title": "Using binning to maintain confidentiality of medical data.",
+  "year": 2002,
+  "source_url": "https://europepmc.org/article/PMC/PMC2244360",
+  "source": "MED",
+  "abstract_text": "Biomedical informatics in general and pharmacogenomics in particular require a research platform that simultaneously enables discovery while protecting research subjects' privacy and information confidentiality. The development of inexpensive DNA sequencing and analysis technologies promises unprecedented database access to very specific information about individuals. To allow analysis of this data without compromising the research subjects' privacy, we must develop methods for removing identifying information from medical and genomic data. In this paper, we build upon the idea that binned database records are more difficult to trace back to individuals. We represent symbolic and numeric data hierarchically, and bin them by generalizing the records. We measure the information loss due to binning using an information theoretic measure called mutual information. The results show that we can bin the data to different levels of precision and use the bin size to control the tradeoff between privacy and data resolution.",
+  "plain_text": "Biomedical informatics in general and pharmacogenomics in particular require a research platform that simultaneously enables discovery while protecting research subjects' privacy and information confidentiality. The development of inexpensive DNA sequencing and analysis technologies promises unprecedented database access to very specific information about individuals. To allow analysis of this data without compromising the research subjects' privacy, we must develop methods for removing identifying information from medical and genomic data. In this paper, we build upon the idea that binned database records are more difficult to trace back to individuals. We represent symbolic and numeric data hierarchically, and bin them by generalizing the records. We measure the information loss due to binning using an information theoretic measure called mutual information. The results show that we can bin the data to different levels of precision and use the bin size to control the tradeoff between privacy and data resolution."
+}

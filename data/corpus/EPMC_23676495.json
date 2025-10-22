@@ -1,17 +1,12 @@
 {
-    "PMC": "3668842",
-    "DOI": "10.1172/jci67398",
-    "PMID": "23676495",
-    "PMCID": "PMC3668842",
-    "title": "Apolipoproteins E and AV mediate lipoprotein clearance by hepatic proteoglycans.",
-    "year": 2013,
-    "source_url": "https://europepmc.org/article/PMC/PMC3668842",
-    "source": "MED",
-    "full_text_abstract": "The heparan sulfate proteoglycan (HSPG) syndecan-1 (SDC1) acts as a major receptor for triglyceride-rich lipoprotein (TRL) clearance in the liver. We sought to identify the relevant apolipoproteins on TRLs that mediate binding to SDC1 and determine their clinical relevance. Evidence supporting ApoE as a major determinant arose from its enrichment in TRLs from mice defective in hepatic heparan sulfate (Ndst1f/fAlbCre\u207a mice), decreased binding of ApoE-deficient TRLs to HSPGs on human hepatoma cells, and decreased clearance of ApoE-deficient [\u00b3H]TRLs in vivo. Evidence for a second ligand was suggested by the faster clearance of ApoE-deficient TRLs after injection into WT Ndst1f/fAlbCre\u207b versus mutant Ndst1f/fAlbCre\u207a mice and elevated fasting and postprandial plasma triglycerides in compound Apoe\u207b/\u207bNdst1f/fAlbCre\u207a mice compared with either single mutant. ApoAV emerged as a candidate based on 6-fold enrichment of ApoAV in TRLs accumulating in Ndst1f/fAlbCre\u207a mice, decreased binding of TRLs to proteoglycans after depletion of ApoAV or addition of anti-ApoAV mAb, and decreased heparan sulfate-dependent binding of ApoAV-deficient particles to hepatocytes. Importantly, disruption of hepatic heparan sulfate-mediated clearance increased atherosclerosis. We conclude that clearance of TRLs by hepatic HSPGs is atheroprotective and mediated by multivalent binding to ApoE and ApoAV.",
-    "function_signal": 0.0,
-    "longevity_signal": 0.0,
-    "year_score": 0.07692307692307693,
-    "functionality_score": 0.0,
-    "longevity_score": 0.0,
-    "composite_score": 0.03076923076923077
+  "PMC": "3668842",
+  "DOI": "10.1172/jci67398",
+  "PMID": "23676495",
+  "PMCID": "PMC3668842",
+  "title": "Apolipoproteins E and AV mediate lipoprotein clearance by hepatic proteoglycans.",
+  "year": 2013,
+  "source_url": "https://europepmc.org/article/PMC/PMC3668842",
+  "source": "MED",
+  "abstract_text": "The heparan sulfate proteoglycan (HSPG) syndecan-1 (SDC1) acts as a major receptor for triglyceride-rich lipoprotein (TRL) clearance in the liver. We sought to identify the relevant apolipoproteins on TRLs that mediate binding to SDC1 and determine their clinical relevance. Evidence supporting ApoE as a major determinant arose from its enrichment in TRLs from mice defective in hepatic heparan sulfate (Ndst1f/fAlbCre⁺ mice), decreased binding of ApoE-deficient TRLs to HSPGs on human hepatoma cells, and decreased clearance of ApoE-deficient [³H]TRLs in vivo. Evidence for a second ligand was suggested by the faster clearance of ApoE-deficient TRLs after injection into WT Ndst1f/fAlbCre⁻ versus mutant Ndst1f/fAlbCre⁺ mice and elevated fasting and postprandial plasma triglycerides in compound Apoe⁻/⁻Ndst1f/fAlbCre⁺ mice compared with either single mutant. ApoAV emerged as a candidate based on 6-fold enrichment of ApoAV in TRLs accumulating in Ndst1f/fAlbCre⁺ mice, decreased binding of TRLs to proteoglycans after depletion of ApoAV or addition of anti-ApoAV mAb, and decreased heparan sulfate-dependent binding of ApoAV-deficient particles to hepatocytes. Importantly, disruption of hepatic heparan sulfate-mediated clearance increased atherosclerosis. We conclude that clearance of TRLs by hepatic HSPGs is atheroprotective and mediated by multivalent binding to ApoE and ApoAV.",
+  "plain_text": "The heparan sulfate proteoglycan (HSPG) syndecan-1 (SDC1) acts as a major receptor for triglyceride-rich lipoprotein (TRL) clearance in the liver. We sought to identify the relevant apolipoproteins on TRLs that mediate binding to SDC1 and determine their clinical relevance. Evidence supporting ApoE as a major determinant arose from its enrichment in TRLs from mice defective in hepatic heparan sulfate (Ndst1f/fAlbCre⁺ mice), decreased binding of ApoE-deficient TRLs to HSPGs on human hepatoma cells, and decreased clearance of ApoE-deficient [³H]TRLs in vivo. Evidence for a second ligand was suggested by the faster clearance of ApoE-deficient TRLs after injection into WT Ndst1f/fAlbCre⁻ versus mutant Ndst1f/fAlbCre⁺ mice and elevated fasting and postprandial plasma triglycerides in compound Apoe⁻/⁻Ndst1f/fAlbCre⁺ mice compared with either single mutant. ApoAV emerged as a candidate based on 6-fold enrichment of ApoAV in TRLs accumulating in Ndst1f/fAlbCre⁺ mice, decreased binding of TRLs to proteoglycans after depletion of ApoAV or addition of anti-ApoAV mAb, and decreased heparan sulfate-dependent binding of ApoAV-deficient particles to hepatocytes. Importantly, disruption of hepatic heparan sulfate-mediated clearance increased atherosclerosis. We conclude that clearance of TRLs by hepatic HSPGs is atheroprotective and mediated by multivalent binding to ApoE and ApoAV."
 }

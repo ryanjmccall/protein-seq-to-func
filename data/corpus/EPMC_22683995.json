@@ -1,0 +1,12 @@
+{
+  "PMC": "4826610",
+  "DOI": "10.1038/nsmb.2335",
+  "PMID": "22683995",
+  "PMCID": "PMC4826610",
+  "title": "The zinc-finger domains of PARP1 cooperate to recognize DNA strand breaks.",
+  "year": 2012,
+  "source_url": "https://europepmc.org/article/PMC/PMC4826610",
+  "source": "MED",
+  "abstract_text": "Poly(ADP-ribose) polymerase 1 (PARP1) is a primary DNA damage sensor whose (ADP-ribose) polymerase activity is acutely regulated by interaction with DNA breaks. Upon activation at sites of DNA damage, PARP1 modifies itself and other proteins by covalent addition of long, branched polymers of ADP-ribose, which in turn recruit downstream DNA repair and chromatin remodeling factors. PARP1 recognizes DNA damage through its N-terminal DNA-binding domain (DBD), which consists of a tandem repeat of an unusual zinc-finger (ZnF) domain. We have determined the crystal structure of the human PARP1-DBD bound to a DNA break. Along with functional analysis of PARP1 recruitment to sites of DNA damage in vivo, the structure reveals a dimeric assembly whereby ZnF1 and ZnF2 domains from separate PARP1 molecules form a strand-break recognition module that helps activate PARP1 by facilitating its dimerization and consequent trans-automodification.",
+  "plain_text": "Poly(ADP-ribose) polymerase 1 (PARP1) is a primary DNA damage sensor whose (ADP-ribose) polymerase activity is acutely regulated by interaction with DNA breaks. Upon activation at sites of DNA damage, PARP1 modifies itself and other proteins by covalent addition of long, branched polymers of ADP-ribose, which in turn recruit downstream DNA repair and chromatin remodeling factors. PARP1 recognizes DNA damage through its N-terminal DNA-binding domain (DBD), which consists of a tandem repeat of an unusual zinc-finger (ZnF) domain. We have determined the crystal structure of the human PARP1-DBD bound to a DNA break. Along with functional analysis of PARP1 recruitment to sites of DNA damage in vivo, the structure reveals a dimeric assembly whereby ZnF1 and ZnF2 domains from separate PARP1 molecules form a strand-break recognition module that helps activate PARP1 by facilitating its dimerization and consequent trans-automodification."
+}

@@ -1,0 +1,12 @@
+{
+  "PMC": "4514456",
+  "DOI": "10.1016/j.celrep.2015.02.033",
+  "PMID": "25772364",
+  "PMCID": "PMC4514456",
+  "title": "SUMO-2 Orchestrates Chromatin Modifiers in Response to DNA Damage.",
+  "year": 2015,
+  "source_url": "https://europepmc.org/article/PMC/PMC4514456",
+  "source": "MED",
+  "abstract_text": "Small ubiquitin-like modifiers play critical roles in the DNA damage response (DDR). To increase our understanding of SUMOylation in the mammalian DDR, we employed a quantitative proteomics approach in order to identify dynamically regulated SUMO-2 conjugates and modification sites upon treatment with the DNA damaging agent methyl methanesulfonate (MMS). We have uncovered a dynamic set of 20 upregulated and 33 downregulated SUMO-2 conjugates, and 755 SUMO-2 sites, of which 362 were dynamic in response to MMS. In contrast to yeast, where a response is centered on homologous recombination, we identified dynamically SUMOylated interaction networks of chromatin modifiers, transcription factors, DNA repair factors, and nuclear body components. SUMOylated chromatin modifiers include JARID1B/KDM5B, JARID1C/KDM5C, p300, CBP, PARP1, SetDB1, and MBD1. Whereas SUMOylated JARID1B was ubiquitylated by the SUMO-targeted ubiquitin ligase RNF4 and degraded by the proteasome in response to DNA damage, JARID1C was SUMOylated and recruited to the chromatin to demethylate histone H3K4.",
+  "plain_text": "Small ubiquitin-like modifiers play critical roles in the DNA damage response (DDR). To increase our understanding of SUMOylation in the mammalian DDR, we employed a quantitative proteomics approach in order to identify dynamically regulated SUMO-2 conjugates and modification sites upon treatment with the DNA damaging agent methyl methanesulfonate (MMS). We have uncovered a dynamic set of 20 upregulated and 33 downregulated SUMO-2 conjugates, and 755 SUMO-2 sites, of which 362 were dynamic in response to MMS. In contrast to yeast, where a response is centered on homologous recombination, we identified dynamically SUMOylated interaction networks of chromatin modifiers, transcription factors, DNA repair factors, and nuclear body components. SUMOylated chromatin modifiers include JARID1B/KDM5B, JARID1C/KDM5C, p300, CBP, PARP1, SetDB1, and MBD1. Whereas SUMOylated JARID1B was ubiquitylated by the SUMO-targeted ubiquitin ligase RNF4 and degraded by the proteasome in response to DNA damage, JARID1C was SUMOylated and recruited to the chromatin to demethylate histone H3K4."
+}

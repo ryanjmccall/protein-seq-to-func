@@ -1,17 +1,12 @@
 {
-    "PMC": "295210",
-    "DOI": "10.1172/jci117443",
-    "PMID": "8083367",
-    "PMCID": "PMC295210",
-    "title": "Variable expression of familial dysbetalipoproteinemia in apolipoprotein E*2 (Lys146-->Gln) Allele carriers.",
-    "year": 1994,
-    "source_url": "https://europepmc.org/article/PMC/PMC295210",
-    "source": "MED",
-    "full_text_abstract": "Genetic and biochemical studies were carried out in 96 relatives of six independently ascertained probands with familial dysbetalipoproteinemia (FD) carrying the APOE*2 (Lys146-->Gln) allele. Compared to noncarriers, the 40 heterozygous APOE*2 (Lys146-->Gln) allele carriers exhibited markedly increased mean levels of cholesterol and triglyceride in the very low density lipoproteins (VLDL) (1.89 +/- 0.37 vs 0.30 +/- 0.27 and 1.86 +/- 0.37 vs 0.68 +/- 0.27 mmol/liter, respectively) and plasma apolipoprotein (apo) E levels (28.1 +/- 1.6 vs 4.6 +/- 1.1 mg/dl), which is characteristic for FD. By means of a pedigree-based maximum likelihood method we calculated that carrier-status accounted for 57% and 71%, respectively, of the total variance of the ratio (VLDL + IDL)-cholesterol/plasma triglyceride and plasma apoE levels. APOE*2 (Lys146-->Gln) and APOE*3-Leiden allele carriers were found to differ significantly in: (a) plasma apoE levels, (b) in the amounts of triglycerides in the VLDL and VLDL + IDL fraction, and (c) in the amount of cholesterol in the VLDL and VLDL + IDL fraction relative to the amount of triglyceride in these fractions. In the APOE*2 (Lys146-->Gln) allele carriers the VLDL and VLDL + IDL fraction is relatively rich in triglycerides as compared with that in APOE*3-Leiden carriers. We hypothesize that these two rare mutations of apoE both lead to dominantly inherited forms of FD along different underlying metabolic defects.",
-    "function_signal": 0.0,
-    "longevity_signal": 0.0,
-    "year_score": 0.03125,
-    "functionality_score": 0.0,
-    "longevity_score": 0.0,
-    "composite_score": 0.0125
+  "PMC": "295210",
+  "DOI": "10.1172/jci117443",
+  "PMID": "8083367",
+  "PMCID": "PMC295210",
+  "title": "Variable expression of familial dysbetalipoproteinemia in apolipoprotein E*2 (Lys146-->Gln) Allele carriers.",
+  "year": 1994,
+  "source_url": "https://europepmc.org/article/PMC/PMC295210",
+  "source": "MED",
+  "abstract_text": "Genetic and biochemical studies were carried out in 96 relatives of six independently ascertained probands with familial dysbetalipoproteinemia (FD) carrying the APOE*2 (Lys146-->Gln) allele. Compared to noncarriers, the 40 heterozygous APOE*2 (Lys146-->Gln) allele carriers exhibited markedly increased mean levels of cholesterol and triglyceride in the very low density lipoproteins (VLDL) (1.89 +/- 0.37 vs 0.30 +/- 0.27 and 1.86 +/- 0.37 vs 0.68 +/- 0.27 mmol/liter, respectively) and plasma apolipoprotein (apo) E levels (28.1 +/- 1.6 vs 4.6 +/- 1.1 mg/dl), which is characteristic for FD. By means of a pedigree-based maximum likelihood method we calculated that carrier-status accounted for 57% and 71%, respectively, of the total variance of the ratio (VLDL + IDL)-cholesterol/plasma triglyceride and plasma apoE levels. APOE*2 (Lys146-->Gln) and APOE*3-Leiden allele carriers were found to differ significantly in: (a) plasma apoE levels, (b) in the amounts of triglycerides in the VLDL and VLDL + IDL fraction, and (c) in the amount of cholesterol in the VLDL and VLDL + IDL fraction relative to the amount of triglyceride in these fractions. In the APOE*2 (Lys146-->Gln) allele carriers the VLDL and VLDL + IDL fraction is relatively rich in triglycerides as compared with that in APOE*3-Leiden carriers. We hypothesize that these two rare mutations of apoE both lead to dominantly inherited forms of FD along different underlying metabolic defects.",
+  "plain_text": "Genetic and biochemical studies were carried out in 96 relatives of six independently ascertained probands with familial dysbetalipoproteinemia (FD) carrying the APOE*2 (Lys146-->Gln) allele. Compared to noncarriers, the 40 heterozygous APOE*2 (Lys146-->Gln) allele carriers exhibited markedly increased mean levels of cholesterol and triglyceride in the very low density lipoproteins (VLDL) (1.89 +/- 0.37 vs 0.30 +/- 0.27 and 1.86 +/- 0.37 vs 0.68 +/- 0.27 mmol/liter, respectively) and plasma apolipoprotein (apo) E levels (28.1 +/- 1.6 vs 4.6 +/- 1.1 mg/dl), which is characteristic for FD. By means of a pedigree-based maximum likelihood method we calculated that carrier-status accounted for 57% and 71%, respectively, of the total variance of the ratio (VLDL + IDL)-cholesterol/plasma triglyceride and plasma apoE levels. APOE*2 (Lys146-->Gln) and APOE*3-Leiden allele carriers were found to differ significantly in: (a) plasma apoE levels, (b) in the amounts of triglycerides in the VLDL and VLDL + IDL fraction, and (c) in the amount of cholesterol in the VLDL and VLDL + IDL fraction relative to the amount of triglyceride in these fractions. In the APOE*2 (Lys146-->Gln) allele carriers the VLDL and VLDL + IDL fraction is relatively rich in triglycerides as compared with that in APOE*3-Leiden carriers. We hypothesize that these two rare mutations of apoE both lead to dominantly inherited forms of FD along different underlying metabolic defects."
 }

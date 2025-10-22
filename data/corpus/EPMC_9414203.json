@@ -1,0 +1,12 @@
+{
+  "PMC": "1181194",
+  "DOI": "10.1016/s0006-3495(97)78317-6",
+  "PMID": "9414203",
+  "PMCID": "PMC1181194",
+  "title": "Protein dynamics derived from clusters of crystal structures.",
+  "year": 1997,
+  "source_url": "https://europepmc.org/article/PMC/PMC1181194",
+  "source": "MED",
+  "abstract_text": "A method is presented to mathematically extract concerted structural transitions in proteins from collections of crystal structures. The \"essential dynamics\" procedure is used to filter out small-amplitude fluctuations from such a set of structures; the remaining large conformational changes describe motions such as those important for the uptake/release of substrate/ligand and in catalytic reactions. The method is applied to sets of x-ray structures for a number of proteins, and the results are compared with the results from essential dynamics as applied to molecular dynamics simulations of those proteins. A significant degree of similarity is found, thereby providing a direct experimental basis for the application of such simulations to the description of large concerted motions in proteins.",
+  "plain_text": "A method is presented to mathematically extract concerted structural transitions in proteins from collections of crystal structures. The \"essential dynamics\" procedure is used to filter out small-amplitude fluctuations from such a set of structures; the remaining large conformational changes describe motions such as those important for the uptake/release of substrate/ligand and in catalytic reactions. The method is applied to sets of x-ray structures for a number of proteins, and the results are compared with the results from essential dynamics as applied to molecular dynamics simulations of those proteins. A significant degree of similarity is found, thereby providing a direct experimental basis for the application of such simulations to the description of large concerted motions in proteins."
+}

@@ -1,0 +1,12 @@
+{
+  "PMC": "3624248",
+  "DOI": "10.1128/mcb.01342-12",
+  "PMID": "23401859",
+  "PMCID": "PMC3624248",
+  "title": "DCNL1 functions as a substrate sensor and activator of cullin 2-RING ligase.",
+  "year": 2013,
+  "source_url": "https://europepmc.org/article/PMC/PMC3624248",
+  "source": "MED",
+  "abstract_text": "Substrate engagement by F-box proteins promotes NEDD8 modification of cullins, which is necessary for the activation of cullin-RING E3 ubiquitin ligases (CRLs). However, the mechanism by which substrate recruitment triggers cullin neddylation remains unclear. Here, we identify DCNL1 (defective in cullin neddylation 1-like 1) as a component of CRL2 called ECV (elongins BC/CUL2/VHL) and show that molecular suppression of DCNL1 attenuates CUL2 neddylation. DCNL1 via its DAD patch binds to CUL2 but is also able to bind VHL independent of CUL2 and the DAD patch. The engagement of the substrate hypoxia-inducible factor 1α (HIF1α) to the substrate receptor VHL increases DCNL1 binding to VHL as well as to CUL2. Notably, an engineered mutant form of HIF1α that associates with CUL2, but not DCNL1, fails to trigger CUL2 neddylation and retains ECV in an inactive state. These findings support a model in which substrate engagement prompts DCNL1 recruitment that facilitates the initiation of CUL2 neddylation and define DCNL1 as a \"substrate sensor switch\" for ECV activation.",
+  "plain_text": "Substrate engagement by F-box proteins promotes NEDD8 modification of cullins, which is necessary for the activation of cullin-RING E3 ubiquitin ligases (CRLs). However, the mechanism by which substrate recruitment triggers cullin neddylation remains unclear. Here, we identify DCNL1 (defective in cullin neddylation 1-like 1) as a component of CRL2 called ECV (elongins BC/CUL2/VHL) and show that molecular suppression of DCNL1 attenuates CUL2 neddylation. DCNL1 via its DAD patch binds to CUL2 but is also able to bind VHL independent of CUL2 and the DAD patch. The engagement of the substrate hypoxia-inducible factor 1α (HIF1α) to the substrate receptor VHL increases DCNL1 binding to VHL as well as to CUL2. Notably, an engineered mutant form of HIF1α that associates with CUL2, but not DCNL1, fails to trigger CUL2 neddylation and retains ECV in an inactive state. These findings support a model in which substrate engagement prompts DCNL1 recruitment that facilitates the initiation of CUL2 neddylation and define DCNL1 as a \"substrate sensor switch\" for ECV activation."
+}

@@ -1,0 +1,12 @@
+{
+  "PMC": "450201",
+  "DOI": "10.1002/j.1460-2075.1996.tb00626.x",
+  "PMID": "8654363",
+  "PMCID": "PMC450201",
+  "title": "The CXXC motif: imperatives for the formation of native disulfide bonds in the cell.",
+  "year": 1996,
+  "source_url": "https://europepmc.org/article/PMC/PMC450201",
+  "source": "MED",
+  "abstract_text": "The rapid formation of native disulfide bonds in cellular proteins is necessary for the efficient use of cellular resources. This process is catalyzed in vitro by protein disulfide isomerase (PDI), with the PDI1 gene being essential for the viability of Saccharomyces cerevisiae. PDI is a member of the thioredoxin (Trx) family of proteins, which have the active-site motif CXXC. PDI contains two Trx domains as well as two domains unrelated to the Trx family. We find that the gene encoding Escherichia coli Trx is unable to complement PDI1 null mutants of S.cerevisiae. Yet, Trx can replace PDI if it is mutated to have a CXXC motif with a disulfide bond of high reduction potential and a thiol group of low pKa. Thus, an enzymic thiolate is both necessary and sufficient for the formation of native disulfide bonds in the cell.",
+  "plain_text": "The rapid formation of native disulfide bonds in cellular proteins is necessary for the efficient use of cellular resources. This process is catalyzed in vitro by protein disulfide isomerase (PDI), with the PDI1 gene being essential for the viability of Saccharomyces cerevisiae. PDI is a member of the thioredoxin (Trx) family of proteins, which have the active-site motif CXXC. PDI contains two Trx domains as well as two domains unrelated to the Trx family. We find that the gene encoding Escherichia coli Trx is unable to complement PDI1 null mutants of S.cerevisiae. Yet, Trx can replace PDI if it is mutated to have a CXXC motif with a disulfide bond of high reduction potential and a thiol group of low pKa. Thus, an enzymic thiolate is both necessary and sufficient for the formation of native disulfide bonds in the cell."
+}

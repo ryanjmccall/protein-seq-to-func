@@ -3,7 +3,7 @@
 # Accepts DOI / PMID / PMCID / title, returns tidy dicts/DataFrames.
 
 from __future__ import annotations
-
+import os
 import re
 import time
 import json
@@ -73,6 +73,26 @@ def _json_safe(value: Any) -> Any:
         except Exception:
             pass
     return value
+
+
+def _json_safe_recursive(value: Any, *, drop_missing: bool = False) -> Any:
+    """
+    Recursively convert values into JSON-serializable structures.
+    """
+    if isinstance(value, Mapping):
+        converted = {
+            str(key): _json_safe_recursive(val, drop_missing=drop_missing)
+            for key, val in value.items()
+        }
+        if drop_missing:
+            converted = {k: v for k, v in converted.items() if v is not None}
+        return converted
+    if isinstance(value, (list, tuple, set)):
+        return [
+            _json_safe_recursive(item, drop_missing=drop_missing)
+            for item in value
+        ]
+    return _json_safe(value)
 
 def _search_epmc(query: str, page_size: int = 25, result_type: str = "core") -> list[dict]:
     r = requests.get(
@@ -557,15 +577,59 @@ def fetch_epmc_batch(
     """
     Batch wrapper for fetch_epmc.
     """
-    return [
-        fetch_epmc(
+    results = []
+    n_items = len(items)
+    for (i, it) in enumerate(items): 
+        print(f"Fetching EPMC metadata for item {i+1} of {n_items}: {it}")
+        epmc_object = fetch_epmc(
             it,
             delay=delay,
             include_full_text=include_full_text,
             include_xml=include_xml,
         )
-        for it in items
-    ]
+        results.append(epmc_object)
+    return results
+
+def fetch_epmc_batch_save_json(
+    items: Iterable[str],
+    directory: str | Path,
+    id_column: str = "PMID",
+    filename_prefix: str = "",
+    indent: int = 2,
+    drop_missing: bool = False,
+    delay: float = 0.1,
+    *,
+    include_full_text: bool = True,
+    include_xml: bool = False,
+    skip_existing: bool = True,
+) -> list[dict]:
+    """
+    Batch wrapper for fetch_epmc.
+    """
+    n_items = len(items)
+    results = []
+    for (i, it) in enumerate(items): 
+        print(f"Fetching EPMC metadata for item {i+1} of {n_items}: {it}")
+        if skip_existing and os.path.exists(os.path.join(directory, f"{filename_prefix}item{i:04d}.json")):
+            print(f"Skipping existing file: {it} (filename: {filename_prefix}item{i:04d}.json)")
+            continue
+        epmc_object = fetch_epmc(
+            it,
+            delay=delay,
+            include_full_text=include_full_text,
+            include_xml=include_xml,
+        )
+        save_json_payload(
+            epmc_object,
+            directory,
+            id_field=id_column,
+            filename_prefix=filename_prefix,
+            indent=indent,
+            drop_missing=drop_missing,
+            fallback_basename=f"item{i:04d}",
+        )
+        results.append(epmc_object)
+    return results  
 
 ResolvedInput = str | Mapping[str, Any]
 
@@ -672,6 +736,66 @@ def list_citations_epmc(item_or_dict: ResolvedInput, page_size: int = 100, delay
     return pd.DataFrame(rows, columns=["PMID","PMCID","DOI","title","journal","year","source_url"])
 
 
+def save_json_payload(
+    payload: Any,
+    directory: str | Path,
+    *,
+    id_field: str | None = "PMID",
+    filename_prefix: str = "",
+    indent: int = 2,
+    drop_missing: bool = False,
+    fallback_basename: str = "payload",
+    skip_existing: bool = False,
+) -> tuple[Optional[Path], bool]:
+    """
+    Persist a single JSON-compatible payload to disk, auto-naming by identifier where possible.
+
+    Args:
+        payload: JSON-serializable structure (dict/list/scalar) to persist.
+        directory: Destination folder for the written file.
+        id_field: When payload is a mapping, use this key to derive the filename stem.
+        filename_prefix: Optional prefix prepended to the filename stem.
+        indent: Indentation level supplied to json.dump.
+        drop_missing: When True, omit mapping entries whose values are null/NA.
+        fallback_basename: Filename stem used when no identifier can be derived.
+
+    Returns:
+        Tuple of (Path to the file, written_flag). When payload is None, returns (None, False).
+    """
+    if payload is None:
+        return None, False
+
+    target_dir = Path(directory)
+    target_dir.mkdir(parents=True, exist_ok=True)
+
+    identifier: Optional[str] = None
+    if isinstance(payload, Mapping) and id_field:
+        raw_identifier = payload.get(id_field)
+        if raw_identifier is not None:
+            candidate = str(raw_identifier).strip()
+            if candidate:
+                identifier = candidate
+
+    if not identifier:
+        candidate = str(fallback_basename).strip()
+        identifier = candidate if candidate else "payload"
+
+    safe_name = re.sub(r"[^A-Za-z0-9._-]+", "_", identifier)
+    if filename_prefix:
+        safe_name = f"{filename_prefix}{safe_name}"
+
+    filepath = target_dir / f"{safe_name}.json"
+
+    if skip_existing and filepath.exists():
+        return filepath, False
+
+    serializable = _json_safe_recursive(payload, drop_missing=drop_missing)
+    with filepath.open("w", encoding="utf-8") as handle:
+        json.dump(serializable, handle, indent=indent)
+
+    return filepath, True
+
+
 def save_dataframe_rows_as_json(
     df: pd.DataFrame,
     directory: str | Path,
@@ -683,6 +807,7 @@ def save_dataframe_rows_as_json(
 ) -> list[Path]:
     """
     Persist each row of a DataFrame as an individual JSON file.
+    Internally delegates to save_json_payload for the actual write.
 
     Args:
         df: DataFrame to export.
@@ -698,35 +823,21 @@ def save_dataframe_rows_as_json(
     if df is None or df.empty:
         return []
 
-    target_dir = Path(directory)
-    target_dir.mkdir(parents=True, exist_ok=True)
-
     saved_paths: list[Path] = []
     for idx, row in df.reset_index(drop=True).iterrows():
-        identifier: Optional[str] = None
-        if id_column and id_column in row and pd.notna(row[id_column]):
-            identifier = str(row[id_column]).strip()
-        if not identifier:
-            identifier = f"row{idx:04d}"
-
-        safe_name = re.sub(r"[^A-Za-z0-9._-]+", "_", identifier)
-        if filename_prefix:
-            safe_name = f"{filename_prefix}{safe_name}"
-
-        filepath = target_dir / f"{safe_name}.json"
-
-        payload = {
-            str(col): _json_safe(val)
-            for col, val in row.items()
-        }
-        if drop_missing:
-            payload = {k: v for k, v in payload.items() if v is not None}
-
-        # json.dump already defaults to ASCII-only output, which keeps filenames portable.
-        with filepath.open("w", encoding="utf-8") as handle:
-            json.dump(payload, handle, indent=indent)
-
-        saved_paths.append(filepath)
+        fallback_name = f"row{idx:04d}"
+        payload = row.to_dict()
+        saved_path = save_json_payload(
+            payload,
+            directory,
+            id_field=id_column,
+            filename_prefix=filename_prefix,
+            indent=indent,
+            drop_missing=drop_missing,
+            fallback_basename=fallback_name,
+        )
+        if saved_path is not None:
+            saved_paths.append(saved_path)
 
     return saved_paths
 

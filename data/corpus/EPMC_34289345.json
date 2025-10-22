@@ -1,0 +1,12 @@
+{
+  "PMC": "8380731",
+  "DOI": "10.1016/j.cell.2021.06.028",
+  "PMID": "34289345",
+  "PMCID": "PMC8380731",
+  "title": "Control of gasdermin D oligomerization and pyroptosis by the Ragulator-Rag-mTORC1 pathway.",
+  "year": 2021,
+  "source_url": "https://europepmc.org/article/PMC/PMC8380731",
+  "source": "MED",
+  "abstract_text": "The process of pyroptosis is mediated by inflammasomes and a downstream effector known as gasdermin D (GSDMD). Upon cleavage by inflammasome-associated caspases, the N-terminal domain of GSDMD forms membrane pores that promote cytolysis. Numerous proteins promote GSDMD cleavage, but none are known to be required for pore formation after GSDMD cleavage. Herein, we report a forward genetic screen that identified the Ragulator-Rag complex as being necessary for GSDMD pore formation and pyroptosis in macrophages. Mechanistic analysis revealed that Ragulator-Rag is not required for GSDMD cleavage upon inflammasome activation but rather promotes GSDMD oligomerization in the plasma membrane. Defects in GSDMD oligomerization and pore formation can be rescued by mitochondrial poisons that stimulate reactive oxygen species (ROS) production, and ROS modulation impacts the ability of inflammasome pathways to promote pore formation downstream of GSDMD cleavage. These findings reveal an unexpected link between key regulators of immunity (inflammasome-GSDMD) and metabolism (Ragulator-Rag).",
+  "plain_text": "The process of pyroptosis is mediated by inflammasomes and a downstream effector known as gasdermin D (GSDMD). Upon cleavage by inflammasome-associated caspases, the N-terminal domain of GSDMD forms membrane pores that promote cytolysis. Numerous proteins promote GSDMD cleavage, but none are known to be required for pore formation after GSDMD cleavage. Herein, we report a forward genetic screen that identified the Ragulator-Rag complex as being necessary for GSDMD pore formation and pyroptosis in macrophages. Mechanistic analysis revealed that Ragulator-Rag is not required for GSDMD cleavage upon inflammasome activation but rather promotes GSDMD oligomerization in the plasma membrane. Defects in GSDMD oligomerization and pore formation can be rescued by mitochondrial poisons that stimulate reactive oxygen species (ROS) production, and ROS modulation impacts the ability of inflammasome pathways to promote pore formation downstream of GSDMD cleavage. These findings reveal an unexpected link between key regulators of immunity (inflammasome-GSDMD) and metabolism (Ragulator-Rag)."
+}

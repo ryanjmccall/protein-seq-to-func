@@ -1,0 +1,12 @@
+{
+  "PMC": "3042158",
+  "DOI": "10.1101/gad.2003811",
+  "PMID": "21325134",
+  "PMCID": "PMC3042158",
+  "title": "BLM-DNA2-RPA-MRN and EXO1-BLM-RPA-MRN constitute two DNA end resection machineries for human DNA break repair.",
+  "year": 2011,
+  "source_url": "https://europepmc.org/article/PMC/PMC3042158",
+  "source": "MED",
+  "abstract_text": "Repair of dsDNA breaks requires processing to produce 3'-terminated ssDNA. We biochemically reconstituted DNA end resection using purified human proteins: Bloom helicase (BLM); DNA2 helicase/nuclease; Exonuclease 1 (EXO1); the complex comprising MRE11, RAD50, and NBS1 (MRN); and Replication protein A (RPA). Resection occurs via two routes. In one, BLM and DNA2 physically and specifically interact to resect DNA in a process that is ATP-dependent and requires BLM helicase and DNA2 nuclease functions. RPA is essential for both DNA unwinding by BLM and enforcing 5' → 3' resection polarity by DNA2. MRN accelerates processing by recruiting BLM to the end. In the other, EXO1 resects the DNA and is stimulated by BLM, MRN, and RPA. BLM increases the affinity of EXO1 for ends, and MRN recruits and enhances the processivity of EXO1. Our results establish two of the core machineries that initiate recombinational DNA repair in human cells.",
+  "plain_text": "Repair of dsDNA breaks requires processing to produce 3'-terminated ssDNA. We biochemically reconstituted DNA end resection using purified human proteins: Bloom helicase (BLM); DNA2 helicase/nuclease; Exonuclease 1 (EXO1); the complex comprising MRE11, RAD50, and NBS1 (MRN); and Replication protein A (RPA). Resection occurs via two routes. In one, BLM and DNA2 physically and specifically interact to resect DNA in a process that is ATP-dependent and requires BLM helicase and DNA2 nuclease functions. RPA is essential for both DNA unwinding by BLM and enforcing 5' → 3' resection polarity by DNA2. MRN accelerates processing by recruiting BLM to the end. In the other, EXO1 resects the DNA and is stimulated by BLM, MRN, and RPA. BLM increases the affinity of EXO1 for ends, and MRN recruits and enhances the processivity of EXO1. Our results establish two of the core machineries that initiate recombinational DNA repair in human cells."
+}

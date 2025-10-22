@@ -4,11 +4,5 @@
     "title": "APOE Kyoto mutation in European Americans with lipoprotein glomerulopathy.",
     "year": 2007,
     "source_url": "https://europepmc.org/article/MED/18077821",
-    "source": "MED",
-    "function_signal": 0.0,
-    "longevity_signal": 0.0,
-    "year_score": 0.05263157894736842,
-    "functionality_score": 0.0,
-    "longevity_score": 0.0,
-    "composite_score": 0.021052631578947368
+    "source": "MED"
 }
