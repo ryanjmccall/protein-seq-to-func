@@ -17,7 +17,7 @@ const siteDescription =
   "Human-readable protein dossiers that connect sequence variation to structure, function, and clinical relevance.";
 
 export const metadata: Metadata = {
-  metadataBase: new URL("https://westcoastvectors.dev"),
+  metadataBase: new URL("https://protein-seq-to-function.vercel.app"),
   title: {
     default: siteTitle,
     template: "%s | Protein Atlas",
