@@ -37,3 +37,16 @@
 
 ## Notes
 - Swagger usage: open /docs, expand the endpoint, set params, click “Try it out” → “Execute”.
+
+
+
+Current workflow to get articles:
+1. write the current protein in the harvest_apoe() funktion, save, run it via Swagger (the folder "papers" should be empty before the run)
+or alternatively use the json files from corpus and put them in the "papers" folder
+2. run "post index/run_all" via Swagger with the following parameters to get html (before starting the function remove existing "faiss_store" folder from the working directory):
+batch_size: 500
+protein name: <the name of the protein, e.g. CCR7>
+query: e.g. "CCR7 polymorphisms affecting human lifespan or aging, not disease-specific"
+top_k: 200
+top_n: 500
+for the rest of the parameters you can leave the default value
