@@ -1031,6 +1031,11 @@ def index_faiss_batch(
     all_files = [os.path.join(PAPERS_DIR, fn) for fn in os.listdir(PAPERS_DIR) if fn.endswith(".json")]
     all_files.sort()
 
+    # Fast path: if scoring is enabled and this window starts beyond top_n, skip immediately.
+    if use_scoring and int(offset) >= int(top_n):
+        print("[INDEX-ONLY] use_scoring=True and offset >= top_n — skipping batch without rescoring.")
+        return {"status": "ok", "files": 0}
+
     # --- Optional scoring and Top-N selection (streaming) ---
     selected_paths = all_files
     if use_scoring:
@@ -1988,11 +1993,20 @@ def article_generate_from_chunks(query: Optional[str] = None, top_k: int = 100, 
 
 
 @app.post("/index/run_all")
-def index_run_all(batch_size: int = 1000, protein_name: str = "APOE", query: Optional[str] = None, top_k: int = 10):
+def index_run_all(
+    batch_size: int = 1001,
+    protein_name: str = "APOE",
+    query: Optional[str] = None,
+    top_k: int = 10,
+    use_scoring: bool = True,
+    top_n: int = 1000,
+    emb_batch_size: int = 96,
+):
     """
     Orchestrator:
-    - Iterates papers/ in batches, calling /index/faiss_batch until all are indexed
-    - Then calls /article/generate once to produce the final article from the full index
+    - When use_scoring=True: index only the Top-N ranked papers in a single batch window
+      (up to min(batch_size, top_n)), then proceed to article generation immediately.
+    - When use_scoring=False: iterate all files in batches until complete, then generate article.
     """
 
     if not os.path.isdir(PAPERS_DIR):
@@ -2004,15 +2018,26 @@ def index_run_all(batch_size: int = 1000, protein_name: str = "APOE", query: Opt
         return {"status": "ok", "note": "No JSON files in papers/", "indexed": 0}
 
     processed = 0
-    for offset in range(0, total, int(batch_size)):
-        limit = min(int(batch_size), total - offset)
-        print(f"[RUN-ALL] Index batch offset={offset} limit={limit}")
+    if use_scoring:
+        # Score once inside the batch endpoint; only embed Top-N once and stop.
+        first_limit = min(int(batch_size), min(int(top_n), total))
+        print(f"[RUN-ALL] (scoring mode) Index single batch offset=0 limit={first_limit} top_n={top_n}")
         try:
-            index_faiss_batch(limit=limit, offset=offset)
-            processed += limit
+            index_faiss_batch(limit=first_limit, offset=0, use_scoring=use_scoring, top_n=top_n, emb_batch_size=emb_batch_size)
+            processed += first_limit
         except HTTPException as e:
             print(f"[RUN-ALL][index error] {e.detail}")
             raise
+    else:
+        for offset in range(0, total, int(batch_size)):
+            limit = min(int(batch_size), total - offset)
+            print(f"[RUN-ALL] Index batch offset={offset} limit={limit}")
+            try:
+                index_faiss_batch(limit=limit, offset=offset, use_scoring=False, top_n=top_n, emb_batch_size=emb_batch_size)
+                processed += limit
+            except HTTPException as e:
+                print(f"[RUN-ALL][index error] {e.detail}")
+                raise
 
     print("[RUN-ALL] Indexing complete. Generating article...")
     article_generate(query=query, top_k=top_k, protein_name=protein_name)
@@ -2030,7 +2055,7 @@ def harvest_apoe():
     """
 
     # ------------------------- Hard-coded settings -------------------------
-    PROTEIN = "CCR1"          # search term (Europe PMC search is case-insensitive)
+    PROTEIN = "CCR7"          # search term (Europe PMC search is case-insensitive)
     PAGE_SIZE = 1000          # Europe PMC maximum per page
     TIMEOUT_SECS = 60         # HTTP client timeout
     OA_ONLY = True            # we only collect Open Access; OA -> PMCID should be present
